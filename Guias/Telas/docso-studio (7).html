@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docso — Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --preto: #0A0A0A;
+    --branco: #FAFAFA;
+    --cinza-sup: #F0F0F0;
+    --cinza-borda: #E4E4E4;
+    --cinza-texto: #A0A0A0;
+    --azul: #30BCFE;
+    --vermelho: #FE7451;
+    --amarelo: #FADB02;
+    --verde: #39BD3D;
+    --sidebar-w: 220px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--branco); font-family: 'DM Sans', sans-serif; height: 100vh; overflow: hidden; display: flex; color: var(--preto); }
+
+  /* ── SIDEBAR ── */
+  .sidebar { width: var(--sidebar-w); height: 100vh; background: var(--preto); display: flex; flex-direction: column; flex-shrink: 0; padding: 36px 0 28px; border-right: 1px solid #1a1a1a; }
+  .sidebar-logo { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.8px; color: var(--branco); text-decoration: none; padding: 0 28px; margin-bottom: 48px; display: block; }
+  .sidebar-logo span { color: var(--azul); }
+  .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 0 14px; }
+  .nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 7px; cursor: pointer; text-decoration: none; transition: background 0.15s; font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: #555; user-select: none; }
+  .nav-item:hover { background: #151515; color: #aaa; }
+  .nav-item.active { background: #151515; color: var(--branco); }
+  .nav-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nav-icon svg { width: 15px; height: 15px; }
+  .nav-item.active .nav-icon svg { stroke: var(--azul); }
+  .sidebar-footer { padding: 0 14px; border-top: 1px solid #1a1a1a; padding-top: 20px; margin-top: 8px; }
+  .user-chip { display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 7px; cursor: pointer; transition: background 0.15s; }
+  .user-chip:hover { background: #151515; }
+  .user-avatar { width: 30px; height: 30px; background: var(--azul); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--preto); flex-shrink: 0; }
+  .user-name { font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--branco); }
+  .user-role { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: #444; text-transform: uppercase; }
+
+  /* ── MAIN ── */
+  .main { flex: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #F2F2F2; }
+
+  /* ── TOPBAR ── */
+  .topbar { height: 56px; background: #fff; border-bottom: 1px solid var(--cinza-borda); display: flex; align-items: center; padding: 0 40px; gap: 16px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--cinza-texto); }
+  .breadcrumb a { color: var(--cinza-texto); text-decoration: none; transition: color 0.15s; }
+  .breadcrumb a:hover { color: var(--preto); }
+  .breadcrumb-sep { opacity: 0.4; }
+  .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  .autosave-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: #C8C8C8; display: flex; align-items: center; gap: 6px; }
+  .autosave-dot { width: 5px; height: 5px; background: var(--verde); border-radius: 50%; animation: blink 2.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+  .btn-ghost { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: transparent; border: 1.5px solid var(--cinza-borda); border-radius: 7px; font-family: 'DM Sans', sans-serif; font-size: 12.5px; color: #666; cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+  .btn-ghost:hover { border-color: #bbb; color: var(--preto); background: var(--cinza-sup); }
+  .btn-ghost svg { width: 13px; height: 13px; }
+  .btn-solid { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 18px; background: var(--preto); border: none; border-radius: 7px; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--branco); cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .btn-solid:hover { background: #222; transform: translateY(-1px); }
+  .btn-solid:active { transform: translateY(0); }
+  .btn-solid svg { width: 13px; height: 13px; }
+
+  /* ── BODY ── */
+  .body-layout { flex: 1; display: flex; overflow: hidden; }
+
+  /* ── CONTEÚDO PRINCIPAL ── */
+  .editor-scroll { flex: 1; overflow-y: auto; padding: 48px 60px 100px; display: flex; justify-content: center; }
+  .editor-scroll::-webkit-scrollbar { width: 4px; }
+  .editor-scroll::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 4px; }
+
+  .editor-inner { width: 100%; max-width: 900px; animation: fadeUp 0.45s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── CARD CABEÇALHO ── */
+  .card { background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 3px 12px rgba(0,0,0,0.04); margin-bottom: 16px; overflow: hidden; }
+
+  .card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--cinza-sup); }
+  /* ── TOOLTIP DE AJUDA ── */
+  .field-label { position: relative; display: flex; align-items: center; gap: 6px; }
+
+  .field-help {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px; height: 14px;
+    background: var(--cinza-sup);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 50%;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--cinza-texto);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    position: relative;
+  }
+  .field-help:hover { background: var(--preto); color: #fff; border-color: var(--preto); }
+
+  .field-help::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--preto);
+    color: #ccc;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0;
+    text-transform: none;
+    width: 240px;
+    padding: 10px 13px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    transform: translateX(-50%) translateY(4px);
+    z-index: 100;
+    white-space: normal;
+  }
+  .field-help::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--preto);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 100;
+  }
+  .field-help:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .field-help:hover::before { opacity: 1; }
+
+  .card-section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.5px;
+    color: var(--preto);
+    margin-bottom: 20px;
+  }
+
+  .card-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--cinza-texto); margin-bottom: 14px; }
+
+  /* ── CAMPOS ── */
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza-texto); margin-bottom: 8px; }
+
+  .field-input {
+    width: 100%;
+    height: 44px;
+    background: var(--cinza-sup);
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--preto);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .field-input:focus { background: #fff; border-color: var(--azul); }
+  .field-input::placeholder { color: #C8C8C8; }
+
+  .field-textarea {
+    width: 100%;
+    background: var(--cinza-sup);
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--preto);
+    outline: none;
+    resize: none;
+    line-height: 1.65;
+    transition: border-color 0.2s, background 0.2s;
+    min-height: 88px;
+  }
+  .field-textarea:focus { background: #fff; border-color: var(--azul); }
+  .field-textarea::placeholder { color: #C8C8C8; }
+
+  /* row de campos */
+  .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* select estilizado */
+  .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+
+  .status-row { display: flex; gap: 8px; }
+  .status-opt { flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; gap: 7px; border-radius: 8px; border: 1.5px solid var(--cinza-borda); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; color: var(--cinza-texto); background: #fff; user-select: none; }
+  .status-opt .sdot { width: 6px; height: 6px; border-radius: 50%; }
+  .status-opt:hover { border-color: #bbb; color: #444; }
+  .status-opt.selected-draft    { background: rgba(250,219,2,0.18);  border-color: #b89800; color: #6e5900; }
+  .status-opt.selected-published { background: rgba(48,188,254,0.12); border-color: #0780b8; color: #0780b8; }
+  .status-opt.selected-outdated  { background: rgba(254,116,81,0.12); border-color: #b83318; color: #b83318; }
+
+  .field-select {
+    width: 100%;
+    height: 44px;
+    background: var(--cinza-sup);
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--preto);
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23A0A0A0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .field-select:focus { background-color: #fff; border-color: var(--azul); }
+
+  /* status pill select */
+  .status-row { display: flex; gap: 8px; }
+  .status-opt {
+    flex: 1;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 8px;
+    border: 1.5px solid var(--cinza-borda);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    color: var(--cinza-texto);
+    background: #fff;
+    user-select: none;
+  }
+  .status-opt .sdot { width: 6px; height: 6px; border-radius: 50%; }
+  .status-opt:hover { border-color: #bbb; color: #444; }
+  .status-opt.selected-pub  { background: rgba(48,188,254,0.12);  border-color: #0780b8; color: #0780b8; }
+  .status-opt.selected-ras  { background: rgba(250,219,2,0.18);   border-color: #b89800; color: #6e5900; }
+  .status-opt.selected-des  { background: rgba(254,116,81,0.12);  border-color: #b83318; color: #b83318; }
+
+  /* ── RESPONSÁVEIS ── */
+  .owners-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 20px 24px; }
+
+  .owner-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px 8px 10px;
+    background: var(--cinza-sup);
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 10px;
+    cursor: default;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .owner-card:hover { border-color: #bbb; }
+  .owner-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; flex-shrink: 0; }
+  .owner-info { display: flex; flex-direction: column; }
+  .owner-nome { font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--preto); }
+  .owner-area { font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--cinza-texto); }
+  .owner-remove { position: absolute; top: -5px; right: -5px; width: 16px; height: 16px; background: var(--preto); border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; color: #fff; line-height: 1; }
+  .owner-card:hover .owner-remove { display: flex; }
+
+  /* form de novo responsável */
+  .add-owner-form {
+    display: none;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--cinza-sup);
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeUp 0.25s ease both;
+  }
+  .add-owner-form.open { display: flex; }
+  .add-owner-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .color-picker { display: flex; gap: 8px; align-items: center; }
+  .color-dot {
+    width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+    border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s;
+    flex-shrink: 0;
+  }
+  .color-dot:hover { transform: scale(1.15); }
+  .color-dot.selected { border-color: var(--preto); }
+
+  .btn-add-small { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 36px; background: transparent; border: 1.5px dashed var(--cinza-borda); border-radius: 8px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza-texto); cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; }
+  .btn-add-small:hover { border-color: #aaa; color: var(--preto); background: var(--cinza-sup); }
+  .btn-add-small svg { width: 11px; height: 11px; }
+
+  .btn-confirm { height: 36px; padding: 0 16px; background: var(--preto); color: var(--branco); border: none; border-radius: 7px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .btn-confirm:hover { background: #222; }
+  .btn-cancel { height: 36px; padding: 0 14px; background: transparent; color: var(--cinza-texto); border: 1.5px solid var(--cinza-borda); border-radius: 7px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .btn-cancel:hover { border-color: #bbb; color: var(--preto); }
+
+  /* ── SEÇÕES ── */
+  .sections-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+  .section-card { background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 2px 10px rgba(0,0,0,0.03); overflow: hidden; }
+
+  .section-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px;
+    background: #fafafa;
+    border-bottom: 1px solid var(--cinza-sup);
+    cursor: default;
+  }
+  .section-num-badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza-texto); flex-shrink: 0; }
+  .section-title-input {
+    flex: 1;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14.5px; letter-spacing: -0.4px;
+    color: var(--preto); background: transparent; border: none;
+    border-bottom: 1.5px dashed transparent; outline: none;
+    padding-bottom: 1px; transition: border-color 0.2s;
+  }
+  .section-title-input:focus { border-color: var(--cinza-borda); }
+  .section-title-input::placeholder { color: #C8C8C8; font-weight: 400; }
+
+  .section-icon-btn {
+    width: 28px; height: 28px; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #D0D0D0; border-radius: 5px; transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .section-icon-btn:hover { background: var(--cinza-sup); color: var(--preto); }
+  .section-icon-btn svg { width: 13px; height: 13px; }
+
+  /* etapas dentro da seção */
+  .steps-body { padding: 6px 20px 12px; }
+
+  .step-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cinza-sup);
+    position: relative;
+  }
+  .step-row:last-child { border-bottom: none; }
+
+  .step-drag-handle {
+    padding-top: 3px; color: #D8D8D8; cursor: grab; flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .step-drag-handle:hover { color: #aaa; }
+  .step-drag-handle svg { width: 12px; height: 12px; }
+
+  .step-num-badge {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #fff; border: 1.5px solid var(--cinza-borda);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto);
+    flex-shrink: 0; margin-top: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .step-fields { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+  .step-name-input {
+    width: 100%; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 13.5px;
+    color: var(--preto); background: var(--cinza-sup); border: 1.5px solid transparent;
+    border-radius: 7px; padding: 7px 11px; outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .step-name-input:focus { background: #fff; border-color: var(--azul); }
+  .step-name-input::placeholder { color: #C8C8C8; font-weight: 400; }
+
+  .step-desc-input {
+    width: 100%; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 12.5px;
+    color: var(--preto); background: var(--cinza-sup); border: 1.5px solid transparent;
+    border-radius: 7px; padding: 7px 11px; outline: none; resize: none;
+    line-height: 1.6; min-height: 36px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .step-desc-input:focus { background: #fff; border-color: var(--azul); }
+  .step-desc-input::placeholder { color: #D0D0D0; }
+
+  .step-meta-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .step-owner-sel {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 10px 4px 6px;
+    background: var(--cinza-sup); border: 1.5px solid var(--cinza-borda);
+    border-radius: 99px; font-family: 'DM Mono', monospace; font-size: 8.5px;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--cinza-texto);
+    cursor: pointer; transition: border-color 0.15s; appearance: none; outline: none;
+  }
+  .step-owner-sel:focus { border-color: var(--azul); }
+
+  .step-owner-av { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 7px; flex-shrink: 0; }
+
+  .step-delete-btn {
+    width: 26px; height: 26px; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #D8D8D8; border-radius: 5px; transition: background 0.15s, color 0.15s;
+    flex-shrink: 0; margin-top: 2px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .step-row:hover .step-delete-btn { opacity: 1; }
+  .step-delete-btn:hover { background: #fff0ee; color: var(--vermelho); }
+  .step-delete-btn svg { width: 12px; height: 12px; }
+
+  /* confirm delete inline */
+  .delete-confirm {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff8f7;
+    border-top: 1px solid #ffe8e4;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    color: #888;
+  }
+  .delete-confirm.open { display: flex; }
+  .delete-confirm strong { color: var(--preto); font-weight: 500; }
+  .btn-confirm-del { padding: 4px 12px; background: var(--vermelho); color: #fff; border: none; border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; }
+  .btn-confirm-del:hover { opacity: 0.85; }
+  .btn-cancel-del { padding: 4px 12px; background: transparent; color: var(--cinza-texto); border: 1.5px solid var(--cinza-borda); border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+  .btn-cancel-del:hover { border-color: #bbb; color: var(--preto); }
+
+  /* add etapa */
+  .btn-add-step {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 11px 20px;
+    background: none; border: none; border-top: 1px dashed var(--cinza-borda);
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--cinza-texto); cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-align: left;
+  }
+  .btn-add-step:hover { background: var(--cinza-sup); color: var(--preto); }
+  .btn-add-step svg { width: 11px; height: 11px; }
+
+  /* add seção */
+  .btn-add-section {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; height: 52px;
+    background: #fff; border: 1.5px dashed var(--cinza-borda); border-radius: 12px;
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--cinza-texto); cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    margin-top: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  .btn-add-section:hover { border-color: #aaa; color: var(--preto); background: var(--cinza-sup); }
+  .btn-add-section svg { width: 12px; height: 12px; }
+
+  /* ── PANEL LATERAL (resumo) ── */
+
+
+
+
+  /* status pill no painel lateral */
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="#" class="sidebar-logo">doc<span>s</span>o</a>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item">
+      <div class="nav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="1.5" width="5" height="5" rx="1"/><rect x="9.5" y="1.5" width="5" height="5" rx="1"/><rect x="1.5" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/></svg></div>Dashboard
+    </a>
+    <a href="#" class="nav-item active">
+      <div class="nav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M8 2l6 6-6 6"/></svg></div>Studio
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M2 8h12M2 12.5h7"/></svg></div>Biblioteca
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">MR</div>
+      <div><div class="user-name">Mariana Rocha</div><div class="user-role">Admin</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="#">Studio</a>
+      <span class="breadcrumb-sep">/</span>
+      <span style="color:#bbb;" id="breadcrumbNome">Novo processo</span>
+    </div>
+    <div class="topbar-actions">
+      <div class="autosave-label"><div class="autosave-dot"></div><span id="autosaveText">Salvo às 14:32</span></div>
+      <button class="btn-ghost" onclick="window.location.reload()">
+        <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4a5 5 0 0 1 9 2M11 9a5 5 0 0 1-9-2"/><path d="M2 2v3h3M11 11V8H8"/></svg>
+        Descartar
+      </button>
+      <button class="btn-solid" onclick="publicar()">
+        <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4.5L5 10.5 2 7.5"/></svg>
+        Publicar
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-layout">
+
+    <!-- EDITOR -->
+    <div class="editor-scroll">
+      <div class="editor-inner">
+
+        <!-- CARD: Informações gerais -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-section-title">Informações gerais</div>
+            <div class="field">
+              <label class="field-label" for="fieldTitle">
+                Nome do processo
+                <span class="field-help" data-tip="O nome que vai aparecer na Biblioteca e nos relatórios. Seja direto: use verbos ou substantivos que descrevam a ação. Ex: &quot;Onboarding de colaboradores&quot;, &quot;Aprovação de despesas&quot;.">?</span>
+              </label>
+              <input class="field-input" id="fieldTitle" type="text" placeholder="Ex: Onboarding de novos colaboradores" oninput="onNomeChange(this.value)">
+            </div>
+            <div class="field">
+              <label class="field-label" for="fieldObjective">
+                Objetivo
+                <span class="field-help" data-tip="Explique em 1–2 frases o que este processo garante ou resolve. Isso aparece como descrição no card da Biblioteca e ajuda o time a entender quando usar este processo.">?</span>
+              </label>
+              <textarea class="field-textarea" id="fieldObjective" placeholder="Ex: Garantir que cada novo colaborador tenha uma chegada estruturada, com acessos e contexto desde o primeiro dia." rows="3" oninput="autoResize(this); triggerAutosave();"></textarea>
+            </div>
+            <div class="fields-row" style="margin-bottom:0">
+              <div class="field" style="margin:0">
+                <label class="field-label" for="fieldExecutor">
+                  Quem executa
+                  <span class="field-help" data-tip="Qual área, cargo ou pessoa é responsável por executar este processo? Ex: &quot;Time de RH&quot;, &quot;Gestor direto&quot;, &quot;Analista financeiro&quot;.">?</span>
+                </label>
+                <input class="field-input" id="fieldExecutor" type="text" placeholder="Ex: Time de RH, Gestor direto...">
+              </div>
+              <div class="field" style="margin:0">
+                <label class="field-label" for="fieldFrequency">
+                  Com que frequência
+                  <span class="field-help" data-tip="De quanto em quanto tempo este processo é executado? Isso ajuda o time a saber quando acionar o processo e facilita auditorias futuras.">?</span>
+                </label>
+                <select class="field-select" id="fieldFrequency">
+                  <option value="" disabled selected>Selecionar</option>
+                  <option value="unica">Única vez</option>
+                  <option value="diaria">Diária</option>
+                  <option value="semanal">Semanal</option>
+                  <option value="quinzenal">Quinzenal</option>
+                  <option value="mensal">Mensal</option>
+                  <option value="trimestral">Trimestral</option>
+                  <option value="sob_demanda">Sob demanda</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SEÇÕES -->
+        <div class="sections-wrap" id="sectionsList"></div>
+
+        <button class="btn-add-section" onclick="addSection()">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+          Adicionar seção
+        </button>
+
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+<script>
+  /* ── ESTADO GLOBAL ── */
+  let owners = [];
+  let selectedColor = { color: '#30BCFE', txt: '#0a0a0a' };
+  let sectionCount = 0;
+
+  /* ── STATUS ── */
+  let currentStatus = '';
+  function selectStatus(s) {
+    currentStatus = s;
+    document.querySelectorAll('.status-opt').forEach(el => {
+      el.className = 'status-opt';
+      if (el.dataset.status === s) el.classList.add('selected-' + s);
+    });
+    triggerAutosave();
+  }
+
+  /* ── NOME ── */
+  function onNomeChange(val) {
+    document.getElementById('breadcrumbNome').textContent = val.trim() || 'Novo processo';
+    triggerAutosave();
+  }
+
+  /* ── STATUS ── */
+
+  /* ── RESPONSÁVEIS ── */
+  function toggleOwnerForm() {
+    const f = document.getElementById('ownerForm');
+    f.classList.toggle('open');
+    if (f.classList.contains('open')) document.getElementById('ownerNome').focus();
+  }
+
+  function selectColor(el) {
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedColor = { color: el.dataset.color, txt: el.dataset.txt };
+  }
+
+  function confirmOwner() {
+    const nome = document.getElementById('ownerNome').value.trim();
+    const area = document.getElementById('ownerArea').value.trim();
+    if (!nome) { document.getElementById('ownerNome').focus(); return; }
+
+    const iniciais = nome.split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase();
+    const owner = { id: Date.now(), nome, area, iniciais, color: selectedColor.color, txt: selectedColor.txt };
+    owners.push(owner);
+
+    renderOwners();
+    document.getElementById('ownerNome').value = '';
+    document.getElementById('ownerArea').value = '';
+    document.getElementById('ownerForm').classList.remove('open');
+    updateStats();
+    triggerAutosave();
+  }
+
+  function renderOwners() {
+    const list = document.getElementById('ownersList');
+
+    list.innerHTML = owners.map(o => `
+      <div class="owner-card">
+        <div class="owner-av" style="background:${o.color};color:${o.txt};">${o.iniciais}</div>
+        <div class="owner-info">
+          <div class="owner-nome">${o.nome}</div>
+          ${o.area ? `<div class="owner-area">${o.area}</div>` : ''}
+        </div>
+        <div class="owner-remove" onclick="removeOwner(${o.id})">×</div>
+      </div>`).join('');
+
+    sideList.innerHTML = owners.map(o => `
+      <div class="side-owner-row">
+        <div class="side-owner-av" style="background:${o.color};color:${o.txt};">${o.iniciais}</div>
+        <div>
+          <div class="side-owner-name">${o.nome}</div>
+          ${o.area ? `<div class="side-owner-area">${o.area}</div>` : ''}
+        </div>
+      </div>`).join('');
+
+    sideCard.style.display = owners.length ? '' : 'none';
+
+    // atualiza selects nas etapas
+    updateOwnerSelects();
+  }
+
+  function removeOwner(id) {
+    owners = owners.filter(o => o.id !== id);
+    renderOwners();
+    updateStats();
+  }
+
+  function ownerSelectOptions() {
+    const base = `<option value="">— Responsável</option>`;
+    return base + owners.map(o => `<option value="${o.id}">${o.iniciais} · ${o.nome}${o.area ? ' · ' + o.area : ''}</option>`).join('');
+  }
+
+  function updateOwnerSelects() {
+    document.querySelectorAll('.step-owner-sel').forEach(sel => {
+      const val = sel.value;
+      sel.innerHTML = ownerSelectOptions();
+      sel.value = val;
+      updateOwnerSelectAvatar(sel);
+    });
+  }
+
+  function updateOwnerSelectAvatar(sel) {
+    const wrap = sel.closest('.step-meta-row');
+    if (!wrap) return;
+    const av = wrap.querySelector('.step-owner-av');
+    if (!av) return;
+    const owner = owners.find(o => String(o.id) === sel.value);
+    if (owner) {
+      av.textContent = owner.iniciais;
+      av.style.background = owner.color;
+      av.style.color = owner.txt;
+    } else {
+      av.textContent = '?';
+      av.style.background = '#E4E4E4';
+      av.style.color = '#A0A0A0';
+    }
+  }
+
+  /* ── SEÇÕES ── */
+  function addSection() {
+    sectionCount++;
+    const id = 'sec-' + sectionCount;
+    const wrap = document.getElementById('sectionsList');
+    const div = document.createElement('div');
+    div.className = 'section-card';
+    div.id = id;
+    div.style.animation = 'fadeUp 0.3s ease both';
+    div.innerHTML = `
+      <div class="section-head">
+        <div class="section-num-badge">0${sectionCount}</div>
+        <input class="section-title-input" type="text" placeholder="Título da seção..." oninput="updateStats(); triggerAutosave();">
+        <button class="section-icon-btn" title="Excluir seção" onclick="askDeleteSection('${id}')">
+          <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M2 3.5h9M5 3.5V2h3v1.5M4 3.5l.5 7h4l.5-7"/>
+          </svg>
+        </button>
+      </div>
+      <div class="steps-body" id="steps-${id}"></div>
+      <div class="delete-confirm" id="del-${id}">
+        <strong>Excluir seção?</strong> As etapas também serão removidas.
+        <button class="btn-confirm-del" onclick="confirmDeleteSection('${id}')">Excluir</button>
+        <button class="btn-cancel-del" onclick="cancelDelete('del-${id}')">Cancelar</button>
+      </div>
+      <button class="btn-add-step" onclick="addStep('steps-${id}')">
+        <svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="5.5" y1="1" x2="5.5" y2="10"/><line x1="1" y1="5.5" x2="10" y2="5.5"/>
+        </svg>
+        Adicionar etapa
+      </button>`;
+    wrap.appendChild(div);
+    div.querySelector('.section-title-input').focus();
+    div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    updateStats();
+  }
+
+  function askDeleteSection(id) {
+    document.getElementById('del-' + id).classList.add('open');
+  }
+  function confirmDeleteSection(id) {
+    const el = document.getElementById(id);
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(6px)';
+    el.style.transition = 'opacity 0.2s, transform 0.2s';
+    setTimeout(() => { el.remove(); renumberSections(); updateStats(); }, 200);
+  }
+  function cancelDelete(delId) {
+    document.getElementById(delId).classList.remove('open');
+  }
+
+  function renumberSections() {
+    document.querySelectorAll('.section-card .section-num-badge').forEach((el, i) => {
+      el.textContent = String(i + 1).padStart(2, '0');
+    });
+    sectionCount = document.querySelectorAll('.section-card').length;
+  }
+
+  /* ── ETAPAS ── */
+  function addStep(stepsId) {
+    const stepsEl = document.getElementById(stepsId);
+    const stepNum = stepsEl.querySelectorAll('.step-row').length + 1;
+    const stepId = stepsId + '-step-' + Date.now();
+    const row = document.createElement('div');
+    row.className = 'step-row';
+    row.id = stepId;
+    row.style.animation = 'fadeUp 0.25s ease both';
+    row.innerHTML = `
+      <div class="step-drag-handle">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="2" y1="4" x2="10" y2="4"/><line x1="2" y1="8" x2="10" y2="8"/>
+        </svg>
+      </div>
+      <div class="step-num-badge">${stepNum}</div>
+      <div class="step-fields">
+        <input class="step-name-input" type="text" placeholder="Nome da etapa..." oninput="updateStats(); triggerAutosave();">
+        <textarea class="step-desc-input" rows="1" placeholder="Descrição opcional..." oninput="autoResize(this); triggerAutosave();"></textarea>
+        <div class="step-meta-row">
+          <div class="step-owner-av" style="background:#E4E4E4;color:#A0A0A0;">?</div>
+          <select class="step-owner-sel" onchange="updateOwnerSelectAvatar(this); triggerAutosave();">
+            ${ownerSelectOptions()}
+          </select>
+        </div>
+      </div>
+      <button class="step-delete-btn" onclick="askDeleteStep('${stepId}')" title="Excluir etapa">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/>
+        </svg>
+      </button>`;
+    stepsEl.appendChild(row);
+    row.querySelector('.step-name-input').focus();
+    updateStats();
+  }
+
+  function askDeleteStep(id) {
+    const row = document.getElementById(id);
+    const section = row.closest('.section-card');
+    // inline confirm dentro da row
+    let confirmEl = row.querySelector('.step-inline-confirm');
+    if (confirmEl) { confirmEl.remove(); return; }
+    confirmEl = document.createElement('div');
+    confirmEl.className = 'step-inline-confirm delete-confirm open';
+    confirmEl.style.borderTop = '1px solid #ffe8e4';
+    confirmEl.style.marginTop = '8px';
+    confirmEl.innerHTML = `<strong>Excluir etapa?</strong>
+      <button class="btn-confirm-del" onclick="confirmDeleteStep('${id}')">Excluir</button>
+      <button class="btn-cancel-del" onclick="this.closest('.step-inline-confirm').remove()">Cancelar</button>`;
+    row.appendChild(confirmEl);
+  }
+
+  function confirmDeleteStep(id) {
+    const row = document.getElementById(id);
+    row.style.opacity = '0';
+    row.style.transform = 'translateX(8px)';
+    row.style.transition = 'opacity 0.2s, transform 0.2s';
+    setTimeout(() => { row.remove(); renumberSteps(); updateStats(); }, 200);
+  }
+
+  function renumberSteps() {
+    document.querySelectorAll('.steps-body').forEach(body => {
+      body.querySelectorAll('.step-num-badge').forEach((el, i) => el.textContent = i + 1);
+    });
+  }
+
+  /* ── STATS ── */
+  function updateStats() {
+    const secoes  = document.querySelectorAll('.section-card').length;
+    const etapas  = document.querySelectorAll('.step-row').length;
+  }
+
+  /* ── AUTO-SAVE ── */
+  let saveTimer;
+  function triggerAutosave() {
+    clearTimeout(saveTimer);
+    document.getElementById('autosaveText').textContent = 'Salvando...';
+    saveTimer = setTimeout(() => {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('autosaveText').textContent = `Salvo às ${h}:${m}`;
+    }, 800);
+  }
+
+  /* ── AUTO-RESIZE TEXTAREA ── */
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  /* ── PUBLICAR ── */
+  function publicar() {
+    const nome = document.getElementById('fieldTitle').value.trim();
+    if (!nome) { document.getElementById('fieldTitle').focus(); document.getElementById('fieldTitle').style.borderColor = 'var(--vermelho)'; return; }
+    selectStatus('published');
+    document.getElementById('autosaveText').textContent = 'Publicado ✓';
+  }
+
+  /* textarea desc auto resize */
+  document.getElementById('descProcesso').addEventListener('input', function() { autoResize(this); });
+</script>
+
+</body>
+</html>

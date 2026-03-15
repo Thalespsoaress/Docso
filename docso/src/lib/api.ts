@@ -1,0 +1,35 @@
+const API_URL = import.meta.env.VITE_API_URL as string
+
+async function getToken(): Promise<string> {
+  // window.Clerk é injetado pelo ClerkProvider
+  const token = await (window as unknown as { Clerk: { session: { getToken: () => Promise<string> } } }).Clerk.session.getToken()
+  return token
+}
+
+async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = await getToken()
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...options?.headers,
+    },
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
+    throw new Error((err as { error: string }).error)
+  }
+
+  return res.json() as Promise<T>
+}
+
+export const api = {
+  get: <T>(path: string) => apiFetch<T>(path),
+  patch: <T>(path: string, body: unknown) =>
+    apiFetch<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
+  post: <T>(path: string, body: unknown) =>
+    apiFetch<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  delete: <T>(path: string) => apiFetch<T>(path, { method: 'DELETE' }),
+}

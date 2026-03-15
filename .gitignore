@@ -1,0 +1,21 @@
+# Environment variables (never commit secrets)
+.env
+.env.*
+!**/.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.sw?
+
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+dist-ssr

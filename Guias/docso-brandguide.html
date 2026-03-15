@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docso — Brand Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --preto: #0A0A0A;
+    --branco: #FAFAFA;
+    --cinza-sup: #F0F0F0;
+    --cinza-borda: #E4E4E4;
+    --cinza-texto: #A0A0A0;
+    --cinza-medio: #666666;
+    --cinza-fraco: #D0D0D0;
+    --cinza-dark: #1A1A1A;
+    --azul: #30BCFE;
+    --vermelho: #FE7451;
+    --amarelo: #FADB02;
+    --verde: #39BD3D;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--branco);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--preto);
+    cursor: default;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250,250,250,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--cinza-borda);
+    padding: 0 64px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--preto); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--preto);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 120px 64px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hbl {
+    position: absolute;
+    border-radius: 2px;
+  }
+
+  .hbl-1 { width: 4px; height: 40%; background: var(--azul); top: 0; left: 15%; opacity: 0.6; animation: lineDown 3s ease-in-out infinite alternate; }
+  .hbl-2 { width: 4px; height: 25%; background: var(--verde); top: 20%; left: 35%; opacity: 0.4; animation: lineDown 4s 0.5s ease-in-out infinite alternate; }
+  .hbl-3 { width: 4px; height: 35%; background: var(--vermelho); top: 10%; left: 60%; opacity: 0.3; animation: lineDown 3.5s 1s ease-in-out infinite alternate; }
+  .hbl-4 { width: 4px; height: 20%; background: var(--amarelo); top: 30%; left: 80%; opacity: 0.4; animation: lineDown 4.5s 0.2s ease-in-out infinite alternate; }
+
+  @keyframes lineDown {
+    from { transform: translateY(0); opacity: 0.2; }
+    to { transform: translateY(40px); opacity: 0.6; }
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(64px, 9vw, 140px);
+    letter-spacing: -5px;
+    line-height: 0.92;
+    color: var(--branco);
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero-title .accent { color: var(--azul); }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    color: var(--cinza-texto);
+    letter-spacing: 0.5px;
+  }
+
+  .hero-version {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #333;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS GENÉRICAS ── */
+  section { padding: 120px 64px; }
+
+  .sec-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 64px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cinza-borda);
+  }
+
+  .sec-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(36px, 4vw, 56px);
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 48px;
+  }
+
+  /* ── 01 SOBRE ── */
+  .sobre { background: var(--branco); }
+
+  .sobre-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .sobre-bloco {
+    padding: 56px;
+    background: var(--cinza-sup);
+  }
+
+  .sobre-bloco-dark {
+    padding: 56px;
+    background: var(--preto);
+    color: var(--branco);
+  }
+
+  .sb-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 24px;
+  }
+
+  .sb-label-dark {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 24px;
+  }
+
+  .sb-titulo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    line-height: 1.1;
+  }
+
+  .sb-titulo-dark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    line-height: 1.1;
+    color: var(--branco);
+  }
+
+  .sb-texto {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #555;
+  }
+
+  .sb-texto-dark {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--cinza-texto);
+  }
+
+  /* pitch */
+  .pitch-box {
+    margin-top: 2px;
+    background: var(--preto);
+    padding: 56px;
+    grid-column: 1 / -1;
+  }
+
+  .pitch-texto {
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    font-size: clamp(20px, 2.5vw, 32px);
+    letter-spacing: -0.5px;
+    line-height: 1.5;
+    color: var(--branco);
+  }
+
+  .pitch-texto em {
+    font-style: normal;
+    color: var(--azul);
+  }
+
+  /* ── 02 POSICIONAMENTO ── */
+  .posicionamento { background: var(--cinza-sup); }
+
+  .pos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .pos-card {
+    background: var(--branco);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .pos-card:hover { transform: translateY(-4px); }
+
+  .pos-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .pc-azul::before { background: var(--azul); }
+  .pc-verde::before { background: var(--verde); }
+  .pc-vermelho::before { background: var(--vermelho); }
+
+  .pos-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 48px;
+    font-weight: 500;
+    color: var(--cinza-borda);
+    margin-bottom: 24px;
+    line-height: 1;
+  }
+
+  .pos-titulo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .pos-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #666;
+  }
+
+  /* dor principal */
+  .dor-box {
+    background: var(--preto);
+    padding: 64px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .dor-titulo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 3vw, 48px);
+    letter-spacing: -2px;
+    color: var(--branco);
+    line-height: 1.05;
+  }
+
+  .dor-titulo span { color: var(--vermelho); }
+
+  .dor-movimentos { display: flex; flex-direction: column; gap: 24px; }
+
+  .mov-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .mov-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #333;
+    padding-top: 3px;
+    flex-shrink: 0;
+    width: 20px;
+  }
+
+  .mov-texto {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--cinza-texto);
+  }
+
+  .mov-texto strong {
+    font-weight: 500;
+    color: var(--branco);
+  }
+
+  /* ── 03 TOM DE VOZ ── */
+  .tomdevoz { background: var(--branco); }
+
+  .tom-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .tom-card {
+    background: var(--cinza-sup);
+    padding: 48px;
+  }
+
+  .tom-card-dark {
+    background: var(--preto);
+    padding: 48px;
+  }
+
+  .tc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 24px;
+  }
+
+  .tc-label-dark {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 24px;
+  }
+
+  .tc-titulo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
+  }
+
+  .tc-titulo-dark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
+    color: var(--branco);
+  }
+
+  .exemplo-par {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .ex-sim {
+    background: rgba(57,189,61,0.08);
+    border-left: 3px solid var(--verde);
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--preto);
+  }
+
+  .ex-nao {
+    background: rgba(254,116,81,0.06);
+    border-left: 3px solid var(--vermelho);
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #888;
+    text-decoration: line-through;
+    text-decoration-color: rgba(254,116,81,0.4);
+  }
+
+  .ex-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .ex-tag-sim { color: var(--verde); }
+  .ex-tag-nao { color: var(--vermelho); }
+
+  /* pilares */
+  .pilares-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .pilar {
+    background: var(--preto);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pilar::after {
+    content: attr(data-num);
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 100px;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .pilar-nome {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .p-azul .pilar-nome { color: var(--azul); }
+  .p-verde .pilar-nome { color: var(--verde); }
+  .p-amarelo .pilar-nome { color: var(--amarelo); }
+  .p-vermelho .pilar-nome { color: var(--vermelho); }
+
+  .pilar-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--cinza-texto);
+  }
+
+  /* ── 04 IDENTIDADE VISUAL ── */
+  .identidade { background: var(--cinza-sup); }
+
+  /* logo showcase */
+  .logo-showcase {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .ls-main {
+    background: var(--preto);
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ls-wordmark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 80px;
+    letter-spacing: -4px;
+    color: var(--branco);
+    line-height: 1;
+  }
+
+  .ls-wordmark .s { color: var(--azul); }
+
+  .ls-tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    color: var(--cinza-texto);
+    letter-spacing: 1px;
+    margin-top: 24px;
+  }
+
+  .ls-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #333;
+    text-transform: uppercase;
+  }
+
+  .ls-var {
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ls-var-light { background: var(--branco); }
+  .ls-var-accent { background: var(--azul); }
+
+  .lsv-wm {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .lsv-wm .s-dark { color: var(--azul); }
+  .lsv-wm .s-accent { color: var(--preto); }
+
+  .lsv-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .lv-light-label { color: #ccc; }
+  .lv-accent-label { color: rgba(0,0,0,0.3); }
+
+  /* paleta */
+  .paleta-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+  }
+
+  .pal-item { display: flex; flex-direction: column; }
+
+  .pal-bloco {
+    height: 120px;
+    transition: transform 0.3s ease;
+    cursor: default;
+  }
+
+  .pal-bloco:hover { transform: scaleY(1.08); transform-origin: bottom; }
+
+  .pal-info {
+    background: var(--branco);
+    padding: 16px 12px;
+  }
+
+  .pal-nome {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--preto);
+    margin-bottom: 4px;
+  }
+
+  .pal-hex {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--cinza-texto);
+    margin-bottom: 2px;
+  }
+
+  .pal-uso {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    color: #bbb;
+  }
+
+  /* tipografia */
+  .tipo-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .tipo-bloco {
+    background: var(--branco);
+    padding: 56px;
+  }
+
+  .tipo-bloco-dark {
+    background: var(--preto);
+    padding: 56px;
+  }
+
+  .tipo-familia {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 32px;
+  }
+
+  .tipo-familia-dark {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 32px;
+  }
+
+  .tipo-grande {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: -3px;
+    line-height: 1;
+    color: var(--preto);
+    margin-bottom: 24px;
+  }
+
+  .tipo-grande-dark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: -3px;
+    line-height: 1;
+    color: var(--branco);
+    margin-bottom: 24px;
+  }
+
+  .tipo-corpo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #666;
+  }
+
+  .tipo-corpo-dark {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--cinza-texto);
+  }
+
+  .tipo-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--azul);
+    margin-top: 24px;
+  }
+
+  /* ── 05 SISTEMA DE FLUXO ── */
+  .fluxo-sec { background: var(--preto); }
+
+  .fluxo-intro {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 3.5vw, 52px);
+    letter-spacing: -2px;
+    color: var(--branco);
+    line-height: 1.05;
+    margin-bottom: 80px;
+    max-width: 700px;
+  }
+
+  .fluxo-intro span { color: var(--azul); }
+
+  .fluxo-demo {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .fd-topbar {
+    background: #161616;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #1e1e1e;
+  }
+
+  .fd-dots { display: flex; gap: 6px; }
+  .fd-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .fd-dot-r { background: #3a1a1a; }
+  .fd-dot-y { background: #2e2a10; }
+  .fd-dot-g { background: #0e2c0e; }
+
+  .fd-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #333;
+    letter-spacing: 1px;
+  }
+
+  .fd-body { padding: 40px 32px; }
+
+  .fd-processo-nome {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--branco);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .fd-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(48,188,254,0.12);
+    color: var(--azul);
+  }
+
+  .fd-etapas {
+    display: flex;
+    gap: 0;
+  }
+
+  .fd-etapa {
+    flex: 1;
+    padding-right: 16px;
+  }
+
+  .fd-linha {
+    height: 3px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  .fd-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: #2a2a2a;
+    margin-bottom: 8px;
+  }
+
+  .fd-nome {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .fd-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* legenda cores */
+  .cor-legenda {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cl-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #111;
+    border: 1px solid #1e1e1e;
+    padding: 12px 20px;
+    border-radius: 6px;
+  }
+
+  .cl-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .cl-texto {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--cinza-texto);
+  }
+
+  .cl-hex {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #333;
+    margin-left: 4px;
+  }
+
+  /* ── 06 MENSAGENS ── */
+  .mensagens { background: var(--branco); }
+
+  .msg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .msg-card {
+    padding: 48px 40px;
+    background: var(--cinza-sup);
+    transition: background 0.3s;
+  }
+
+  .msg-card:hover { background: var(--preto); }
+  .msg-card:hover .mc-titulo { color: var(--branco); }
+  .msg-card:hover .mc-texto { color: var(--cinza-texto); }
+  .msg-card:hover .mc-seg { color: #333; }
+
+  .mc-seg {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 24px;
+    transition: color 0.3s;
+  }
+
+  .mc-titulo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    line-height: 1.1;
+    transition: color 0.3s;
+  }
+
+  .mc-texto {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #666;
+    transition: color 0.3s;
+  }
+
+  /* pitch box */
+  .pitch-final {
+    margin-top: 2px;
+    background: var(--preto);
+    padding: 80px 64px;
+  }
+
+  .pf-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 32px;
+  }
+
+  .pf-texto {
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    font-size: clamp(20px, 2.5vw, 34px);
+    letter-spacing: -0.5px;
+    line-height: 1.55;
+    color: var(--branco);
+    max-width: 900px;
+  }
+
+  .pf-texto em {
+    font-style: normal;
+    color: var(--azul);
+  }
+
+  /* ── 07 O QUE NÃO SER ── */
+  .naoser { background: var(--cinza-sup); }
+
+  .ns-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  .ns-card {
+    background: var(--branco);
+    padding: 48px 40px;
+    border-top: 3px solid var(--vermelho);
+  }
+
+  .ns-titulo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    color: var(--vermelho);
+    margin-bottom: 16px;
+  }
+
+  .ns-texto {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #666;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--preto);
+    padding: 80px 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #1a1a1a;
+  }
+
+  .footer-left {}
+
+  .footer-logo {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .footer-tag {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: var(--cinza-texto);
+  }
+
+  .footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  .footer-cores {
+    display: flex;
+    gap: 8px;
+  }
+
+  .fc { width: 14px; height: 14px; border-radius: 50%; }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #222;
+  }
+
+  /* ── UTILS ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    nav .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero { padding: 120px 24px 60px; }
+    .sobre-grid, .pos-grid, .logo-showcase, .tipo-showcase,
+    .tom-grid, .msg-grid, .ns-grid { grid-template-columns: 1fr; }
+    .pilares-grid { grid-template-columns: repeat(2, 1fr); }
+    .paleta-row { grid-template-columns: repeat(3, 1fr); }
+    .fd-etapas { flex-direction: column; gap: 16px; }
+    footer { flex-direction: column; gap: 40px; align-items: flex-start; }
+    .footer-right { align-items: flex-start; }
+    .dor-box { grid-template-columns: 1fr; }
+    .pitch-box, .pitch-final { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg height="20" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#0A0A0A"/>
+      <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#0A0A0A"/>
+      <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#0A0A0A"/>
+      <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#0A0A0A"/>
+      <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#0A0A0A"/>
+      <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#posicionamento">Posicionamento</a></li>
+    <li><a href="#tomdevoz">Tom de voz</a></li>
+    <li><a href="#identidade">Identidade</a></li>
+    <li><a href="#fluxo">Sistema</a></li>
+    <li><a href="#mensagens">Mensagens</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-lines">
+    <div class="hbl hbl-1"></div>
+    <div class="hbl hbl-2"></div>
+    <div class="hbl hbl-3"></div>
+    <div class="hbl hbl-4"></div>
+  </div>
+  <div class="hero-label">— Brand Guide · Versão 1.0</div>
+  <div class="hero-title">
+    <svg height="100" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+      <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#FAFAFA"/>
+      <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#FAFAFA"/>
+      <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#FAFAFA"/>
+      <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#FAFAFA"/>
+      <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#FAFAFA"/>
+      <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+    </svg>
+  </div>
+  <div class="hero-bottom">
+    <div class="hero-tagline">Seu processo. No lugar certo.</div>
+    <div class="hero-version">2026</div>
+  </div>
+</div>
+
+<!-- 01 SOBRE -->
+<section class="sobre" id="sobre">
+  <div class="sec-label">01 — Sobre a empresa</div>
+
+  <div class="sobre-grid">
+    <div class="sobre-bloco">
+      <div class="sb-label">O que é</div>
+      <div class="sb-titulo">Uma plataforma que coloca o processo no lugar certo.</div>
+      <div class="sb-texto">Docso é um SaaS B2B para PMEs que documenta processos com IA, treina times automaticamente e retém conhecimento quando alguém sai. Feito para quem tem entre 5 e 50 funcionários e precisa que o negócio funcione sem depender de uma pessoa só.</div>
+    </div>
+    <div class="sobre-bloco-dark">
+      <div class="sb-label-dark">Para quem</div>
+      <div class="sb-titulo-dark">Agências. Consultorias. Escritórios.</div>
+      <div class="sb-texto-dark">PMEs brasileiras onde o processo existe — mas vive na cabeça do dono ou num documento que ninguém abre. Donos que querem escalar sem precisar estar presentes em tudo.</div>
+    </div>
+  </div>
+
+  <div class="pitch-box">
+    <div class="pitch-texto">
+      A maioria das PMEs tem processo. O problema é que ele existe <em>só na cabeça do dono</em> ou num documento que ninguém abre. O Docso documenta como seu time trabalha, treina quem é novo e garante que o conhecimento fica na empresa — não na pessoa.
+    </div>
+  </div>
+</section>
+
+<!-- 02 POSICIONAMENTO -->
+<section class="posicionamento" id="posicionamento">
+  <div class="sec-label">02 — Posicionamento</div>
+
+  <div class="pos-grid">
+    <div class="pos-card pc-azul">
+      <div class="pos-num">01</div>
+      <div class="pos-titulo">Documenta</div>
+      <div class="pos-desc">Captura como seu negócio funciona de verdade. Não como deveria funcionar no papel. A IA registra cada etapa do jeito que o time realmente trabalha.</div>
+    </div>
+    <div class="pos-card pc-verde">
+      <div class="pos-num">02</div>
+      <div class="pos-titulo">Treina</div>
+      <div class="pos-desc">Novos funcionários aprendem o processo certo desde o primeiro dia. Sem depender de ninguém para ensinar. O onboarding acontece no produto.</div>
+    </div>
+    <div class="pos-card pc-vermelho">
+      <div class="pos-num">03</div>
+      <div class="pos-titulo">Retém</div>
+      <div class="pos-desc">Quando alguém sai, o conhecimento fica. O processo continua. O negócio não para. O que foi construído pertence à empresa, não à pessoa.</div>
+    </div>
+  </div>
+
+  <div class="dor-box">
+    <div class="dor-titulo">A dor que <span>abre</span> a conversa.</div>
+    <div class="dor-movimentos">
+      <div class="mov-item">
+        <div class="mov-num">01</div>
+        <div class="mov-texto"><strong>A dor.</strong> Você tem um jeito certo de fazer as coisas. Mas quando olha pro lado, o time faz diferente. Cada um do seu jeito.</div>
+      </div>
+      <div class="mov-item">
+        <div class="mov-num">02</div>
+        <div class="mov-texto"><strong>O custo.</strong> Isso gera retrabalho, cliente insatisfeito e você no operacional resolvendo o que não deveria.</div>
+      </div>
+      <div class="mov-item">
+        <div class="mov-num">03</div>
+        <div class="mov-texto"><strong>A causa.</strong> Não é falta de competência. É falta de processo no lugar certo — acessível, claro, seguível.</div>
+      </div>
+      <div class="mov-item">
+        <div class="mov-num">04</div>
+        <div class="mov-texto"><strong>A solução.</strong> O Docso coloca seu processo no lugar certo. O time segue. Você escala.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 TOM DE VOZ -->
+<section class="tomdevoz" id="tomdevoz">
+  <div class="sec-label">03 — Tom de voz</div>
+
+  <div class="pilares-grid">
+    <div class="pilar p-azul" data-num="1">
+      <div class="pilar-nome">Direto</div>
+      <div class="pilar-desc">Vai ao ponto. Não aquece o assunto antes de falar o que importa. A primeira frase já entrega.</div>
+    </div>
+    <div class="pilar p-verde" data-num="2">
+      <div class="pilar-nome">Confiante</div>
+      <div class="pilar-desc">Não pede licença para existir. Não usa "talvez" ou "pode ser que". Afirma com clareza.</div>
+    </div>
+    <div class="pilar p-amarelo" data-num="3">
+      <div class="pilar-nome">Preciso</div>
+      <div class="pilar-desc">Cada palavra tem função. Nada é decorativo. Sem superlativo vazio. Sem jargão de startup.</div>
+    </div>
+    <div class="pilar p-vermelho" data-num="4">
+      <div class="pilar-nome">Humano</div>
+      <div class="pilar-desc">Fala com pessoa, não com empresa. Conhece a dor. Não é robô, não é corporativo.</div>
+    </div>
+  </div>
+
+  <div class="tom-grid" style="margin-top:2px;">
+    <div class="tom-card">
+      <div class="tc-label">Direto — exemplo</div>
+      <div class="tc-titulo">Como escrever</div>
+      <div class="exemplo-par">
+        <div>
+          <div class="ex-tag ex-tag-sim">✓ sim</div>
+          <div class="ex-sim">Seu processo não pode depender de uma pessoa só.</div>
+        </div>
+        <div>
+          <div class="ex-tag ex-tag-nao">✗ não</div>
+          <div class="ex-nao">Sabemos que gerir uma equipe pode ser um desafio enorme nos dias de hoje...</div>
+        </div>
+      </div>
+    </div>
+    <div class="tom-card">
+      <div class="tc-label">Confiante — exemplo</div>
+      <div class="tc-titulo">Como escrever</div>
+      <div class="exemplo-par">
+        <div>
+          <div class="ex-tag ex-tag-sim">✓ sim</div>
+          <div class="ex-sim">O Docso documenta. O time aprende. O conhecimento fica.</div>
+        </div>
+        <div>
+          <div class="ex-tag ex-tag-nao">✗ não</div>
+          <div class="ex-nao">O Docso pode ajudar sua equipe a talvez melhorar seus processos.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tom-card">
+      <div class="tc-label">Preciso — exemplo</div>
+      <div class="tc-titulo">Como escrever</div>
+      <div class="exemplo-par">
+        <div>
+          <div class="ex-tag ex-tag-sim">✓ sim</div>
+          <div class="ex-sim">8 etapas. 1 processo. Todo o time alinhado.</div>
+        </div>
+        <div>
+          <div class="ex-tag ex-tag-nao">✗ não</div>
+          <div class="ex-nao">Uma solução incrível, completa e revolucionária para transformar seu negócio!</div>
+        </div>
+      </div>
+    </div>
+    <div class="tom-card">
+      <div class="tc-label">Humano — exemplo</div>
+      <div class="tc-titulo">Como escrever</div>
+      <div class="exemplo-par">
+        <div>
+          <div class="ex-tag ex-tag-sim">✓ sim</div>
+          <div class="ex-sim">Quando alguém sai, o conhecimento não pode ir junto.</div>
+        </div>
+        <div>
+          <div class="ex-tag ex-tag-nao">✗ não</div>
+          <div class="ex-nao">Nossa plataforma garante a retenção do capital intelectual organizacional.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 IDENTIDADE VISUAL -->
+<section class="identidade" id="identidade">
+  <div class="sec-label">04 — Identidade visual</div>
+
+  <!-- Logo -->
+  <div class="logo-showcase">
+    <div class="ls-main">
+      <div>
+        <svg style="display:block;height:56px;width:auto;margin-bottom:24px;" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#FAFAFA"/>
+          <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#FAFAFA"/>
+          <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#FAFAFA"/>
+          <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#FAFAFA"/>
+          <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#FAFAFA"/>
+          <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+        </svg>
+        <div class="ls-tagline">Seu processo. No lugar certo.</div>
+      </div>
+      <div class="ls-note">Versão principal — dark</div>
+    </div>
+    <div class="ls-var ls-var-light">
+      <svg style="display:block;height:32px;width:auto;margin-bottom:auto;" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#0A0A0A"/>
+        <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#0A0A0A"/>
+        <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#0A0A0A"/>
+        <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#0A0A0A"/>
+        <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#0A0A0A"/>
+        <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+      </svg>
+      <div class="lsv-label lv-light-label">— light</div>
+    </div>
+    <div class="ls-var ls-var-accent">
+      <svg style="display:block;height:32px;width:auto;margin-bottom:auto;" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#0A0A0A"/>
+        <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#0A0A0A"/>
+        <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#0A0A0A"/>
+        <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#0A0A0A"/>
+        <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#0A0A0A"/>
+        <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+      </svg>
+      <div class="lsv-label lv-accent-label">— accent</div>
+    </div>
+  </div>
+
+  <!-- Monograma -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px;">
+    <div style="background:var(--preto);padding:48px 64px;display:flex;flex-direction:column;justify-content:space-between;">
+      <svg style="display:block;height:72px;width:auto;" viewBox="0 0 70 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21.2004 67.8132C16.9572 67.8132 13.2444 66.7524 10.062 64.6308C6.942 62.5092 4.5396 59.514 2.8548 55.6452C1.2324 51.714 0.421204 47.0964 0.421204 41.7924C0.421204 36.4884 1.2636 31.902 2.9484 28.0332C4.6332 24.102 7.0356 21.0756 10.1556 18.954C13.2756 16.8324 16.9572 15.7716 21.2004 15.7716C24.6324 15.7716 27.69 16.4892 30.3732 17.9244C33.0564 19.3596 35.0844 21.3564 36.4572 23.9148V0.233997H46.3788V66.69H37.1124L36.8316 59.202C35.4588 61.8852 33.3684 64.0068 30.5604 65.5668C27.8148 67.0644 24.6948 67.8132 21.2004 67.8132ZM23.8212 59.202C26.5044 59.202 28.782 58.5156 30.654 57.1428C32.526 55.77 33.9612 53.7732 34.9596 51.1524C35.958 48.5316 36.4572 45.4116 36.4572 41.7924C36.4572 38.0484 35.958 34.8972 34.9596 32.3388C33.9612 29.718 32.526 27.7524 30.654 26.442C28.782 25.0692 26.5044 24.3828 23.8212 24.3828C19.8276 24.3828 16.6452 25.9428 14.274 29.0628C11.9028 32.1204 10.7172 36.3636 10.7172 41.7924C10.7172 47.1588 11.9028 51.402 14.274 54.522C16.6452 57.642 19.8276 59.202 23.8212 59.202Z" fill="#FAFAFA"/>
+        <path d="M62.01 67.7138C66.2101 67.7138 69.615 64.4726 69.615 60.4744C69.615 56.4762 66.2101 53.235 62.01 53.235C57.8099 53.235 54.405 56.4762 54.405 60.4744C54.405 64.4726 57.8099 67.7138 62.01 67.7138Z" fill="#30BCFE"/>
+      </svg>
+      <div class="ls-note">Monograma — dark</div>
+    </div>
+    <div style="background:var(--branco);padding:48px 64px;display:flex;flex-direction:column;justify-content:space-between;">
+      <svg style="display:block;height:72px;width:auto;" viewBox="0 0 70 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21.2004 67.8132C16.9572 67.8132 13.2444 66.7524 10.062 64.6308C6.942 62.5092 4.5396 59.514 2.8548 55.6452C1.2324 51.714 0.421204 47.0964 0.421204 41.7924C0.421204 36.4884 1.2636 31.902 2.9484 28.0332C4.6332 24.102 7.0356 21.0756 10.1556 18.954C13.2756 16.8324 16.9572 15.7716 21.2004 15.7716C24.6324 15.7716 27.69 16.4892 30.3732 17.9244C33.0564 19.3596 35.0844 21.3564 36.4572 23.9148V0.233997H46.3788V66.69H37.1124L36.8316 59.202C35.4588 61.8852 33.3684 64.0068 30.5604 65.5668C27.8148 67.0644 24.6948 67.8132 21.2004 67.8132ZM23.8212 59.202C26.5044 59.202 28.782 58.5156 30.654 57.1428C32.526 55.77 33.9612 53.7732 34.9596 51.1524C35.958 48.5316 36.4572 45.4116 36.4572 41.7924C36.4572 38.0484 35.958 34.8972 34.9596 32.3388C33.9612 29.718 32.526 27.7524 30.654 26.442C28.782 25.0692 26.5044 24.3828 23.8212 24.3828C19.8276 24.3828 16.6452 25.9428 14.274 29.0628C11.9028 32.1204 10.7172 36.3636 10.7172 41.7924C10.7172 47.1588 11.9028 51.402 14.274 54.522C16.6452 57.642 19.8276 59.202 23.8212 59.202Z" fill="#0A0A0A"/>
+        <path d="M62.01 67.7138C66.2101 67.7138 69.615 64.4726 69.615 60.4744C69.615 56.4762 66.2101 53.235 62.01 53.235C57.8099 53.235 54.405 56.4762 54.405 60.4744C54.405 64.4726 57.8099 67.7138 62.01 67.7138Z" fill="#30BCFE"/>
+      </svg>
+      <div class="lsv-label" style="color:#ccc;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;">— light</div>
+    </div>
+    <div style="background:var(--azul);padding:48px 64px;display:flex;flex-direction:column;justify-content:space-between;">
+      <svg style="display:block;height:72px;width:auto;" viewBox="0 0 70 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21.2004 67.8132C16.9572 67.8132 13.2444 66.7524 10.062 64.6308C6.942 62.5092 4.5396 59.514 2.8548 55.6452C1.2324 51.714 0.421204 47.0964 0.421204 41.7924C0.421204 36.4884 1.2636 31.902 2.9484 28.0332C4.6332 24.102 7.0356 21.0756 10.1556 18.954C13.2756 16.8324 16.9572 15.7716 21.2004 15.7716C24.6324 15.7716 27.69 16.4892 30.3732 17.9244C33.0564 19.3596 35.0844 21.3564 36.4572 23.9148V0.233997H46.3788V66.69H37.1124L36.8316 59.202C35.4588 61.8852 33.3684 64.0068 30.5604 65.5668C27.8148 67.0644 24.6948 67.8132 21.2004 67.8132ZM23.8212 59.202C26.5044 59.202 28.782 58.5156 30.654 57.1428C32.526 55.77 33.9612 53.7732 34.9596 51.1524C35.958 48.5316 36.4572 45.4116 36.4572 41.7924C36.4572 38.0484 35.958 34.8972 34.9596 32.3388C33.9612 29.718 32.526 27.7524 30.654 26.442C28.782 25.0692 26.5044 24.3828 23.8212 24.3828C19.8276 24.3828 16.6452 25.9428 14.274 29.0628C11.9028 32.1204 10.7172 36.3636 10.7172 41.7924C10.7172 47.1588 11.9028 51.402 14.274 54.522C16.6452 57.642 19.8276 59.202 23.8212 59.202Z" fill="#0A0A0A"/>
+        <path d="M62.01 67.7138C66.2101 67.7138 69.615 64.4726 69.615 60.4744C69.615 56.4762 66.2101 53.235 62.01 53.235C57.8099 53.235 54.405 56.4762 54.405 60.4744C54.405 64.4726 57.8099 67.7138 62.01 67.7138Z" fill="#0A0A0A"/>
+      </svg>
+      <div class="lsv-label" style="color:rgba(0,0,0,0.3);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;">— accent</div>
+    </div>
+  </div>
+
+  <!-- Paleta -->
+  <div class="paleta-row" style="margin-top:2px;">
+    <div class="pal-item">
+      <div class="pal-bloco" style="background:#0A0A0A;"></div>
+      <div class="pal-info">
+        <div class="pal-nome">Preto</div>
+        <div class="pal-hex">#0A0A0A</div>
+        <div class="pal-uso">Fundo principal</div>
+      </div>
+    </div>
+    <div class="pal-item">
+      <div class="pal-bloco" style="background:#FAFAFA; border:1px solid #eee;"></div>
+      <div class="pal-info">
+        <div class="pal-nome">Branco</div>
+        <div class="pal-hex">#FAFAFA</div>
+        <div class="pal-uso">Fundo claro</div>
+      </div>
+    </div>
+    <div class="pal-item">
+      <div class="pal-bloco" style="background:#30BCFE;"></div>
+      <div class="pal-info">
+        <div class="pal-nome">Azul</div>
+        <div class="pal-hex">#30BCFE</div>
+        <div class="pal-uso">Fluxo ativo</div>
+      </div>
+    </div>
+    <div class="pal-item">
+      <div class="pal-bloco" style="background:#39BD3D;"></div>
+      <div class="pal-info">
+        <div class="pal-nome">Verde</div>
+        <div class="pal-hex">#39BD3D</div>
+        <div class="pal-uso">Concluído</div>
+      </div>
+    </div>
+    <div class="pal-item">
+      <div class="pal-bloco" style="background:#FADB02;"></div>
+      <div class="pal-info">
+        <div class="pal-nome">Amarelo</div>
+        <div class="pal-hex">#FADB02</div>
+        <div class="pal-uso">Em revisão</div>
+      </div>
+    </div>
+    <div class="pal-item">
+      <div class="pal-bloco" style="background:#FE7451;"></div>
+      <div class="pal-info">
+        <div class="pal-nome">Vermelho</div>
+        <div class="pal-hex">#FE7451</div>
+        <div class="pal-uso">Atenção</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tipografia -->
+  <div class="tipo-showcase">
+    <div class="tipo-bloco">
+      <div class="tipo-familia">Plus Jakarta Sans 700 — Títulos de tela</div>
+      <div class="tipo-grande" style="font-family:'Plus Jakarta Sans',sans-serif;">Bom te ver<br>de volta.</div>
+      <div class="tipo-corpo">Usado em títulos de tela, formulários e botão primário. Peso 600–700. Tracking negativo.</div>
+    </div>
+    <div class="tipo-bloco-dark">
+      <div class="tipo-familia-dark">Syne 800 — Headlines de painel</div>
+      <div class="tipo-grande-dark">Seu<br>processo.<br>No lugar<br>certo.</div>
+      <div class="tipo-corpo-dark">Usado em headlines grandes em painéis escuros. Peso 800. Tracking negativo em em.</div>
+    </div>
+    <div class="tipo-bloco">
+      <div class="tipo-familia">DM Sans 300 — Corpo</div>
+      <div class="tipo-grande" style="font-size:22px;letter-spacing:-0.3px;font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;">Com o Docso, seus processos saem da cabeça e entram no lugar certo.</div>
+      <div class="tipo-corpo">Usado em parágrafos, descrições e interface. Peso 300 ou 400. Linha 1.7.</div>
+      <div class="tipo-mono">DM Mono — Labels, eyebrow e código</div>
+    </div>
+    <div class="tipo-bloco-dark">
+      <div class="tipo-familia-dark">Geist 500 — Logo</div>
+      <div style="margin-bottom:24px;">
+        <svg style="display:block;height:40px;width:auto;" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#FAFAFA"/>
+          <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#FAFAFA"/>
+          <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#FAFAFA"/>
+          <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#FAFAFA"/>
+          <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#FAFAFA"/>
+          <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+        </svg>
+      </div>
+      <div class="tipo-corpo-dark">Usado exclusivamente no logotipo. Arquivo vetorial (SVG). Não recriar em texto.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 SISTEMA DE FLUXO -->
+<section class="fluxo-sec" id="fluxo">
+  <div class="sec-label" style="color:#333;">05 — Sistema de fluxo</div>
+
+  <div class="fluxo-intro">
+    Cor como <span>sinalização</span>.<br>Nunca como decoração.
+  </div>
+
+  <div class="fluxo-demo">
+    <div class="fd-topbar">
+      <div class="fd-dots">
+        <div class="fd-dot fd-dot-r"></div>
+        <div class="fd-dot fd-dot-y"></div>
+        <div class="fd-dot fd-dot-g"></div>
+      </div>
+      <div class="fd-title">docso — processos</div>
+      <div style="width:48px;"></div>
+    </div>
+    <div class="fd-body">
+      <div class="fd-processo-nome">
+        Onboarding — Analista de Dados
+        <div class="fd-badge">Em andamento</div>
+      </div>
+      <div class="fd-etapas">
+        <div class="fd-etapa">
+          <div class="fd-linha" style="background:var(--verde);"></div>
+          <div class="fd-num">01</div>
+          <div class="fd-nome">Acesso aos sistemas</div>
+          <div class="fd-status" style="color:var(--verde);">Concluído</div>
+        </div>
+        <div class="fd-etapa">
+          <div class="fd-linha" style="background:var(--verde);"></div>
+          <div class="fd-num">02</div>
+          <div class="fd-nome">Leitura do manual</div>
+          <div class="fd-status" style="color:var(--verde);">Concluído</div>
+        </div>
+        <div class="fd-etapa">
+          <div class="fd-linha" style="background:var(--azul);"></div>
+          <div class="fd-num">03</div>
+          <div class="fd-nome">Treinamento prático</div>
+          <div class="fd-status" style="color:var(--azul);">Em andamento</div>
+        </div>
+        <div class="fd-etapa">
+          <div class="fd-linha" style="background:var(--amarelo);"></div>
+          <div class="fd-num">04</div>
+          <div class="fd-nome">Revisão com gestor</div>
+          <div class="fd-status" style="color:var(--amarelo);">Aguardando</div>
+        </div>
+        <div class="fd-etapa">
+          <div class="fd-linha" style="background:#222;"></div>
+          <div class="fd-num">05</div>
+          <div class="fd-nome">Primeira entrega</div>
+          <div class="fd-status" style="color:#333;">Pendente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cor-legenda">
+    <div class="cl-item">
+      <div class="cl-dot" style="background:var(--azul);"></div>
+      <span class="cl-texto">Em andamento</span>
+      <span class="cl-hex">#30BCFE</span>
+    </div>
+    <div class="cl-item">
+      <div class="cl-dot" style="background:var(--verde);"></div>
+      <span class="cl-texto">Concluído</span>
+      <span class="cl-hex">#39BD3D</span>
+    </div>
+    <div class="cl-item">
+      <div class="cl-dot" style="background:var(--amarelo);"></div>
+      <span class="cl-texto">Em revisão</span>
+      <span class="cl-hex">#FADB02</span>
+    </div>
+    <div class="cl-item">
+      <div class="cl-dot" style="background:var(--vermelho);"></div>
+      <span class="cl-texto">Bloqueado</span>
+      <span class="cl-hex">#FE7451</span>
+    </div>
+  </div>
+</section>
+
+<!-- 06 MENSAGENS -->
+<section class="mensagens" id="mensagens">
+  <div class="sec-label">06 — Mensagens por segmento</div>
+
+  <div class="msg-grid">
+    <div class="msg-card">
+      <div class="mc-seg">Agências</div>
+      <div class="mc-titulo">Cada cliente tem um processo. Cada funcionário tem o seu.</div>
+      <div class="mc-texto">O Docso coloca todo mundo na mesma página — sem reunião para isso. O padrão do atendimento fica documentado, acessível e seguível.</div>
+    </div>
+    <div class="msg-card">
+      <div class="mc-seg">Consultorias</div>
+      <div class="mc-titulo">Seu método é o seu diferencial.</div>
+      <div class="mc-texto">O Docso garante que ele não fique só na sua cabeça — e que o time o aplique do jeito certo. O que você construiu pertence à empresa.</div>
+    </div>
+    <div class="msg-card">
+      <div class="mc-seg">Escritórios</div>
+      <div class="mc-titulo">Erros de processo custam clientes.</div>
+      <div class="mc-texto">O Docso documenta, treina e mantém o padrão — mesmo quando a equipe muda. O processo não depende de quem está na cadeira.</div>
+    </div>
+  </div>
+
+  <div class="pitch-final">
+    <div class="pf-label">— Elevator pitch · 30 segundos</div>
+    <div class="pf-texto">
+      A maioria das PMEs tem processo. O problema é que ele existe <em>só na cabeça do dono</em> ou num documento que ninguém abre. O Docso documenta como seu time trabalha, treina quem é novo e garante que o conhecimento fica na empresa — não na pessoa. <em>Tudo em um lugar. Do jeito certo.</em>
+    </div>
+  </div>
+</section>
+
+<!-- 07 O QUE NÃO SER -->
+<section class="naoser">
+  <div class="sec-label">07 — O que o Docso nunca é</div>
+
+  <div class="ns-grid">
+    <div class="ns-card">
+      <div class="ns-titulo">Não é corporativo</div>
+      <div class="ns-texto">O Docso não fala de "ecossistema", "soluções robustas" ou "capital intelectual organizacional". Fala de processo, time e negócio — do jeito que o dono de PME entende.</div>
+    </div>
+    <div class="ns-card">
+      <div class="ns-titulo">Não é informal demais</div>
+      <div class="ns-texto">Não usa emoji em contexto profissional, não exagera na exclamação, não tenta ser a marca de 22 anos querendo ser descolada. É sério sem ser frio.</div>
+    </div>
+    <div class="ns-card">
+      <div class="ns-titulo">Não é genérico</div>
+      <div class="ns-texto">O Docso tem opinião. Sabe o que funciona. Não usa frases como "cada empresa é única" ou "depende do seu contexto". Diz o que o cliente precisa ouvir.</div>
+    </div>
+    <div class="ns-card">
+      <div class="ns-titulo">Não é técnico demais</div>
+      <div class="ns-texto">O usuário do Docso não precisa saber o que é BPM, BPMN ou fluxograma. A interface ensina pelo comportamento. A comunicação não exige conhecimento prévio.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <svg class="footer-logo" height="28" viewBox="0 0 283 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M234.893 74.784C229.656 74.784 225.074 73.6101 221.147 71.2623C217.22 68.9145 214.188 65.5655 212.052 61.2152C209.916 56.8649 208.848 51.7895 208.848 45.9891C208.848 40.1196 209.916 35.0442 212.052 30.763C214.188 26.4817 217.22 23.1672 221.147 20.8194C225.074 18.4025 229.656 17.1941 234.893 17.1941C240.129 17.1941 244.711 18.4025 248.639 20.8194C252.566 23.1672 255.598 26.4817 257.734 30.763C259.87 35.0442 260.938 40.1196 260.938 45.9891C260.938 51.7895 259.87 56.8649 257.734 61.2152C255.598 65.5655 252.566 68.9145 248.639 71.2623C244.711 73.6101 240.129 74.784 234.893 74.784ZM234.893 65.2548C239.578 65.2548 243.195 63.563 245.745 60.1794C248.294 56.7268 249.569 51.9967 249.569 45.9891C249.569 39.9815 248.294 35.2859 245.745 31.9023C243.195 28.4497 239.578 26.7234 234.893 26.7234C230.276 26.7234 226.659 28.4497 224.041 31.9023C221.492 35.2859 220.217 39.9815 220.217 45.9891C220.217 51.9967 221.492 56.7268 224.041 60.1794C226.659 63.563 230.276 65.2548 234.893 65.2548Z" fill="#FAFAFA"/>
+      <path d="M184.842 74.784C179.675 74.784 175.299 73.9899 171.716 72.4017C168.202 70.8135 165.481 68.6383 163.552 65.8762C161.622 63.0451 160.52 59.7996 160.244 56.1398L171.51 55.6219C172.061 58.6602 173.37 61.0771 175.437 62.8724C177.504 64.6678 180.639 65.5655 184.842 65.5655C188.287 65.5655 191.009 65.0131 193.007 63.9082C195.005 62.8034 196.004 61.0425 196.004 58.6257C196.004 57.3137 195.66 56.2089 194.971 55.3112C194.351 54.3444 193.11 53.5503 191.25 52.9289C189.39 52.2383 186.634 51.5823 182.982 50.9609C177.539 49.9251 173.267 48.7167 170.166 47.3356C167.066 45.9545 164.861 44.1937 163.552 42.0531C162.242 39.9124 161.588 37.323 161.588 34.2847C161.588 29.2438 163.448 25.1352 167.169 21.9588C170.958 18.7823 176.402 17.1941 183.499 17.1941C188.253 17.1941 192.249 18.0228 195.487 19.68C198.726 21.2682 201.241 23.4434 203.032 26.2055C204.892 28.8985 206.064 31.9369 206.546 35.3204L195.281 35.9419C194.936 34.0084 194.247 32.3512 193.214 30.9701C192.249 29.52 190.94 28.4152 189.286 27.6556C187.633 26.827 185.669 26.4127 183.395 26.4127C179.881 26.4127 177.263 27.1032 175.54 28.4842C173.818 29.8653 172.957 31.6607 172.957 33.8703C172.957 35.5276 173.336 36.8741 174.093 37.9099C174.92 38.9457 176.229 39.8089 178.021 40.4994C179.812 41.1209 182.189 41.6733 185.152 42.1567C190.871 43.1234 195.35 44.3318 198.588 45.7819C201.826 47.163 204.1 48.8893 205.409 50.9609C206.718 53.0324 207.373 55.5529 207.373 58.5221C207.373 61.9748 206.408 64.9095 204.479 67.3263C202.55 69.7432 199.897 71.6076 196.521 72.9196C193.145 74.1625 189.252 74.784 184.842 74.784Z" fill="#FAFAFA"/>
+      <path d="M135.263 74.784C130.026 74.784 125.445 73.6101 121.517 71.2623C117.59 68.9145 114.558 65.5655 112.422 61.2152C110.286 56.8649 109.218 51.7895 109.218 45.9891C109.218 40.1887 110.286 35.1478 112.422 30.8665C114.558 26.5162 117.59 23.1672 121.517 20.8194C125.445 18.4025 130.026 17.1941 135.263 17.1941C139.742 17.1941 143.703 17.9882 147.148 19.5764C150.662 21.0956 153.487 23.3398 155.623 26.3091C157.828 29.2783 159.241 32.9036 159.861 37.1849L148.389 37.8063C147.837 34.2156 146.391 31.488 144.048 29.6236C141.705 27.6901 138.777 26.7234 135.263 26.7234C130.647 26.7234 127.029 28.4497 124.411 31.9023C121.862 35.2859 120.587 39.9815 120.587 45.9891C120.587 51.9967 121.862 56.7268 124.411 60.1794C127.029 63.563 130.647 65.2548 135.263 65.2548C138.777 65.2548 141.705 64.288 144.048 62.3545C146.391 60.352 147.837 57.3482 148.389 53.3432L159.861 53.9647C159.241 58.1769 157.828 61.8367 155.623 64.944C153.487 68.0514 150.662 70.4682 147.148 72.1945C143.703 73.9209 139.742 74.784 135.263 74.784Z" fill="#FAFAFA"/>
+      <path d="M81.7136 74.784C76.4771 74.784 71.8951 73.6101 67.9678 71.2623C64.0404 68.9145 61.0087 65.5655 58.8728 61.2152C56.7368 56.8649 55.6689 51.7895 55.6689 45.9891C55.6689 40.1196 56.7368 35.0442 58.8728 30.763C61.0087 26.4817 64.0404 23.1672 67.9678 20.8194C71.8951 18.4025 76.4771 17.1941 81.7136 17.1941C86.9501 17.1941 91.5321 18.4025 95.4594 20.8194C99.3868 23.1672 102.418 26.4817 104.554 30.763C106.69 35.0442 107.758 40.1196 107.758 45.9891C107.758 51.7895 106.69 56.8649 104.554 61.2152C102.418 65.5655 99.3868 68.9145 95.4594 71.2623C91.5321 73.6101 86.9501 74.784 81.7136 74.784ZM81.7136 65.2548C86.3989 65.2548 90.0162 63.563 92.5656 60.1794C95.1149 56.7268 96.3896 51.9967 96.3896 45.9891C96.3896 39.9815 95.1149 35.2859 92.5656 31.9023C90.0162 28.4497 86.3989 26.7234 81.7136 26.7234C77.0972 26.7234 73.4799 28.4497 70.8616 31.9023C68.3123 35.2859 67.0376 39.9815 67.0376 45.9891C67.0376 51.9967 68.3123 56.7268 70.8616 60.1794C73.4799 63.563 77.0972 65.2548 81.7136 65.2548Z" fill="#FAFAFA"/>
+      <path d="M22.9442 74.784C18.2589 74.784 14.1592 73.6101 10.6453 71.2623C7.2002 68.9145 4.5475 65.6 2.68716 61.3187C0.895719 56.9684 0 51.8585 0 45.9891C0 40.1196 0.93017 35.0442 2.79051 30.763C4.65085 26.4126 7.30355 23.0636 10.7486 20.7158C14.1937 18.368 18.2589 17.1941 22.9442 17.1941C26.7338 17.1941 30.1099 17.9882 33.0727 19.5764C36.0355 21.1646 38.2748 23.3743 39.7906 26.2055V0H50.7459V73.5411H40.514L40.204 65.2547C38.6882 68.224 36.38 70.5718 33.2794 72.2981C30.2477 73.9554 26.8027 74.784 22.9442 74.784ZM25.838 65.2547C28.8008 65.2547 31.3157 64.4952 33.3828 62.976C35.4498 61.4568 37.0345 59.2472 38.137 56.347C39.2394 53.4467 39.7906 49.9941 39.7906 45.9891C39.7906 41.8459 39.2394 38.3587 38.137 35.5276C37.0345 32.6274 35.4498 30.4522 33.3828 29.0021C31.3157 27.4829 28.8008 26.7234 25.838 26.7234C21.4284 26.7234 17.9144 28.4497 15.2961 31.9023C12.6779 35.2859 11.3687 39.9815 11.3687 45.9891C11.3687 51.9276 12.6779 56.6232 15.2961 60.0758C17.9144 63.5284 21.4284 65.2547 25.838 65.2547Z" fill="#FAFAFA"/>
+      <path d="M274.064 73.5411C278.702 73.5411 282.461 69.7732 282.461 65.1253C282.461 60.4773 278.702 56.7095 274.064 56.7095C269.426 56.7095 265.667 60.4773 265.667 65.1253C265.667 69.7732 269.426 73.5411 274.064 73.5411Z" fill="#30BCFE"/>
+    </svg>
+    <div class="footer-tag">Seu processo. No lugar certo.</div>
+  </div>
+  <div class="footer-right">
+    <div class="footer-cores">
+      <div class="fc" style="background:var(--azul);"></div>
+      <div class="fc" style="background:var(--verde);"></div>
+      <div class="fc" style="background:var(--amarelo);"></div>
+      <div class="fc" style="background:var(--vermelho);"></div>
+    </div>
+    <div class="footer-copy">Brand Guide v1.0 · 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>

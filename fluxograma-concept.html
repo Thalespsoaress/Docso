@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Fluxograma — Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --preto:       #0A0A0A;
+    --branco:      #FAFAFA;
+    --cinza-sup:   #F0F0F0;
+    --cinza-borda: #E4E4E4;
+    --cinza-texto: #A0A0A0;
+    --azul:        #30BCFE;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #EFEFEF;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    gap: 48px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    align-self: flex-start;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  /* ─── CANVAS ─── */
+  .canvas {
+    width: 100%;
+    max-width: 1100px;
+    height: 340px;
+    background-color: #F7F7F8;
+    background-image: radial-gradient(circle, #D2D2D2 1px, transparent 1px);
+    background-size: 24px 24px;
+    border-radius: 16px;
+    border: 1.5px solid var(--cinza-borda);
+    position: relative;
+    overflow: hidden;
+  }
+
+  svg.edges {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* ─── NÓS EVENTO (início / fim) ─── */
+  .evt-node {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .evt-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  }
+
+  .evt-circle.start {
+    background: #fff;
+    border: 2.5px solid var(--preto);
+  }
+
+  .evt-circle.end {
+    background: var(--preto);
+  }
+
+  .evt-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #B8B8B8;
+    text-transform: uppercase;
+  }
+
+  /* ─── NÓS DE ETAPA ─── */
+  .step-node {
+    position: absolute;
+    width: 192px;
+    height: 84px;
+    background: #fff;
+    border: 1.5px solid #E8E8E8;
+    border-left: 3px solid var(--azul);
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 14px 14px 10px 16px;
+    cursor: default;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+
+  .step-node:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-color: var(--azul);
+    border-left-color: var(--azul);
+  }
+
+  .step-node.selected {
+    border-color: var(--azul);
+    border-left-color: var(--azul);
+    box-shadow: 0 0 0 3px rgba(48,188,254,0.15), 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  .step-title {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    color: var(--preto);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: #CACACA;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── CONTROLES ─── */
+  .controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .ctrl-btn {
+    width: 36px;
+    height: 34px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #666;
+  }
+
+  .ctrl-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--cinza-borda);
+  }
+
+  .ctrl-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--cinza-texto);
+    padding: 0 12px;
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .reset-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 174px;
+    height: 34px;
+    background: #fff;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 0 14px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--cinza-texto);
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── DRAWER ─── */
+  .drawer {
+    position: absolute;
+    top: 0; right: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid var(--cinza-borda);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.06);
+  }
+
+  .drawer-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+  }
+
+  .drawer-title {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: var(--preto);
+    line-height: 1.3;
+  }
+
+  .drawer-divider {
+    height: 1px;
+    background: var(--cinza-borda);
+  }
+
+  .drawer-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 6px;
+  }
+
+  .drawer-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+
+  .drawer-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--cinza-texto);
+    font-size: 20px;
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+
+  /* ─── VARIAÇÕES ─── */
+  .variants {
+    display: flex;
+    gap: 24px;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .variant-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 12px;
+  }
+
+  /* node variante alternativa */
+  .step-node.alt {
+    border-left-color: var(--preto);
+    border-radius: 8px;
+  }
+
+  .step-node.soft {
+    border: none;
+    background: #fff;
+    box-shadow: 0 1px 0 0 #E8E8E8, 0 4px 16px rgba(0,0,0,0.07);
+    border-radius: 12px;
+  }
+
+</style>
+</head>
+<body>
+
+<h2>Concept A — Acento azul à esquerda (recomendado)</h2>
+
+<!-- CANVAS PRINCIPAL -->
+<div class="canvas" id="canvas-a">
+  <svg class="edges" id="edges-a"></svg>
+
+  <!-- INÍCIO -->
+  <div class="evt-node" style="left:40px; top:112px;">
+    <div class="evt-circle start">
+      <svg width="14" height="14" viewBox="0 0 14 14"><polygon points="3,2 12,7 3,12" fill="#0A0A0A"/></svg>
+    </div>
+    <span class="evt-label">Início</span>
+  </div>
+
+  <!-- ETAPAS -->
+  <div class="step-node" id="sn1" style="left:148px; top:98px;">
+    <div class="step-title">Receber solicitação do cliente</div>
+    <div class="step-num">01</div>
+  </div>
+
+  <div class="step-node selected" id="sn2" style="left:380px; top:98px;">
+    <div class="step-title">Verificar estoque e disponibilidade</div>
+    <div class="step-num">02</div>
+  </div>
+
+  <div class="step-node" id="sn3" style="left:612px; top:98px;">
+    <div class="step-title">Emitir orçamento e enviar por email</div>
+    <div class="step-num">03</div>
+  </div>
+
+  <div class="step-node" id="sn4" style="left:844px; top:98px;">
+    <div class="step-title">Aguardar aprovação</div>
+    <div class="step-num">04</div>
+  </div>
+
+  <!-- FIM -->
+  <div class="evt-node" style="left:1076px; top:112px;" id="end-a">
+    <div class="evt-circle end">
+      <div style="width:14px;height:14px;background:#fff;border-radius:2px;"></div>
+    </div>
+    <span class="evt-label">Fim</span>
+  </div>
+
+  <!-- DRAWER (step 2 selecionado) -->
+  <div class="drawer">
+    <button class="drawer-close">×</button>
+    <div class="drawer-eyebrow">— Etapa 02</div>
+    <div class="drawer-title">Verificar estoque e disponibilidade</div>
+    <div class="drawer-divider"></div>
+    <div>
+      <div class="drawer-section-label">Descrição</div>
+      <div class="drawer-desc">Acesse o sistema de estoque e verifique se o produto solicitado está disponível na quantidade necessária.</div>
+    </div>
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="controls">
+    <button class="ctrl-btn">+</button>
+    <div class="ctrl-sep"></div>
+    <div class="ctrl-pct">100%</div>
+    <div class="ctrl-sep"></div>
+    <button class="ctrl-btn">−</button>
+  </div>
+  <button class="reset-btn">Resetar layout</button>
+</div>
+
+<h2>Concept B — Sem acento, sombra suave</h2>
+
+<div class="canvas" id="canvas-b" style="height:220px;">
+  <svg class="edges" id="edges-b"></svg>
+
+  <div class="evt-node" style="left:40px; top:72px;">
+    <div class="evt-circle start">
+      <svg width="14" height="14" viewBox="0 0 14 14"><polygon points="3,2 12,7 3,12" fill="#0A0A0A"/></svg>
+    </div>
+    <span class="evt-label">Início</span>
+  </div>
+
+  <div class="step-node soft" style="left:148px; top:58px;">
+    <div class="step-title">Receber solicitação do cliente</div>
+    <div class="step-num">01</div>
+  </div>
+
+  <div class="step-node soft" style="left:380px; top:58px;">
+    <div class="step-title">Verificar estoque e disponibilidade</div>
+    <div class="step-num">02</div>
+  </div>
+
+  <div class="step-node soft" style="left:612px; top:58px;">
+    <div class="step-title">Emitir orçamento e enviar</div>
+    <div class="step-num">03</div>
+  </div>
+
+  <div class="evt-node" style="left:844px; top:72px;">
+    <div class="evt-circle end">
+      <div style="width:14px;height:14px;background:#fff;border-radius:2px;"></div>
+    </div>
+    <span class="evt-label">Fim</span>
+  </div>
+</div>
+
+<script>
+  function bezier(x1, y1, x2, y2) {
+    const dx = Math.max(Math.abs(x2 - x1) * 0.45, 40)
+    return `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`
+  }
+
+  function drawEdges(canvasId, edgesId, nodes, evtR, cardW, cardH) {
+    const canvas = document.getElementById(canvasId)
+    const svg = document.getElementById(edgesId)
+    if (!canvas || !svg) return
+
+    svg.innerHTML = `
+      <defs>
+        <marker id="arrow-${canvasId}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,1.5 L7,4 L0,6.5 Z" fill="#C4C4C4"/>
+        </marker>
+      </defs>
+    `
+
+    function path(d) {
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      p.setAttribute('d', d)
+      p.setAttribute('fill', 'none')
+      p.setAttribute('stroke', '#C8C8C8')
+      p.setAttribute('stroke-width', '1.5')
+      p.setAttribute('marker-end', `url(#arrow-${canvasId})`)
+      svg.appendChild(p)
+    }
+
+    const startEl = canvas.querySelector('.evt-node')
+    const endEl = canvas.querySelectorAll('.evt-node')[canvas.querySelectorAll('.evt-node').length - 1]
+
+    if (!nodes.length) return
+
+    const startX = startEl.offsetLeft + evtR * 2
+    const startY = startEl.offsetTop + evtR
+    const endX   = endEl.offsetLeft
+    const endY   = endEl.offsetTop + evtR
+
+    const n0 = nodes[0]
+    path(bezier(startX, startY, n0.offsetLeft, n0.offsetTop + cardH / 2))
+
+    for (let i = 0; i < nodes.length - 1; i++) {
+      const a = nodes[i], b = nodes[i + 1]
+      path(bezier(a.offsetLeft + cardW, a.offsetTop + cardH / 2, b.offsetLeft, b.offsetTop + cardH / 2))
+    }
+
+    const last = nodes[nodes.length - 1]
+    path(bezier(last.offsetLeft + cardW, last.offsetTop + cardH / 2, endX, endY))
+  }
+
+  window.addEventListener('load', () => {
+    const nodesA = [
+      document.getElementById('sn1'),
+      document.getElementById('sn2'),
+      document.getElementById('sn3'),
+      document.getElementById('sn4'),
+    ]
+    drawEdges('canvas-a', 'edges-a', nodesA, 28, 192, 84)
+
+    const nodesB = Array.from(document.querySelectorAll('#canvas-b .step-node'))
+    drawEdges('canvas-b', 'edges-b', nodesB, 28, 192, 84)
+  })
+</script>
+</body>
+</html>

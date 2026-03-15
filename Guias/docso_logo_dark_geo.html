@@ -1,0 +1,380 @@
+verif<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .page {
+    background: #0e0e0e;
+    min-height: 100vh;
+    padding: 40px 32px 48px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin: 36px 0;
+  }
+
+  /* ── HERO CARD ── */
+  .hero-card {
+    background: #161616;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 56px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .hero-lockup {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .wordmark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: #ffffff;
+  }
+
+  .wm-xl  { font-size: 44px; }
+  .wm-lg  { font-size: 28px; }
+  .wm-md  { font-size: 20px; }
+  .wm-sm  { font-size: 15px; }
+
+  .accent { color: #30BCFE; }
+
+  .tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ── GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  .card {
+    background: #161616;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 20px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card.on-white { background: #ffffff; }
+  .card.on-blue  { background: #30BCFE; }
+  .card.on-dark  { background: #0e0e0e; border-color: rgba(255,255,255,0.1); }
+
+  /* ── SYMBOL SIZES ── */
+  .sym-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
+  .sym-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* ── FAVICON ── */
+  .fav-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fav {
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  /* ── COLOR CHIPS ── */
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+  }
+  .chip-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ── NAVBAR DEMO ── */
+  .navbar-demo {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 16px;
+    margin-left: 24px;
+  }
+
+  .nav-link {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-link.active {
+    color: rgba(255,255,255,0.85);
+  }
+
+  .nav-spacer { flex: 1; }
+
+  .nav-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #30BCFE;
+    opacity: 0.7;
+  }
+</style>
+
+<div class="page">
+
+  <!-- HERO -->
+  <span class="label">Logo Principal · Dark Mode</span>
+  <div class="hero-card">
+    <div class="hero-lockup">
+      <!-- Symbol XL -->
+      <svg width="52" height="52" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer square, minimal geometric -->
+        <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+        <!-- Inner: 3 horizontal bars com proporção áurea -->
+        <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+        <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+        <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+      </svg>
+      <span class="wordmark wm-xl">doc<span class="accent">so</span></span>
+    </div>
+    <span class="tagline">Seu processo. No lugar certo.</span>
+  </div>
+
+  <!-- VARIAÇÕES DE FUNDO -->
+  <span class="label">Variações de Fundo</span>
+  <div class="grid-3" style="margin-bottom:36px">
+    <!-- Dark -->
+    <div class="card on-dark">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+        </svg>
+        <span class="wordmark wm-lg">doc<span class="accent">so</span></span>
+      </div>
+      <span class="mono" style="margin-top:4px">Fundo escuro</span>
+    </div>
+
+    <!-- White -->
+    <div class="card on-white">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(0,0,0,0.4)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(0,0,0,0.2)"/>
+        </svg>
+        <span class="wordmark wm-lg" style="color:#0e0e0e">doc<span class="accent">so</span></span>
+      </div>
+      <span class="mono" style="color: rgba(0,0,0,0.3);margin-top:4px">Fundo branco</span>
+    </div>
+
+    <!-- Blue -->
+    <div class="card on-blue">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#0e0e0e" stroke-width="1.5" opacity="0.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#0e0e0e"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(0,0,0,0.45)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(0,0,0,0.25)"/>
+        </svg>
+        <span class="wordmark wm-lg" style="color:#0e0e0e">docso</span>
+      </div>
+      <span class="mono" style="color:rgba(0,0,0,0.35);margin-top:4px">Fundo azul</span>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- WORDMARK ISOLADO -->
+  <span class="label">Wordmark Isolado</span>
+  <div class="grid-3" style="margin-bottom:36px">
+    <div class="card on-dark">
+      <span class="wordmark wm-xl">doc<span class="accent">so</span></span>
+    </div>
+    <div class="card on-white">
+      <span class="wordmark wm-xl" style="color:#0e0e0e">doc<span class="accent">so</span></span>
+    </div>
+    <div class="card on-blue">
+      <span class="wordmark wm-xl" style="color:#0e0e0e">docso</span>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- SÍMBOLO ISOLADO -->
+  <span class="label">Símbolo Isolado · App Icon</span>
+  <div class="card" style="margin-bottom:12px; padding: 36px 20px">
+    <div class="sym-row">
+      <div class="sym-item">
+        <svg width="80" height="80" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+        </svg>
+        <span class="mono">80px</span>
+      </div>
+      <div class="sym-item">
+        <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+        </svg>
+        <span class="mono">56px</span>
+      </div>
+      <div class="sym-item">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+        </svg>
+        <span class="mono">40px</span>
+      </div>
+      <div class="sym-item">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+        </svg>
+        <span class="mono">28px</span>
+      </div>
+      <div class="sym-item">
+        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+          <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+          <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+        </svg>
+        <span class="mono">20px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAVICON -->
+  <span class="label" style="margin-top:24px;display:block">Favicon · 16–32px</span>
+  <div class="card" style="margin-bottom:36px;flex-direction:row;gap:16px;justify-content:center">
+    <div class="sym-item">
+      <div class="fav" style="width:32px;height:32px;background:#30BCFE;color:#0e0e0e;font-size:16px">D</div>
+      <span class="mono">32px</span>
+    </div>
+    <div class="sym-item">
+      <div class="fav" style="width:24px;height:24px;background:#30BCFE;color:#0e0e0e;font-size:12px">D</div>
+      <span class="mono">24px</span>
+    </div>
+    <div class="sym-item">
+      <div class="fav" style="width:16px;height:16px;background:#30BCFE;color:#0e0e0e;font-size:9px;border-radius:4px">D</div>
+      <span class="mono">16px</span>
+    </div>
+    <div class="sym-item" style="margin-left:16px">
+      <div class="fav" style="width:32px;height:32px;background:#0e0e0e;border:1px solid rgba(255,255,255,0.1);color:#30BCFE;font-size:16px">D</div>
+      <span class="mono">32px alt</span>
+    </div>
+    <div class="sym-item">
+      <div class="fav" style="width:32px;height:32px;background:#ffffff;color:#30BCFE;font-size:16px">D</div>
+      <span class="mono">32px white</span>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- VERSÃO COMPACTA NAVBAR -->
+  <span class="label">Versão Compacta · Navbar</span>
+  <div class="navbar-demo" style="margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+        <rect x="2" y="2" width="36" height="36" rx="10" fill="none" stroke="#30BCFE" stroke-width="1.5"/>
+        <rect x="10" y="11" width="20" height="3" rx="1" fill="#30BCFE"/>
+        <rect x="10" y="18" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+        <rect x="10" y="24" width="14" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+      </svg>
+      <span class="wordmark wm-sm">doc<span class="accent">so</span></span>
+    </div>
+    <div class="nav-links">
+      <span class="nav-link active">Dashboard</span>
+      <span class="nav-link">Biblioteca</span>
+      <span class="nav-link">Studio</span>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-avatar"></div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- PALETA -->
+  <span class="label">Paleta da Logo</span>
+  <div class="chips">
+    <div class="chip"><div class="chip-dot" style="background:#30BCFE"></div>#30BCFE — Blue (acento)</div>
+    <div class="chip"><div class="chip-dot" style="background:#ffffff;border:1px solid rgba(255,255,255,0.1)"></div>#FFFFFF — Primário</div>
+    <div class="chip"><div class="chip-dot" style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.08)"></div>#0E0E0E — Fundo</div>
+  </div>
+
+</div>

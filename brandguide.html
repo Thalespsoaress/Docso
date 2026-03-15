@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docso — Brandguide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --preto:       #0A0A0A;
+      --branco:      #FAFAFA;
+      --cinza-sup:   #F0F0F0;
+      --cinza-borda: #E4E4E4;
+      --cinza-texto: #6B6B6B;
+      --cinza-dark:  #1A1A1A;
+      --azul:        #30BCFE;
+      --azul-texto:  #0A8FCC;
+      --azul-sutil:  #E8F7FF;
+      --vermelho:    #FE7451;
+      --amarelo:     #FADB02;
+      --verde:       #39BD3D;
+      --surf2:       #242424;
+      --surf3:       #2E2E2E;
+      --borda-dark:  #333333;
+
+      /* Tema claro — padrão */
+      --bg:          #FAFAFA;
+      --surface:     #F0F0F0;
+      --surface-2:   #FFFFFF;
+      --border:      #E4E4E4;
+      --text:        #0A0A0A;
+      --text-muted:  #6B6B6B;
+      --sidebar-bg:  #F0F0F0;
+      --sidebar-border: #E4E4E4;
+      --card-bg:     #FFFFFF;
+      --card-border: #E4E4E4;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      overflow-y: auto;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 32px 0 24px;
+    }
+    .sidebar-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      padding: 0 24px 8px;
+    }
+    .sidebar-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 24px 24px 8px;
+    }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav a {
+      display: block;
+      padding: 7px 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 80ms, background 80ms;
+      border-left: 2px solid transparent;
+    }
+    .sidebar-nav a:hover {
+      color: var(--text);
+      background: rgba(0,0,0,0.04);
+      border-left-color: var(--azul);
+    }
+
+    .main {
+      margin-left: 240px;
+      max-width: 960px;
+      padding: 80px 64px 120px;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section { margin-bottom: 80px; }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 80px 0;
+    }
+
+    /* ─── TYPOGRAPHY ─── */
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 48px;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    p { color: var(--text); font-size: 15px; line-height: 1.75; }
+    .muted { color: var(--text-muted); }
+    .mono { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 80px 0 64px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 80px;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--azul-texto);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero-tagline {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text-muted);
+      margin-top: 20px;
+      max-width: 560px;
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-active { border-left: 3px solid var(--azul); }
+
+    /* ─── VALUES ─── */
+    .value-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .value-desc { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ─── POSITIONING ─── */
+    .tagline-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 16px;
+    }
+    .tagline {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--azul);
+      margin-bottom: 24px;
+    }
+    .pitch {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 640px;
+    }
+
+    /* ─── PILLARS ─── */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .pillar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 28px 24px;
+    }
+    .pillar-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--azul-texto);
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+    .pillar-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ─── PERSONALITY ─── */
+    .tag {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      margin: 4px;
+    }
+    .tag-yes { background: var(--azul-sutil); color: var(--azul-texto); }
+    .tag-no { background: rgba(254,116,81,0.10); color: var(--vermelho); text-decoration: line-through; }
+
+    /* ─── VOICE EXAMPLES ─── */
+    .voice-pair {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 12px;
+    }
+    .voice-context {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .voice-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .voice-wrong, .voice-right {
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .voice-wrong { background: rgba(254,116,81,0.06); border: 1px solid rgba(254,116,81,0.2); color: var(--text-muted); }
+    .voice-right { background: rgba(57,189,61,0.06); border: 1px solid rgba(57,189,61,0.2); color: var(--text); }
+    .voice-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .voice-wrong .voice-label { color: var(--vermelho); }
+    .voice-right .voice-label { color: var(--verde); }
+
+    /* ─── AUDIENCE ─── */
+    .audience-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .audience-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 28px 24px;
+    }
+    .pain { color: var(--vermelho); }
+    .goal { color: var(--verde); }
+    .list-item {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-dot { flex-shrink: 0; margin-top: 8px; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+    /* ─── MESSAGING ─── */
+    .headline-list { list-style: none; }
+    .headline-item {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.3;
+    }
+    .headline-item:last-child { border-bottom: none; }
+
+    /* ─── COLORS ─── */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .color-swatch {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .color-fill { height: 80px; }
+    .color-info { background: var(--surface); padding: 12px; }
+    .color-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+    .color-hex { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
+    .color-usage { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+    /* ─── TYPOGRAPHY SCALE ─── */
+    .type-row {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 24px;
+      align-items: center;
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { text-align: right; }
+    .type-meta-item { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+    /* ─── SPACING SCALE ─── */
+    .spacing-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .spacing-row:last-child { border-bottom: none; }
+    .spacing-bar-wrap { width: 200px; flex-shrink: 0; }
+    .spacing-bar { background: var(--azul); height: 4px; border-radius: 2px; opacity: 0.4; }
+    .spacing-info { flex: 1; }
+    .spacing-token { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul-texto); }
+    .spacing-value { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); margin-left: 12px; }
+    .spacing-usage { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ─── COMPONENTS ─── */
+    .btn-demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.01em; cursor: pointer; border: none; text-decoration: none; }
+    .btn-primary { background: var(--azul); color: var(--preto); }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost { background: transparent; color: var(--text-muted); }
+    .btn-destructive { background: transparent; border: 1px solid var(--vermelho); color: var(--vermelho); }
+    .btn-icon { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px; }
+
+    /* ─── STATUS BADGES ─── */
+    .badge-demo { display: flex; flex-wrap: wrap; gap: 10px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge-rascunho { background: rgba(107,107,107,0.10); color: #6B6B6B; }
+    .badge-publicado { background: rgba(57,189,61,0.10); color: #2A9A2E; }
+    .badge-revisao { background: rgba(250,219,2,0.15); color: #8A7800; }
+    .badge-arquivado { background: rgba(200,200,200,0.15); color: #999; }
+    .badge-bloqueado { background: rgba(254,116,81,0.10); color: #D45A3A; }
+    .badge-pendente { background: var(--azul-sutil); color: var(--azul-texto); }
+    .badge-andamento { background: var(--azul-sutil); color: var(--azul-texto); border: 1px solid #A8E0F5; }
+    .badge-concluido { background: rgba(57,189,61,0.10); color: #2A9A2E; }
+
+    /* ─── INPUT DEMO ─── */
+    .input-demo { padding: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .field input {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+    }
+    .field input.focus { border: 2px solid var(--azul); }
+    .field input.error { border: 2px solid var(--vermelho); }
+    .field input.success { border: 2px solid var(--verde); }
+    .field-msg { font-size: 12px; }
+    .field-msg.error { color: var(--vermelho); }
+    .field-msg.success { color: #2A9A2E; }
+
+    /* ─── DARK MODE HIERARCHY ─── */
+    .surface-stack {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #333;
+    }
+    .surface-level {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .surface-level-name { font-size: 13px; font-weight: 500; color: #FAFAFA; }
+    .surface-level-meta { font-family: 'DM Mono', monospace; font-size: 11px; color: #A0A0A0; }
+    .surface-level-usage { font-size: 12px; color: #A0A0A0; margin-top: 2px; }
+
+    /* ─── DO/DONT ─── */
+    .dodont-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .dodont-do { background: rgba(57,189,61,0.05); border: 1px solid rgba(57,189,61,0.2); border-radius: 10px; padding: 20px; }
+    .dodont-dont { background: rgba(254,116,81,0.05); border: 1px solid rgba(254,116,81,0.2); border-radius: 10px; padding: 20px; }
+    .dodont-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+    .dodont-do .dodont-label { color: #2A9A2E; }
+    .dodont-dont .dodont-label { color: var(--vermelho); }
+    .dodont-text { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .dodont-category { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* ─── TERMS ─── */
+    .term-row { padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .term-row:last-child { border-bottom: none; }
+    .term-word { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; color: var(--azul-texto); margin-bottom: 8px; }
+    .term-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 10px; }
+    .term-use { font-size: 13px; color: var(--text); line-height: 1.6; }
+    .term-avoid { font-size: 13px; color: var(--text-muted); line-height: 1.6; text-decoration: line-through; }
+    .term-why { font-size: 13px; color: var(--text-muted); line-height: 1.6; font-style: italic; }
+
+    /* ─── MOTION TABLE ─── */
+    .motion-table { width: 100%; border-collapse: collapse; }
+    .motion-table th { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .motion-table td { font-size: 13px; color: var(--text-muted); padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .motion-table td:first-child { color: var(--text); font-weight: 500; }
+    .motion-table code { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--azul-texto); background: var(--azul-sutil); padding: 2px 6px; border-radius: 3px; }
+    .motion-table tr:last-child td { border-bottom: none; }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header { margin-bottom: 40px; }
+    .section-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--azul-texto); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; display: block; }
+
+    /* ─── MISSION/VISION ─── */
+    .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+    .mv-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 28px 24px; }
+    .mv-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--azul-texto); margin-bottom: 12px; }
+    .mv-text { font-size: 15px; color: var(--text); line-height: 1.7; }
+
+    /* ─── PROOF POINTS ─── */
+    .proof-list { list-style: none; }
+    .proof-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .proof-item:last-child { border-bottom: none; }
+    .proof-bullet { width: 20px; height: 20px; border-radius: 50%; background: var(--azul-sutil); border: 1px solid #A8E0F5; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .proof-bullet svg { width: 10px; height: 10px; stroke: var(--azul-texto); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── FONTS DEMO ─── */
+    .font-demo { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 32px; margin-bottom: 16px; }
+    .font-demo-name { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px; }
+    .font-syne-sample { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 42px; letter-spacing: -0.04em; line-height: 1; color: var(--text); }
+    .font-dmsans-sample { font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 18px; line-height: 1.7; color: var(--text); }
+    .font-dmmono-sample { font-family: 'DM Mono', monospace; font-weight: 400; font-size: 15px; line-height: 1.6; color: var(--text); }
+    .font-meta { margin-top: 16px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .font-meta-item { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 3px; }
+
+    /* ─── TENSION CARD ─── */
+    .tension-card { background: rgba(254,219,2,0.06); border: 1px solid rgba(250,219,2,0.25); border-radius: 12px; padding: 24px; margin-top: 16px; }
+    .tension-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: #8A7800; margin-bottom: 8px; }
+    .tension-text { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ─── RISK NOTE ─── */
+    .risk-note { background: rgba(254,116,81,0.05); border: 1px solid rgba(254,116,81,0.2); border-radius: 10px; padding: 20px; margin-top: 16px; }
+    .risk-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: #D45A3A; margin-bottom: 8px; }
+    .risk-text { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">Docso</div>
+  <p class="mono" style="padding: 0 24px 0; font-size: 11px;">Brandguide v1.0</p>
+
+  <span class="sidebar-label">Identidade de Marca</span>
+  <ul class="sidebar-nav">
+    <li><a href="#missao">Missão e Visão</a></li>
+    <li><a href="#valores">Valores</a></li>
+    <li><a href="#posicionamento">Posicionamento</a></li>
+    <li><a href="#personalidade">Personalidade</a></li>
+    <li><a href="#voz">Voz e Tom</a></li>
+    <li><a href="#audiencia">Audiência</a></li>
+    <li><a href="#mensagens">Mensagens-Chave</a></li>
+    <li><a href="#vocabulario">Vocabulário</a></li>
+  </ul>
+
+  <span class="sidebar-label">Identidade Visual</span>
+  <ul class="sidebar-nav">
+    <li><a href="#logo">Logo</a></li>
+    <li><a href="#cores">Cores</a></li>
+    <li><a href="#tipografia">Tipografia</a></li>
+    <li><a href="#escala-tipo">Escala Tipográfica</a></li>
+    <li><a href="#espacamento">Espaçamento</a></li>
+    <li><a href="#bordas">Bordas e Raios</a></li>
+    <li><a href="#icones">Iconografia</a></li>
+    <li><a href="#movimento">Movimento</a></li>
+    <li><a href="#layout">Layout</a></li>
+  </ul>
+
+  <span class="sidebar-label">Componentes</span>
+  <ul class="sidebar-nav">
+    <li><a href="#botoes">Botões</a></li>
+    <li><a href="#inputs">Inputs</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#status">Status</a></li>
+    <li><a href="#tema-escuro">Tema Escuro</a></li>
+    <li><a href="#dodont">Do / Don't</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Docso — Brandguide</div>
+    <h1>A marca<br>que documenta.</h1>
+    <p class="hero-tagline">Diretrizes completas de identidade de marca e sistema visual da Docso.</p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 01 — MISSÃO E VISÃO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="missao">
+    <div class="section-header">
+      <span class="section-num">01 — Identidade de Marca</span>
+      <h2>Missão e Visão</h2>
+    </div>
+
+    <div class="mv-grid">
+      <div class="mv-card">
+        <div class="mv-label">Missão</div>
+        <p class="mv-text">Ajudar pequenas e médias empresas brasileiras a capturar, documentar e transferir conhecimento operacional com precisão — para que o negócio funcione independentemente de quem está presente.</p>
+      </div>
+      <div class="mv-card">
+        <div class="mv-label">Visão</div>
+        <p class="mv-text">Ser a memória institucional de toda PME brasileira: o lugar onde o jeito certo de fazer as coisas nunca se perde.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 02 — VALORES
+  ═══════════════════════════════════════ -->
+  <div class="section" id="valores">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Valores</h2>
+    </div>
+
+    <div class="card-grid card-grid-2" style="gap: 12px;">
+      <div class="card">
+        <div class="value-name">Clareza antes de tudo</div>
+        <div class="value-desc">Processos confusos geram erros. Comunicamos e documentamos com precisão — sem jargão, sem ambiguidade, sem espaço para interpretação errada.</div>
+      </div>
+      <div class="card">
+        <div class="value-name">Respeito pelo tempo do gestor</div>
+        <div class="value-desc">O dono de uma agência não tem horas sobrando. Cada funcionalidade existe para economizar tempo, não para gerar mais uma tarefa.</div>
+      </div>
+      <div class="card">
+        <div class="value-name">Conhecimento como ativo</div>
+        <div class="value-desc">O que um funcionário experiente sabe vale dinheiro. Tratamos esse saber como patrimônio da empresa, não como propriedade de quem está saindo.</div>
+      </div>
+      <div class="card">
+        <div class="value-name">Confiança construída pela consistência</div>
+        <div class="value-desc">Não prometemos o que não entregamos. A confiança dos nossos clientes é conquistada toda vez que um processo documentado realmente funciona na prática.</div>
+      </div>
+      <div class="card card-active" style="grid-column: 1 / -1;">
+        <div class="value-name">Simples por princípio</div>
+        <div class="value-desc">A complexidade é o inimigo da adoção. Preferimos fazer menos e fazer bem do que entregar dez recursos que ninguém usa.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 03 — POSICIONAMENTO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="posicionamento">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Posicionamento</h2>
+    </div>
+
+    <div class="tagline-block">
+      <div class="tagline">O conhecimento fica.<br>A empresa continua.</div>
+      <p class="pitch">A Docso documenta como o seu negócio funciona de verdade. Com uma extensão Chrome, capturamos cada etapa do processo enquanto o funcionário executa. A IA transforma isso em documentação pronta. Novos colaboradores aprendem pelo processo correto desde o primeiro dia. E quando alguém sai, o conhecimento fica na empresa — não vai embora com eles.</p>
+    </div>
+
+    <div style="margin-bottom: 32px;">
+      <h4>Três Pilares</h4>
+      <div class="pillar-grid">
+        <div class="pillar">
+          <div class="pillar-num">01 — DOCUMENTA</div>
+          <div class="pillar-title">Captura como o negócio funciona de verdade</div>
+          <div class="pillar-desc">Uma extensão Chrome captura cada etapa enquanto o funcionário executa normalmente. A IA transforma isso em documentação estruturada — sem reuniões de mapeamento, sem templates complicados.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">02 — TREINA</div>
+          <div class="pillar-title">Novos funcionários aprendem o processo certo</div>
+          <div class="pillar-desc">O novo funcionário recebe um link com o processo passo a passo — do jeito que a empresa realmente faz. Sem depender da disponibilidade do gestor, sem interpretação errada.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">03 — RETÉM</div>
+          <div class="pillar-title">Quando alguém sai, o conhecimento fica</div>
+          <div class="pillar-desc">Quando alguém pede demissão, o conhecimento não vai junto. O processo documentado pertence à empresa — pronto para ser repassado para quem vier a seguir.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h4>Pontos de Prova</h4>
+      <ul class="proof-list">
+        <li class="proof-item">
+          <span class="proof-bullet"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>
+          Captura o processo no momento em que ele acontece — não reconstruído de memória depois
+        </li>
+        <li class="proof-item">
+          <span class="proof-bullet"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>
+          Documentação gerada por IA a partir do comportamento real do usuário na tela
+        </li>
+        <li class="proof-item">
+          <span class="proof-bullet"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>
+          Treinamento enviado por link — sem instalação, sem conta, sem atrito para quem aprende
+        </li>
+        <li class="proof-item">
+          <span class="proof-bullet"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>
+          Processos nunca são deletados — apenas arquivados, preservando o histórico
+        </li>
+        <li class="proof-item">
+          <span class="proof-bullet"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>
+          Multi-tenant com isolamento por organização — dados de um cliente nunca acessíveis por outro
+        </li>
+        <li class="proof-item">
+          <span class="proof-bullet"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>
+          Funciona em qualquer aplicativo web — o que a equipe já usa hoje
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 04 — PERSONALIDADE
+  ═══════════════════════════════════════ -->
+  <div class="section" id="personalidade">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Personalidade</h2>
+    </div>
+
+    <div style="margin-bottom: 32px;">
+      <h4>Arquétipos</h4>
+      <div class="card-grid card-grid-3" style="gap: 12px;">
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul);">O Sábio</div>
+          <div class="value-desc">Organiza conhecimento, elimina ambiguidade, guia com clareza</div>
+        </div>
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul);">O Cuidador</div>
+          <div class="value-desc">Protege o negócio do cliente, não deixa o conhecimento se perder</div>
+        </div>
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul);">O Artesão</div>
+          <div class="value-desc">Faz bem-feito, com precisão e atenção aos detalhes</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 32px;">
+      <h4>Adjetivos — A Docso é</h4>
+      <div>
+        <span class="tag tag-yes">direto</span>
+        <span class="tag tag-yes">confiável</span>
+        <span class="tag tag-yes">preciso</span>
+        <span class="tag tag-yes">profissional</span>
+        <span class="tag tag-yes">prático</span>
+        <span class="tag tag-yes">consistente</span>
+        <span class="tag tag-yes">sólido</span>
+        <span class="tag tag-yes">contextual</span>
+      </div>
+    </div>
+
+    <div>
+      <h4>A Docso não é</h4>
+      <div>
+        <span class="tag tag-no">exuberante</span>
+        <span class="tag tag-no">empolgado</span>
+        <span class="tag tag-no">informal demais</span>
+        <span class="tag tag-no">técnico demais</span>
+        <span class="tag tag-no">condescendente</span>
+        <span class="tag tag-no">genérico</span>
+        <span class="tag tag-no">vago</span>
+        <span class="tag tag-no">corporativo frio</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 05 — VOZ E TOM
+  ═══════════════════════════════════════ -->
+  <div class="section" id="voz">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Voz e Tom</h2>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <div class="card-grid card-grid-2" style="gap: 12px; margin-bottom: 32px;">
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul); margin-bottom: 8px;">Direto ao ponto</div>
+          <div class="value-desc"><strong style="color: var(--verde); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Fazer:</strong> Diga o que o usuário precisa saber para agir agora. Frases curtas, verbo no início.</div>
+          <div class="value-desc" style="margin-top: 8px;"><strong style="color: var(--vermelho); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Evitar:</strong> Não alongue com introduções, qualificadores ou explicações desnecessárias.</div>
+        </div>
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul); margin-bottom: 8px;">Concreto, não abstrato</div>
+          <div class="value-desc"><strong style="color: var(--verde); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Fazer:</strong> Use exemplos do mundo real: agências, consultorias, escritórios. Mostre o resultado.</div>
+          <div class="value-desc" style="margin-top: 8px;"><strong style="color: var(--vermelho); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Evitar:</strong> "Solução robusta", "ecossistema integrado", "transformação digital" sem âncora prática.</div>
+        </div>
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul); margin-bottom: 8px;">Sério sem ser frio</div>
+          <div class="value-desc"><strong style="color: var(--verde); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Fazer:</strong> Escreva como um colega competente — que entende o problema e vai direto à solução.</div>
+          <div class="value-desc" style="margin-top: 8px;"><strong style="color: var(--vermelho); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Evitar:</strong> Informal a ponto de perder credibilidade. Formal a ponto de parecer distante.</div>
+        </div>
+        <div class="card">
+          <div class="value-name" style="font-size: 14px; color: var(--azul); margin-bottom: 8px;">Empático com o contexto</div>
+          <div class="value-desc"><strong style="color: var(--verde); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Fazer:</strong> Reconheça as restrições reais: equipe pequena, rotatividade alta, pouco tempo para treinamento.</div>
+          <div class="value-desc" style="margin-top: 8px;"><strong style="color: var(--vermelho); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Evitar:</strong> Presumir que o cliente tem equipe de RH, gerente de processos ou tempo sobrando.</div>
+        </div>
+      </div>
+
+      <h4>Exemplos Reais</h4>
+
+      <div class="voice-pair">
+        <div class="voice-context">Botão de ação principal para iniciar captura</div>
+        <div class="voice-row">
+          <div class="voice-wrong"><div class="voice-label">Errado</div>Iniciar sessão de captura de processos</div>
+          <div class="voice-right"><div class="voice-label">Certo</div>Gravar processo</div>
+        </div>
+      </div>
+
+      <div class="voice-pair">
+        <div class="voice-context">Mensagem de erro ao falhar geração de IA</div>
+        <div class="voice-row">
+          <div class="voice-wrong"><div class="voice-label">Errado</div>Ocorreu um erro inesperado no sistema. Por favor, tente novamente mais tarde.</div>
+          <div class="voice-right"><div class="voice-label">Certo</div>Não foi possível gerar o processo agora. Verifique sua conexão e tente de novo.</div>
+        </div>
+      </div>
+
+      <div class="voice-pair">
+        <div class="voice-context">Email de convite para treinamento</div>
+        <div class="voice-row">
+          <div class="voice-wrong"><div class="voice-label">Errado</div>Você foi adicionado a uma nova jornada de aprendizado dentro da plataforma Docso!</div>
+          <div class="voice-right"><div class="voice-label">Certo</div>Você tem um novo processo para aprender. Acesse o link e siga os passos.</div>
+        </div>
+      </div>
+
+      <div class="voice-pair">
+        <div class="voice-context">Estado vazio na lista de processos</div>
+        <div class="voice-row">
+          <div class="voice-wrong"><div class="voice-label">Errado</div>Nenhum processo encontrado.</div>
+          <div class="voice-right"><div class="voice-label">Certo</div>Nenhum processo documentado ainda. Instale a extensão e grave o primeiro.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 06 — AUDIÊNCIA
+  ═══════════════════════════════════════ -->
+  <div class="section" id="audiencia">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Audiência</h2>
+    </div>
+
+    <div class="audience-grid">
+      <div class="audience-card">
+        <div class="mv-label">Primário</div>
+        <h3 style="margin-bottom: 4px;">O gestor-operador da PME</h3>
+        <p style="font-size: 13px; color: var(--cinza-texto); margin-bottom: 20px; line-height: 1.6;">Dono ou sócio de agência, consultoria ou escritório com 5 a 50 funcionários. Atua no operacional e estratégico ao mesmo tempo. Não tem equipe de RH nem de TI.</p>
+
+        <div class="mv-label pain">Dores</div>
+        <div style="margin-bottom: 20px;">
+          <div class="list-item pain"><span class="list-dot"></span>Quando um funcionário-chave sai, o conhecimento vai junto</div>
+          <div class="list-item pain"><span class="list-dot"></span>Novos contratados levam semanas para aprender o básico</div>
+          <div class="list-item pain"><span class="list-dot"></span>Processos existem na cabeça das pessoas, sem documentação</div>
+          <div class="list-item pain"><span class="list-dot"></span>Não tem tempo nem metodologia para documentar manualmente</div>
+          <div class="list-item pain"><span class="list-dot"></span>Depende de uma ou duas pessoas para que tudo funcione</div>
+        </div>
+
+        <div class="mv-label goal">Objetivos</div>
+        <div>
+          <div class="list-item goal"><span class="list-dot"></span>Negócio funcionando de forma previsível e independente</div>
+          <div class="list-item goal"><span class="list-dot"></span>Treinar novos funcionários mais rápido e com menos esforço</div>
+          <div class="list-item goal"><span class="list-dot"></span>Reduzir o impacto do turnover na operação</div>
+          <div class="list-item goal"><span class="list-dot"></span>Padronizar a qualidade do trabalho entregue ao cliente</div>
+        </div>
+      </div>
+
+      <div class="audience-card">
+        <div class="mv-label">Secundário</div>
+        <h3 style="margin-bottom: 4px;">O gerente ou coordenador</h3>
+        <p style="font-size: 13px; color: var(--cinza-texto); margin-bottom: 20px; line-height: 1.6;">Profissional de nível intermediário. Responsável por onboarding informal e qualidade das entregas. Quer delegar com mais segurança.</p>
+
+        <div class="mv-label pain">Dores</div>
+        <div style="margin-bottom: 20px;">
+          <div class="list-item pain"><span class="list-dot"></span>Repetir o mesmo treinamento toda vez que alguém novo entra</div>
+          <div class="list-item pain"><span class="list-dot"></span>Não ter onde registrar "o jeito certo de fazer"</div>
+          <div class="list-item pain"><span class="list-dot"></span>Perder tempo respondendo dúvidas já respondidas antes</div>
+          <div class="list-item pain"><span class="list-dot"></span>Dificuldade em delegar sem supervisão constante</div>
+          <div class="list-item pain"><span class="list-dot"></span>Processos que variam conforme quem os executa</div>
+        </div>
+
+        <div class="mv-label goal">Objetivos</div>
+        <div>
+          <div class="list-item goal"><span class="list-dot"></span>Delegar tarefas com confiança de execução correta</div>
+          <div class="list-item goal"><span class="list-dot"></span>Ter uma referência centralizada para novos funcionários</div>
+          <div class="list-item goal"><span class="list-dot"></span>Reduzir tempo gasto em onboarding e dúvidas recorrentes</div>
+          <div class="list-item goal"><span class="list-dot"></span>Manter qualidade mesmo com a equipe crescendo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 07 — MENSAGENS-CHAVE
+  ═══════════════════════════════════════ -->
+  <div class="section" id="mensagens">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Mensagens-Chave</h2>
+    </div>
+
+    <h4>Headlines</h4>
+    <ul class="headline-list" style="margin-bottom: 40px;">
+      <li class="headline-item">O conhecimento da sua equipe não pode ir embora quando alguém sai.</li>
+      <li class="headline-item">Documente como o seu negócio funciona de verdade — sem esforço manual.</li>
+      <li class="headline-item">Novos funcionários aprendem o processo certo desde o primeiro dia.</li>
+      <li class="headline-item">Pare de depender de uma pessoa para que tudo funcione.</li>
+      <li class="headline-item">Quando alguém sai, o processo fica.</li>
+      <li class="headline-item">Do jeito que vocês fazem — não do jeito que um manual genérico manda.</li>
+    </ul>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 08 — VOCABULÁRIO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="vocabulario">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Vocabulário</h2>
+    </div>
+
+    <p style="color: var(--cinza-texto); font-size: 14px; margin-bottom: 32px;">Termos que definem como falamos sobre o produto. Consistência no vocabulário reforça clareza e confiança.</p>
+
+    <div>
+      <div class="term-row">
+        <div class="term-word">Processo</div>
+        <div class="term-grid">
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--verde); margin-bottom: 4px;">Usar</div><div class="term-use">Para se referir a qualquer sequência documentada de passos operacionais da empresa.</div></div>
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--vermelho); margin-bottom: 4px;">Evitar</div><div class="term-avoid">fluxo de trabalho, workflow, SOP, procedimento operacional padrão</div></div>
+        </div>
+      </div>
+      <div class="term-row">
+        <div class="term-word">Captura</div>
+        <div class="term-grid">
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--verde); margin-bottom: 4px;">Usar</div><div class="term-use">O ato de gravar o processo via extensão Chrome enquanto ele acontece.</div></div>
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--vermelho); margin-bottom: 4px;">Evitar</div><div class="term-avoid">gravação de tela, rastreamento, monitoramento</div></div>
+        </div>
+      </div>
+      <div class="term-row">
+        <div class="term-word">Documentação</div>
+        <div class="term-grid">
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--verde); margin-bottom: 4px;">Usar</div><div class="term-use">O resultado gerado pela IA — a descrição estruturada do processo.</div></div>
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--vermelho); margin-bottom: 4px;">Evitar</div><div class="term-avoid">manual, wiki, base de conhecimento</div></div>
+        </div>
+      </div>
+      <div class="term-row">
+        <div class="term-word">Treinamento</div>
+        <div class="term-grid">
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--verde); margin-bottom: 4px;">Usar</div><div class="term-use">O envio de um processo para um funcionário aprender — sempre associado a uma ação concreta.</div></div>
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--vermelho); margin-bottom: 4px;">Evitar</div><div class="term-avoid">jornada de aprendizado, trilha, curso, módulo</div></div>
+        </div>
+      </div>
+      <div class="term-row">
+        <div class="term-word">Publicar</div>
+        <div class="term-grid">
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--verde); margin-bottom: 4px;">Usar</div><div class="term-use">Tornar um processo disponível para treinamento — ação deliberada do gestor.</div></div>
+          <div><div style="font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--vermelho); margin-bottom: 4px;">Evitar</div><div class="term-avoid">ativar, liberar, finalizar</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 09 — LOGO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="logo">
+    <div class="section-header">
+      <span class="section-num">09 — Identidade Visual</span>
+      <h2>Logo</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+      <div style="background: var(--preto); border: 1px solid var(--borda-dark); border-radius: 12px; padding: 48px; display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 48px; letter-spacing: -0.05em; color: var(--branco);">Docso</span>
+      </div>
+      <div style="background: var(--branco); border: 1px solid var(--cinza-borda); border-radius: 12px; padding: 48px; display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 48px; letter-spacing: -0.05em; color: var(--preto);">Docso</span>
+      </div>
+      <div style="background: var(--azul); border-radius: 12px; padding: 48px; display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 48px; letter-spacing: -0.05em; color: var(--preto);">Docso</span>
+      </div>
+      <div style="background: repeating-linear-gradient(45deg, #1a1a1a 0px, #1a1a1a 10px, #222 10px, #222 20px); border-radius: 12px; padding: 48px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; border: 1px solid var(--borda-dark);">
+        <span style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -0.05em; color: var(--vermelho); opacity: 0.5;">Docso</span>
+        <span style="font-size: 11px; color: var(--cinza-texto); letter-spacing: 0.06em; text-transform: uppercase; font-family: 'DM Mono', monospace;">Proibido — fundo texturizado</span>
+      </div>
+    </div>
+
+    <h4>Regras de Uso</h4>
+    <div class="card">
+      <ul style="list-style: none; padding: 0;">
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--verde);"></span>Usar sempre o arquivo original — nunca recriar o logotipo manualmente</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--verde);"></span>Manter proporções originais — nunca esticar ou comprimir</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--verde);"></span>Versão escura (#0A0A0A) para fundos claros; versão clara (#FAFAFA) para fundos escuros</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--verde);"></span>Espaço de proteção: altura da letra "D" em todas as direções</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--verde);"></span>Tamanho mínimo: 32px de altura em interfaces digitais</li>
+        <li class="list-item" style="color: var(--vermelho);"><span class="list-dot"></span>Nunca rotacionar, aplicar transparência ou adicionar contorno</li>
+        <li class="list-item" style="color: var(--vermelho);"><span class="list-dot"></span>Nunca aplicar sobre fundos coloridos saturados ou fotografias sem overlay</li>
+        <li class="list-item" style="color: var(--vermelho);"><span class="list-dot"></span>Nunca usar qualquer fonte diferente de Syne 800 para recriar o nome</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 10 — CORES
+  ═══════════════════════════════════════ -->
+  <div class="section" id="cores">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>Cores</h2>
+    </div>
+
+    <h4>Paleta Principal</h4>
+    <div class="color-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 40px;">
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #0A0A0A;"></div>
+        <div class="color-info"><div class="color-name">Preto</div><div class="color-hex">#0A0A0A</div><div class="color-usage">Fundo principal</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #FAFAFA;"></div>
+        <div class="color-info"><div class="color-name">Branco</div><div class="color-hex">#FAFAFA</div><div class="color-usage">Fundo claro / texto sobre escuro</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #1A1A1A;"></div>
+        <div class="color-info"><div class="color-name">Cinza Escuro</div><div class="color-hex">#1A1A1A</div><div class="color-usage">Superfície elevada no escuro</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #F0F0F0;"></div>
+        <div class="color-info"><div class="color-name">Cinza Sup.</div><div class="color-hex">#F0F0F0</div><div class="color-usage">Cards e inputs no claro</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #A0A0A0;"></div>
+        <div class="color-info"><div class="color-name">Cinza Texto</div><div class="color-hex">#A0A0A0</div><div class="color-usage">Texto secundário</div></div>
+      </div>
+    </div>
+
+    <h4>Cores de Sinalização</h4>
+    <div class="color-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 40px;">
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #30BCFE;"></div>
+        <div class="color-info"><div class="color-name">Azul</div><div class="color-hex">#30BCFE</div><div class="color-usage">Ação primária / fluxo ativo</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #39BD3D;"></div>
+        <div class="color-info"><div class="color-name">Verde</div><div class="color-hex">#39BD3D</div><div class="color-usage">Concluído / sucesso</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #FADB02;"></div>
+        <div class="color-info"><div class="color-name">Amarelo</div><div class="color-hex">#FADB02</div><div class="color-usage">Em revisão / pendência</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-fill" style="background: #FE7451;"></div>
+        <div class="color-info"><div class="color-name">Vermelho</div><div class="color-hex">#FE7451</div><div class="color-usage">Atenção / bloqueado</div></div>
+      </div>
+    </div>
+
+    <h4>Regras de Uso de Cor</h4>
+    <div class="card">
+      <ul style="list-style: none; padding: 0;">
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--azul);"></span>Azul é a única cor de ação — nenhuma outra indica interatividade primária</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--azul);"></span>Vermelho, amarelo e verde são exclusivos para sinalização de status — nunca decorativos</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--azul);"></span>Amarelo sempre requer texto escuro (#0A0A0A) — contraste insuficiente com texto claro</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--azul);"></span>Cor não substitui texto — todo status deve ter label além da cor (acessibilidade)</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--azul);"></span>Gradientes são proibidos na interface de produto — apenas cores sólidas</li>
+        <li class="list-item" style="color: var(--cinza-texto);"><span class="list-dot" style="background: var(--azul);"></span>Contraste mínimo: 4.5:1 para texto normal, 3:1 para texto grande (WCAG AA)</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 11 — TIPOGRAFIA
+  ═══════════════════════════════════════ -->
+  <div class="section" id="tipografia">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <h2>Tipografia</h2>
+    </div>
+
+    <div class="font-demo">
+      <div class="font-demo-name">Syne — Display e Títulos</div>
+      <div class="font-syne-sample">O conhecimento fica. A empresa continua.</div>
+      <div class="font-meta">
+        <span class="font-meta-item">Weights: 700, 800</span>
+        <span class="font-meta-item">Tracking: negativo obrigatório</span>
+        <span class="font-meta-item">Uso: headings, títulos, marca</span>
+      </div>
+    </div>
+
+    <div class="font-demo">
+      <div class="font-demo-name">DM Sans — Corpo e Interface</div>
+      <div class="font-dmsans-sample">Quando um funcionário-chave sai da empresa, o conhecimento que ele carrega vai junto. A Docso documenta processos como eles acontecem de verdade — e mantém esse conhecimento na empresa.</div>
+      <div class="font-meta">
+        <span class="font-meta-item">Weights: 300, 400, 500</span>
+        <span class="font-meta-item">Line-height: 1.7</span>
+        <span class="font-meta-item">Uso: corpo, labels, botões, navegação</span>
+      </div>
+    </div>
+
+    <div class="font-demo">
+      <div class="font-demo-name">DM Mono — Labels Técnicos e Código</div>
+      <div class="font-dmmono-sample">session_id: cap_01JXYZ<br>status: processing<br>steps: [1, 2, 3, 4]</div>
+      <div class="font-meta">
+        <span class="font-meta-item">Weights: 400, 500</span>
+        <span class="font-meta-item">Uso: tokens, IDs, código, timestamps</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 12 — ESCALA TIPOGRÁFICA
+  ═══════════════════════════════════════ -->
+  <div class="section" id="escala-tipo">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <h2>Escala Tipográfica</h2>
+    </div>
+
+    <div class="card">
+      <div class="type-row">
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 48px; letter-spacing: -0.04em; line-height: 1.05;">Display</div>
+        <div class="type-meta"><div class="type-meta-item">48px / Syne 800</div><div class="type-meta-item">tracking -0.04em / lh 1.1</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px; letter-spacing: -0.03em; line-height: 1.15;">Heading 1</div>
+        <div class="type-meta"><div class="type-meta-item">36px / Syne 800</div><div class="type-meta-item">tracking -0.03em / lh 1.15</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.025em; line-height: 1.2;">Heading 2</div>
+        <div class="type-meta"><div class="type-meta-item">28px / Syne 700</div><div class="type-meta-item">tracking -0.025em / lh 1.2</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.25;">Heading 3</div>
+        <div class="type-meta"><div class="type-meta-item">22px / Syne 700</div><div class="type-meta-item">tracking -0.02em / lh 1.25</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 16px; line-height: 1.7;">Body Large — texto de parágrafo principal e instruções</div>
+        <div class="type-meta"><div class="type-meta-item">16px / DM Sans 400</div><div class="type-meta-item">lh 1.7</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 14px; line-height: 1.7;">Body — labels de formulário, navegação, conteúdo de cards</div>
+        <div class="type-meta"><div class="type-meta-item">14px / DM Sans 400</div><div class="type-meta-item">lh 1.7</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px; line-height: 1.6; color: var(--cinza-texto);">Body Small — notas de rodapé, mensagens de validação</div>
+        <div class="type-meta"><div class="type-meta-item">13px / DM Sans 300</div><div class="type-meta-item">lh 1.6</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 12px; line-height: 1.5; color: var(--cinza-texto);">Caption — timestamps, metadados, labels de ícone</div>
+        <div class="type-meta"><div class="type-meta-item">12px / DM Sans 400</div><div class="type-meta-item">lh 1.5 / +0.01em</div></div>
+      </div>
+      <div class="type-row">
+        <div style="font-family: 'DM Mono', monospace; font-weight: 400; font-size: 13px; line-height: 1.6;">Code — proc_01JXYZ · status: published</div>
+        <div class="type-meta"><div class="type-meta-item">13px / DM Mono 400</div><div class="type-meta-item">lh 1.6</div></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 13 — ESPAÇAMENTO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="espacamento">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <h2>Espaçamento</h2>
+    </div>
+    <p style="color: var(--cinza-texto); font-size: 14px; margin-bottom: 32px;">Base: 4px — toda a escala deriva de múltiplos de 4px, garantindo consistência matemática.</p>
+
+    <div class="card">
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 4px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-1</span><span class="spacing-value">4px</span><div class="spacing-usage">Espaço mínimo: gap entre ícone e label dentro de badge</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 8px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-2</span><span class="spacing-value">8px</span><div class="spacing-usage">Padding interno de badges, gap entre elementos inline</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 12px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-3</span><span class="spacing-value">12px</span><div class="spacing-usage">Padding de inputs e selects, gap label/campo</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 16px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-4</span><span class="spacing-value">16px</span><div class="spacing-usage">Padding padrão de cards e botões, gap entre campos</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 24px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-6</span><span class="spacing-value">24px</span><div class="spacing-usage">Padding de cards maiores, gap entre cards em grid</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 32px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-8</span><span class="spacing-value">32px</span><div class="spacing-usage">Espaçamento entre seções, padding de modais</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 48px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-12</span><span class="spacing-value">48px</span><div class="spacing-usage">Padding de seções de página, gap título/conteúdo</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 64px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-16</span><span class="spacing-value">64px</span><div class="spacing-usage">Seções com separação visual forte</div></div></div>
+      <div class="spacing-row"><div class="spacing-bar-wrap"><div class="spacing-bar" style="width: 96px;"></div></div><div class="spacing-info"><span class="spacing-token">--space-24</span><span class="spacing-value">96px</span><div class="spacing-usage">Espaçamento máximo em onboarding e landing</div></div></div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 14 — BORDAS E RAIOS
+  ═══════════════════════════════════════ -->
+  <div class="section" id="bordas">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <h2>Bordas e Raios</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div class="card">
+        <h4>Escala de Raios</h4>
+        <div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 100px;">--radius-sm</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">4px</span><span style="font-size: 13px; color: var(--cinza-texto);">Badges, tags, tooltips</span></div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 100px;">--radius-md</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">8px</span><span style="font-size: 13px; color: var(--cinza-texto);">Inputs, botões, cards compactos</span></div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 100px;">--radius-lg</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">12px</span><span style="font-size: 13px; color: var(--cinza-texto);">Cards, painéis, modais médios</span></div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 100px;">--radius-xl</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">16px</span><span style="font-size: 13px; color: var(--cinza-texto);">Modais grandes, drawers</span></div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 100px;">--radius-full</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">9999px</span><span style="font-size: 13px; color: var(--cinza-texto);">Avatares, loaders circulares</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h4>Espessura de Borda</h4>
+        <div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 110px;">--border-thin</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">1px</span><span style="font-size: 13px; color: var(--cinza-texto);">Inputs, cards, dividers padrão</span></div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 110px;">--border-medium</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">2px</span><span style="font-size: 13px; color: var(--cinza-texto);">Estado de foco, cards ativos</span></div>
+          <div class="list-item"><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--azul); min-width: 110px;">--border-thick</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto); min-width: 40px;">3px</span><span style="font-size: 13px; color: var(--cinza-texto);">Indicadores de etapa, barra lateral de status</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 15 — ICONOGRAFIA
+  ═══════════════════════════════════════ -->
+  <div class="section" id="icones">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <h2>Iconografia</h2>
+    </div>
+
+    <div class="card" style="margin-bottom: 16px;">
+      <p style="font-size: 14px; color: var(--cinza-texto); margin-bottom: 16px;">Ícones de linha (stroke), sem preenchimento sólido. Stroke width de 1.5px acima de 20px e 1.25px abaixo. Estilo geométrico, sem ornamentos. Biblioteca recomendada: <span style="color: var(--azul); font-family: 'DM Mono', monospace; font-size: 13px;">Lucide Icons</span>.</p>
+      <div style="display: flex; gap: 24px; align-items: flex-end; padding: 24px; background: var(--surf2); border-radius: 8px;">
+        <div style="text-align: center;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--cinza-texto)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto); margin-top: 6px;">12px</div>
+        </div>
+        <div style="text-align: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cinza-texto)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto); margin-top: 6px;">16px</div>
+        </div>
+        <div style="text-align: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--branco)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto); margin-top: 6px;">20px — padrão</div>
+        </div>
+        <div style="text-align: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--branco)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto); margin-top: 6px;">24px</div>
+        </div>
+        <div style="text-align: center;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--azul)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto); margin-top: 6px;">32px</div>
+        </div>
+        <div style="text-align: center;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--azul)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--cinza-texto); margin-top: 6px;">48px — destaque</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 16 — MOVIMENTO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="movimento">
+    <div class="section-header">
+      <span class="section-num">16</span>
+      <h2>Movimento</h2>
+    </div>
+
+    <h4>Durações</h4>
+    <div class="card" style="margin-bottom: 24px;">
+      <table class="motion-table">
+        <thead>
+          <tr><th>Nome</th><th>Duração</th><th>Uso</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Micro</td><td><code>80ms</code></td><td>Hover de botões, mudança de cor de ícone, feedback de clique</td></tr>
+          <tr><td>Rápido</td><td><code>150ms</code></td><td>Transições de estado de inputs, abertura de dropdown, toggle</td></tr>
+          <tr><td>Padrão</td><td><code>200ms</code></td><td>Abertura de tooltip, fade de badge, transição de tab ativa</td></tr>
+          <tr><td>Moderado</td><td><code>300ms</code></td><td>Entrada de modal, slide de painel lateral, accordion</td></tr>
+          <tr><td>Lento</td><td><code>400ms</code></td><td>Transições de página, empty state, conclusão de processo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Curvas de Easing</h4>
+    <div class="card">
+      <table class="motion-table">
+        <thead>
+          <tr><th>Nome</th><th>Curva</th><th>Uso</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Standard</td><td><code>cubic-bezier(0.4, 0, 0.2, 1)</code></td><td>Transições gerais de estado dentro de elementos visíveis</td></tr>
+          <tr><td>Entrada</td><td><code>cubic-bezier(0, 0, 0.2, 1)</code></td><td>Elementos que entram na tela: modais, painéis, toasts</td></tr>
+          <tr><td>Saída</td><td><code>cubic-bezier(0.4, 0, 1, 1)</code></td><td>Elementos que saem da tela: dismiss de modal, dropdown</td></tr>
+          <tr><td>Sharp</td><td><code>cubic-bezier(0.4, 0, 0.6, 1)</code></td><td>Feedback imediato: validação de erro, resposta de ação</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 17 — LAYOUT
+  ═══════════════════════════════════════ -->
+  <div class="section" id="layout">
+    <div class="section-header">
+      <span class="section-num">17</span>
+      <h2>Layout</h2>
+    </div>
+
+    <div class="card-grid card-grid-2" style="gap: 16px; margin-bottom: 24px;">
+      <div class="card">
+        <div class="mv-label">Grid</div>
+        <p style="font-size: 14px; color: var(--cinza-texto);">12 colunas com gutter de 24px. Colunas fluidas dentro do container. Sidebar fixa de 240px na aplicação autenticada.</p>
+      </div>
+      <div class="card">
+        <div class="mv-label">Largura Máxima</div>
+        <p style="font-size: 14px; color: var(--cinza-texto);">1280px — container de conteúdo. Em telas maiores, centraliza com margens proporcionais.</p>
+      </div>
+    </div>
+
+    <h4>Breakpoints</h4>
+    <div class="card">
+      <div class="spacing-row"><div style="min-width: 80px;"><span class="spacing-token">xs</span></div><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto);">375px</span></div>
+      <div class="spacing-row"><div style="min-width: 80px;"><span class="spacing-token">sm</span></div><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto);">640px</span></div>
+      <div class="spacing-row"><div style="min-width: 80px;"><span class="spacing-token">md</span></div><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto);">768px</span></div>
+      <div class="spacing-row"><div style="min-width: 80px;"><span class="spacing-token">lg</span></div><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto);">1024px</span></div>
+      <div class="spacing-row"><div style="min-width: 80px;"><span class="spacing-token">xl</span></div><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto);">1280px</span></div>
+      <div class="spacing-row"><div style="min-width: 80px;"><span class="spacing-token">2xl</span></div><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cinza-texto);">1440px</span></div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 18 — BOTÕES
+  ═══════════════════════════════════════ -->
+  <div class="section" id="botoes">
+    <div class="section-header">
+      <span class="section-num">18 — Componentes</span>
+      <h2>Botões</h2>
+    </div>
+
+    <div class="btn-demo" style="margin-bottom: 16px;">
+      <button class="btn btn-primary">Gravar processo</button>
+      <button class="btn btn-secondary">Cancelar</button>
+      <button class="btn btn-ghost">Voltar</button>
+      <button class="btn btn-destructive">Arquivar processo</button>
+      <button class="btn btn-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+
+    <h4>Variantes e Uso</h4>
+    <div class="card">
+      <div class="list-item"><span style="min-width: 100px; font-size: 13px; color: var(--azul); font-weight: 500;">Primary</span><span style="font-size: 13px; color: var(--cinza-texto);">Ação principal e única do contexto. Nunca mais de um por área de decisão.</span></div>
+      <div class="list-item"><span style="min-width: 100px; font-size: 13px; color: var(--branco); font-weight: 500;">Secondary</span><span style="font-size: 13px; color: var(--cinza-texto);">Ação importante mas não principal. Aparece ao lado do primário como alternativa.</span></div>
+      <div class="list-item"><span style="min-width: 100px; font-size: 13px; color: var(--cinza-texto); font-weight: 500;">Ghost</span><span style="font-size: 13px; color: var(--cinza-texto);">Ações terciárias, cancelar, voltar. Não pesa visualmente.</span></div>
+      <div class="list-item"><span style="min-width: 100px; font-size: 13px; color: var(--vermelho); font-weight: 500;">Destructive</span><span style="font-size: 13px; color: var(--cinza-texto);">Ações irreversíveis com consequência negativa. Sempre com confirmação.</span></div>
+      <div class="list-item"><span style="min-width: 100px; font-size: 13px; color: var(--cinza-texto); font-weight: 500;">Icon</span><span style="font-size: 13px; color: var(--cinza-texto);">Ações secundárias compactas onde o ícone é reconhecível. Sempre com tooltip.</span></div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 19 — INPUTS
+  ═══════════════════════════════════════ -->
+  <div class="section" id="inputs">
+    <div class="section-header">
+      <span class="section-num">19</span>
+      <h2>Inputs</h2>
+    </div>
+
+    <div class="input-demo" style="margin-bottom: 16px;">
+      <div class="field">
+        <label>Nome do processo</label>
+        <input type="text" placeholder="Ex.: Fechar proposta comercial">
+        <span class="field-msg" style="color: var(--cinza-texto); font-size: 12px;">Default</span>
+      </div>
+      <div class="field">
+        <label>Nome do processo</label>
+        <input type="text" class="focus" value="Fechar proposta comercial">
+        <span class="field-msg" style="color: var(--azul); font-size: 12px;">Focus</span>
+      </div>
+      <div class="field">
+        <label>Nome do processo</label>
+        <input type="text" class="error" value="">
+        <span class="field-msg error">Este campo é obrigatório</span>
+      </div>
+      <div class="field">
+        <label>Nome do processo</label>
+        <input type="text" class="success" value="Fechar proposta comercial">
+        <span class="field-msg success">Nome disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 20 — STATUS
+  ═══════════════════════════════════════ -->
+  <div class="section" id="status">
+    <div class="section-header">
+      <span class="section-num">20</span>
+      <h2>Status</h2>
+    </div>
+
+    <h4>Processos</h4>
+    <div class="badge-demo" style="margin-bottom: 16px;">
+      <span class="badge badge-rascunho">Rascunho</span>
+      <span class="badge badge-publicado">Publicado</span>
+      <span class="badge badge-revisao">Em revisão</span>
+      <span class="badge badge-arquivado">Arquivado</span>
+      <span class="badge badge-bloqueado">Bloqueado</span>
+    </div>
+
+    <h4>Treinamentos</h4>
+    <div class="badge-demo">
+      <span class="badge badge-pendente">Pendente</span>
+      <span class="badge badge-andamento">Em andamento</span>
+      <span class="badge badge-concluido">Concluído</span>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <p style="font-size: 13px; color: var(--cinza-texto);">Status badges sempre combinam cor + ícone + label textual. Cor nunca é o único indicador de estado — usuários com daltonismo não distinguem vermelho de verde sem referência textual.</p>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 21 — TEMA ESCURO
+  ═══════════════════════════════════════ -->
+  <div class="section" id="tema-escuro">
+    <div class="section-header">
+      <span class="section-num">21</span>
+      <h2>Tema Escuro</h2>
+    </div>
+
+    <p style="color: var(--cinza-texto); font-size: 14px; margin-bottom: 32px;">O tema escuro é o padrão da Docso. Hierarquia por luminosidade — cada camada acima adiciona leveza, não sombra.</p>
+
+    <div class="surface-stack" style="margin-bottom: 24px;">
+      <div class="surface-level" style="background: #2E2E2E;">
+        <div><div class="surface-level-name">Superfície 3 — Input em foco</div><div class="surface-level-usage">Inputs dentro de cards, hover de itens de lista</div></div>
+        <div class="surface-level-meta">#2E2E2E</div>
+      </div>
+      <div class="surface-level" style="background: #242424; border-top: 1px solid var(--borda-dark);">
+        <div><div class="surface-level-name">Superfície 2 — Cards aninhados</div><div class="surface-level-usage">Cards dentro de cards, dropdowns sobre cards</div></div>
+        <div class="surface-level-meta">#242424</div>
+      </div>
+      <div class="surface-level" style="background: #1A1A1A; border-top: 1px solid var(--borda-dark);">
+        <div><div class="surface-level-name">Superfície 1 — Cards e painéis</div><div class="surface-level-usage">Cards, sidebars, modais — primeiro nível acima do fundo</div></div>
+        <div class="surface-level-meta">#1A1A1A</div>
+      </div>
+      <div class="surface-level" style="background: #0A0A0A; border-top: 1px solid var(--borda-dark);">
+        <div><div class="surface-level-name">Base — Fundo de página</div><div class="surface-level-usage">Background do body, área externa ao layout</div></div>
+        <div class="surface-level-meta">#0A0A0A</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
+  <!-- ═══════════════════════════════════════
+       SEÇÃO 22 — DO / DON'T
+  ═══════════════════════════════════════ -->
+  <div class="section" id="dodont">
+    <div class="section-header">
+      <span class="section-num">22</span>
+      <h2>Do / Don't</h2>
+    </div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Cor</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Usar azul (#30BCFE) exclusivamente para indicar ação primária, link clicável ou estado ativo</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Usar azul como cor decorativa de fundo, ilustração ou destaque de texto informativo</div></div>
+    </div></div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Tipografia</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Usar Syne com tracking negativo em todos os headings — quanto maior o tamanho, mais negativo o tracking</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Usar Syne em corpo de texto, labels de formulário, botões ou qualquer contexto de leitura contínua</div></div>
+    </div></div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Ícones</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Sempre acompanhar ícones de ação crítica com label textual legível</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Usar apenas ícone em ações irreversíveis como arquivar ou remover membro do time</div></div>
+    </div></div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Formulários</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Colocar label sempre acima do campo, visível antes e depois do preenchimento</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Usar apenas placeholder como label — desaparece ao digitar e prejudica acessibilidade</div></div>
+    </div></div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Tema Escuro</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Criar hierarquia de superfície por diferença de luminosidade (#0A0A0A → #1A1A1A → #242424)</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Aplicar drop-shadow para criar elevação no tema escuro — sombra não funciona sobre fundos muito escuros</div></div>
+    </div></div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Status</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Sempre combinar badge de status colorido com label textual descritivo do estado</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Usar cor como único indicador de status — usuários com daltonismo não distinguem vermelho de verde</div></div>
+    </div></div>
+
+    <div style="margin-bottom: 8px;"><div class="dodont-category">Movimento</div>
+    <div class="dodont-grid">
+      <div class="dodont-do"><div class="dodont-label">Fazer</div><div class="dodont-text">Animar apenas o que muda no estado do componente — entrada, saída, feedback de ação</div></div>
+      <div class="dodont-dont"><div class="dodont-label">Evitar</div><div class="dodont-text">Animar elementos decorativos em loop, usar bounce ou elastic em transições de interface</div></div>
+    </div></div>
+  </div>
+
+
+  <!-- FOOTER -->
+  <div style="padding-top: 40px; border-top: 1px solid var(--borda-dark); display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.03em; color: var(--branco);">Docso</span>
+    <span style="font-family: 'DM Mono', monospace; font-size: 11px; color: var(--cinza-texto);">Brandguide v1.0 — 2026</span>
+  </div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docso — Biblioteca</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --preto: #0A0A0A;
+    --branco: #FAFAFA;
+    --cinza-sup: #F0F0F0;
+    --cinza-borda: #E4E4E4;
+    --cinza-texto: #A0A0A0;
+    --azul: #30BCFE;
+    --vermelho: #FE7451;
+    --amarelo: #FADB02;
+    --verde: #39BD3D;
+    --sidebar-w: 220px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--branco);
+    font-family: 'DM Sans', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    color: var(--preto);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--preto);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: 36px 0 28px;
+    border-right: 1px solid #1a1a1a;
+  }
+
+  .sidebar-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.8px;
+    color: var(--branco);
+    text-decoration: none;
+    padding: 0 28px;
+    margin-bottom: 48px;
+    display: block;
+  }
+
+  .sidebar-logo span { color: var(--azul); }
+
+  .sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 14px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 400;
+    color: #555;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: #151515; color: #aaa; }
+
+  .nav-item.active {
+    background: #151515;
+    color: var(--branco);
+  }
+
+  .nav-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-icon svg { width: 15px; height: 15px; }
+
+  /* active indicator */
+  .nav-item.active .nav-icon svg { stroke: var(--azul); }
+
+  .sidebar-footer {
+    padding: 0 14px;
+    border-top: 1px solid #1a1a1a;
+    padding-top: 20px;
+    margin-top: 8px;
+  }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .user-chip:hover { background: #151515; }
+
+  .user-avatar {
+    width: 30px;
+    height: 30px;
+    background: var(--azul);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--preto);
+    flex-shrink: 0;
+  }
+
+  .user-info { overflow: hidden; }
+
+  .user-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--branco);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: #444;
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background: #F2F2F2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* scrollbar */
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 4px; }
+
+  .main-inner {
+    padding: 52px 60px 80px;
+    max-width: 1200px;
+    width: 100%;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 48px;
+  }
+
+  .greeting-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    margin-bottom: 8px;
+  }
+
+  .greeting-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -1.2px;
+    color: var(--preto);
+    line-height: 1.1;
+  }
+
+  .btn-novo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 20px;
+    background: var(--preto);
+    color: var(--branco);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .btn-novo:hover { background: #222; transform: translateY(-1px); }
+  .btn-novo:active { transform: translateY(0); }
+
+  .btn-novo svg { width: 14px; height: 14px; }
+
+  /* SEARCH + TOGGLE ROW */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .search-wrap {
+    flex: 1;
+    position: relative;
+    max-width: 480px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cinza-texto);
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon svg { width: 15px; height: 15px; }
+
+  .search-input {
+    width: 100%;
+    height: 42px;
+    background: #fff;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 8px;
+    padding: 0 16px 0 44px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--preto);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .search-input::placeholder { color: #C0C0C0; }
+  .search-input:focus { background: #fff; border-color: var(--azul); }
+
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+  }
+
+  .results-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+  }
+
+  .view-toggle {
+    display: flex;
+    background: var(--cinza-sup);
+    border-radius: 7px;
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .vt-btn {
+    width: 32px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    color: var(--cinza-texto);
+  }
+
+  .vt-btn:hover { color: var(--preto); }
+  .vt-btn.active { background: var(--branco); color: var(--preto); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .vt-btn svg { width: 14px; height: 14px; }
+
+  /* ── CARDS VIEW ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .process-card {
+    background: #fff;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 10px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .process-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.4px;
+    color: var(--preto);
+    line-height: 1.25;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .status-pill .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-publicado { background: rgba(48,188,254,0.1); color: #1a9ed4; }
+  .status-publicado .dot { background: var(--azul); }
+  .status-rascunho { background: rgba(250,219,2,0.12); color: #a08800; }
+  .status-rascunho .dot { background: var(--amarelo); }
+  .status-desatualizado { background: rgba(254,116,81,0.1); color: #d94f2b; }
+  .status-desatualizado .dot { background: var(--vermelho); }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--cinza-sup);
+  }
+
+  .card-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .area-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+    background: var(--cinza-sup);
+    padding: 4px 9px;
+    border-radius: 4px;
+  }
+
+  .card-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: #C0C0C0;
+  }
+
+  /* ── LIST VIEW ── */
+  .list-view { display: none; }
+
+  .list-header {
+    display: grid;
+    grid-template-columns: 1fr 140px 130px 130px;
+    gap: 16px;
+    padding: 0 20px 12px;
+    border-bottom: 1.5px solid var(--cinza-borda);
+    margin-bottom: 4px;
+  }
+
+  .list-col-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+  }
+
+  .list-row {
+    display: grid;
+    grid-template-columns: 1fr 140px 130px 130px;
+    gap: 16px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    align-items: center;
+    border-bottom: 1px solid var(--cinza-sup);
+  }
+
+  .list-row:hover { background: var(--cinza-sup); }
+  .list-row:last-child { border-bottom: none; }
+
+  .list-name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--preto);
+  }
+
+  .list-area {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cinza-texto);
+  }
+
+  .list-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #C0C0C0;
+    letter-spacing: 0.3px;
+  }
+
+  /* Section label */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #D0D0D0;
+    margin-bottom: 20px;
+  }
+
+  /* when view is list */
+  body.view-list .cards-grid { display: none; }
+  body.view-list .list-view { display: block; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="#" class="sidebar-logo">doc<span>s</span>o</a>
+
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1.5" y="1.5" width="5" height="5" rx="1"/>
+          <rect x="9.5" y="1.5" width="5" height="5" rx="1"/>
+          <rect x="1.5" y="9.5" width="5" height="5" rx="1"/>
+          <rect x="9.5" y="9.5" width="5" height="5" rx="1"/>
+        </svg>
+      </div>
+      Dashboard
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 8h12M8 2l6 6-6 6"/>
+        </svg>
+      </div>
+      Studio
+    </a>
+    <a href="#" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3.5h12M2 8h12M2 12.5h7"/>
+        </svg>
+      </div>
+      Biblioteca
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">MR</div>
+      <div class="user-info">
+        <div class="user-name">Mariana Rocha</div>
+        <div class="user-role">Admin</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="main-inner">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="greeting-label">— Biblioteca</div>
+        <div class="greeting-title">Olá, Mariana.</div>
+      </div>
+      <button class="btn-novo" onclick="novoProcesso()">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="7" y1="1" x2="7" y2="13"/>
+          <line x1="1" y1="7" x2="13" y2="7"/>
+        </svg>
+        Novo processo
+      </button>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <div class="search-icon">
+          <svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="6.5" cy="6.5" r="4.5"/>
+            <line x1="10" y1="10" x2="14" y2="14"/>
+          </svg>
+        </div>
+        <input type="text" class="search-input" placeholder="Buscar processo..." id="searchInput" oninput="filterProcesses()">
+      </div>
+
+      <div class="toolbar-right">
+        <div class="results-count" id="resultsCount">12 processos</div>
+        <div class="view-toggle">
+          <button class="vt-btn active" id="btn-cards" onclick="setView('cards')" title="Cards">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="1" width="5" height="5" rx="1"/>
+              <rect x="8" y="1" width="5" height="5" rx="1"/>
+              <rect x="1" y="8" width="5" height="5" rx="1"/>
+              <rect x="8" y="8" width="5" height="5" rx="1"/>
+            </svg>
+          </button>
+          <button class="vt-btn" id="btn-list" onclick="setView('list')" title="Lista">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="1" y1="3" x2="13" y2="3"/>
+              <line x1="1" y1="7" x2="13" y2="7"/>
+              <line x1="1" y1="11" x2="13" y2="11"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label" id="sectionLabel">— Todos os processos</div>
+
+    <!-- CARDS VIEW -->
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <!-- LIST VIEW -->
+    <div class="list-view" id="listView">
+      <div class="list-header">
+        <div class="list-col-label">Nome</div>
+        <div class="list-col-label">Área</div>
+        <div class="list-col-label">Status</div>
+        <div class="list-col-label">Atualizado em</div>
+      </div>
+      <div id="listRows"></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  const PROCESSOS = [
+    { nome: "Onboarding de novos colaboradores", area: "RH", status: "publicado", data: "08 mar 2025" },
+    { nome: "Aprovação de férias", area: "RH", status: "publicado", data: "01 mar 2025" },
+    { nome: "Emissão de nota fiscal de serviço", area: "Financeiro", status: "publicado", data: "27 fev 2025" },
+    { nome: "Conciliação bancária mensal", area: "Financeiro", status: "rascunho", data: "22 fev 2025" },
+    { nome: "Qualificação de leads", area: "Vendas", status: "publicado", data: "18 fev 2025" },
+    { nome: "Fechamento de contrato", area: "Vendas", status: "desatualizado", data: "03 jan 2025" },
+    { nome: "Abertura de chamado de suporte", area: "Suporte", status: "publicado", data: "15 fev 2025" },
+    { nome: "Escalada de incidente crítico", area: "Suporte", status: "rascunho", data: "10 fev 2025" },
+    { nome: "Deploy em produção", area: "Tech", status: "publicado", data: "12 mar 2025" },
+    { nome: "Revisão de código (PR)", area: "Tech", status: "publicado", data: "11 mar 2025" },
+    { nome: "Briefing de campanha", area: "Marketing", status: "desatualizado", data: "15 dez 2024" },
+    { nome: "Aprovação de peças criativas", area: "Marketing", status: "rascunho", data: "05 mar 2025" },
+  ];
+
+  const STATUS_LABEL = { publicado: "Publicado", rascunho: "Rascunho", desatualizado: "Desatualizado" };
+
+  let currentView = 'cards';
+  let filtered = [...PROCESSOS];
+
+  function statusPillHTML(status) {
+    return `<div class="status-pill status-${status}"><div class="dot"></div>${STATUS_LABEL[status]}</div>`;
+  }
+
+  function renderCards() {
+    const grid = document.getElementById('cardsGrid');
+    grid.innerHTML = filtered.map(p => `
+      <div class="process-card">
+        <div class="card-header">
+          <div class="card-name">${p.nome}</div>
+          ${statusPillHTML(p.status)}
+        </div>
+        <div class="card-footer">
+          <div class="card-area"><div class="area-tag">${p.area}</div></div>
+          <div class="card-date">${p.data}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderList() {
+    const rows = document.getElementById('listRows');
+    rows.innerHTML = filtered.map(p => `
+      <div class="list-row">
+        <div class="list-name">${p.nome}</div>
+        <div class="list-area">${p.area}</div>
+        ${statusPillHTML(p.status)}
+        <div class="list-date">${p.data}</div>
+      </div>
+    `).join('');
+  }
+
+  function render() {
+    renderCards();
+    renderList();
+    const n = filtered.length;
+    document.getElementById('resultsCount').textContent = `${n} processo${n !== 1 ? 's' : ''}`;
+    const q = document.getElementById('searchInput').value.trim();
+    document.getElementById('sectionLabel').textContent = q ? `— Resultados para "${q}"` : '— Todos os processos';
+  }
+
+  function filterProcesses() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    filtered = q
+      ? PROCESSOS.filter(p => p.nome.toLowerCase().includes(q) || p.area.toLowerCase().includes(q))
+      : [...PROCESSOS];
+    render();
+  }
+
+  function setView(v) {
+    currentView = v;
+    document.body.classList.toggle('view-list', v === 'list');
+    document.getElementById('btn-cards').classList.toggle('active', v === 'cards');
+    document.getElementById('btn-list').classList.toggle('active', v === 'list');
+  }
+
+  function novoProcesso() {
+    alert('Criar novo processo — integração com Studio');
+  }
+
+  render();
+</script>
+
+</body>
+</html>

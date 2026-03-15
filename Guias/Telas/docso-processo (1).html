@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docso — Processo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --preto: #0A0A0A;
+    --branco: #FAFAFA;
+    --cinza-sup: #F0F0F0;
+    --cinza-borda: #E4E4E4;
+    --cinza-texto: #A0A0A0;
+    --azul: #30BCFE;
+    --vermelho: #FE7451;
+    --amarelo: #FADB02;
+    --verde: #39BD3D;
+    --sidebar-w: 220px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--branco); font-family: 'DM Sans', sans-serif; height: 100vh; overflow: hidden; display: flex; color: var(--preto); }
+
+  /* SIDEBAR */
+  .sidebar { width: var(--sidebar-w); height: 100vh; background: var(--preto); display: flex; flex-direction: column; flex-shrink: 0; padding: 36px 0 28px; border-right: 1px solid #1a1a1a; }
+  .sidebar-logo { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.8px; color: var(--branco); text-decoration: none; padding: 0 28px; margin-bottom: 48px; display: block; }
+  .sidebar-logo span { color: var(--azul); }
+  .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 0 14px; }
+  .nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 7px; cursor: pointer; text-decoration: none; transition: background 0.15s; font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: #555; user-select: none; }
+  .nav-item:hover { background: #151515; color: #aaa; }
+  .nav-item.active { background: #151515; color: var(--branco); }
+  .nav-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nav-icon svg { width: 15px; height: 15px; }
+  .nav-item.active .nav-icon svg { stroke: var(--azul); }
+  .sidebar-footer { padding: 0 14px; border-top: 1px solid #1a1a1a; padding-top: 20px; margin-top: 8px; }
+  .user-chip { display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 7px; cursor: pointer; transition: background 0.15s; }
+  .user-chip:hover { background: #151515; }
+  .user-avatar { width: 30px; height: 30px; background: var(--azul); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--preto); flex-shrink: 0; }
+  .user-name { font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--branco); }
+  .user-role { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: #444; text-transform: uppercase; }
+
+  /* MAIN */
+  .main { flex: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #F2F2F2; }
+
+  /* TOPBAR */
+  .process-topbar { height: 56px; background: #fff; border-bottom: 1px solid var(--cinza-borda); display: flex; align-items: center; padding: 0 40px; gap: 16px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--cinza-texto); }
+  .breadcrumb a { color: var(--cinza-texto); text-decoration: none; transition: color 0.15s; }
+  .breadcrumb a:hover { color: var(--preto); }
+  .breadcrumb-sep { opacity: 0.4; }
+  .breadcrumb-current { color: var(--preto); }
+  .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .btn-ghost { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: transparent; border: 1.5px solid var(--cinza-borda); border-radius: 7px; font-family: 'DM Sans', sans-serif; font-size: 12.5px; color: #666; cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+  .btn-ghost:hover { border-color: #bbb; color: var(--preto); background: var(--cinza-sup); }
+  .btn-ghost svg { width: 13px; height: 13px; }
+
+  /* ABAS */
+  .tabs-bar { height: 44px; background: #fff; border-bottom: 1px solid var(--cinza-borda); display: flex; align-items: flex-end; padding: 0 40px; flex-shrink: 0; }
+  .tab-btn { display: flex; align-items: center; gap: 7px; height: 44px; padding: 0 18px; background: transparent; border: none; border-bottom: 2px solid transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--cinza-texto); cursor: pointer; transition: color 0.15s, border-color 0.15s; margin-bottom: -1px; }
+  .tab-btn svg { width: 13px; height: 13px; }
+  .tab-btn:hover { color: var(--preto); }
+  .tab-btn.active { color: var(--preto); border-bottom-color: var(--preto); font-weight: 500; }
+
+  /* VIEWS */
+  .tab-view { display: none; flex: 1; overflow: hidden; }
+  .tab-view.visible { display: flex; }
+
+  /* DOC */
+  .process-body { flex: 1; display: flex; overflow: hidden; }
+  .process-content { flex: 1; overflow-y: auto; padding: 52px 64px 100px; }
+  .process-content::-webkit-scrollbar { width: 4px; }
+  .process-content::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 4px; }
+  .content-inner { max-width: 720px; animation: fadeUp 0.45s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .process-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .meta-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza-texto); background: #ebebeb; padding: 5px 10px; border-radius: 4px; }
+  .status-pill { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 99px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
+  .status-pill .dot { width: 5px; height: 5px; border-radius: 50%; }
+  .status-publicado { background: rgba(48,188,254,0.18); color: #0780b8; }
+  .status-publicado .dot { background: #0780b8; }
+  .meta-sep { color: var(--cinza-borda); font-size: 18px; }
+  .meta-date { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: #C0C0C0; }
+  .process-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -1.5px; color: var(--preto); line-height: 1.1; margin-bottom: 16px; }
+  .process-desc { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; color: #666; line-height: 1.75; margin-bottom: 48px; max-width: 600px; }
+  .owners-row { display: flex; align-items: center; gap: 20px; padding: 18px 20px; background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: 10px; margin-bottom: 48px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .owners-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza-texto); flex-shrink: 0; }
+  .owners-list { display: flex; align-items: center; gap: 8px; }
+  .owner-chip { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; background: var(--cinza-sup); border-radius: 99px; font-family: 'DM Sans', sans-serif; font-size: 12px; color: #444; }
+  .owner-av { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 9px; flex-shrink: 0; }
+  .section-block { margin-bottom: 52px; }
+  .section-eyebrow { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--cinza-texto); margin-bottom: 16px; }
+  .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.5px; color: var(--preto); margin-bottom: 20px; }
+  .steps-list { display: flex; flex-direction: column; }
+  .step { display: flex; gap: 20px; position: relative; }
+  .step:not(:last-child) .step-left::after { content: ''; position: absolute; left: 15px; top: 36px; bottom: -1px; width: 1px; background: var(--cinza-borda); }
+  .step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; position: relative; padding-bottom: 28px; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 1.5px solid var(--cinza-borda); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--cinza-texto); flex-shrink: 0; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.06); position: relative; z-index: 1; }
+  .step.done .step-num { background: var(--preto); border-color: var(--preto); color: transparent; font-size: 0; }
+  .step.done .step-num::after { content: ''; width: 6px; height: 10px; border: 1.5px solid var(--branco); border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); display: block; }
+  .step-right { flex: 1; padding-bottom: 28px; }
+  .step-card { background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: 10px; padding: 20px 22px; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .step-card:hover { border-color: #bbb; box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
+  .step.done .step-card { background: #fafafa; }
+  .step-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .step-name { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; color: var(--preto); line-height: 1.3; }
+  .step.done .step-name { text-decoration: line-through; color: var(--cinza-texto); }
+  .step-owner-chip { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--cinza-texto); flex-shrink: 0; }
+  .soc-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 7px; flex-shrink: 0; }
+  .step-desc { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px; color: #888; line-height: 1.65; }
+  .attachments { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .attach-chip { display: flex; align-items: center; gap: 7px; padding: 6px 12px; background: var(--cinza-sup); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: #666; cursor: pointer; transition: background 0.15s; text-transform: uppercase; }
+  .attach-chip:hover { background: var(--cinza-borda); color: var(--preto); }
+  .attach-chip svg { width: 12px; height: 12px; }
+  /* TOC */
+  .process-toc { width: 220px; flex-shrink: 0; padding: 52px 28px 40px 8px; overflow-y: auto; border-left: 1px solid var(--cinza-borda); background: #F2F2F2; }
+  .toc-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #C8C8C8; margin-bottom: 20px; padding-left: 12px; }
+  .toc-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--cinza-texto); transition: background 0.15s, color 0.15s; text-decoration: none; margin-bottom: 2px; }
+  .toc-item:hover { background: var(--cinza-borda); color: var(--preto); }
+  .toc-item.active { color: var(--preto); font-weight: 500; }
+  .toc-num { font-family: 'DM Mono', monospace; font-size: 9px; color: #D0D0D0; width: 14px; flex-shrink: 0; }
+  .toc-divider { height: 1px; background: var(--cinza-borda); margin: 16px 12px; }
+  .toc-progress { padding: 16px 12px; background: #fff; border-radius: 8px; margin-top: 24px; border: 1.5px solid var(--cinza-borda); }
+  .toc-prog-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .toc-prog-text { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cinza-texto); }
+  .toc-prog-pct { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--preto); }
+  .prog-bar { height: 4px; background: var(--cinza-sup); border-radius: 2px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--azul); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* FLUXOGRAMA */
+  .flow-view {
+    flex: 1; position: relative; overflow: hidden;
+    background-color: #F2F2F2;
+    background-image: radial-gradient(circle, #CACACA 1px, transparent 1px);
+    background-size: 24px 24px;
+    cursor: grab; user-select: none;
+  }
+  .flow-view:active { cursor: grabbing; }
+  .flow-view.visible { display: block; }
+
+  #flowSvg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  #flowCanvas { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+
+  /* Nós */
+  .fnode { position: absolute; cursor: pointer; }
+  .fnode:hover .fnode-box { filter: drop-shadow(0 6px 20px rgba(0,0,0,0.12)); }
+
+  /* Terminal */
+  .fnode-terminal .fnode-box { width: 148px; height: 46px; border-radius: 23px; background: var(--preto); display: flex; align-items: center; justify-content: center; }
+  .fnode-terminal .fnode-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--branco); }
+
+  /* Tarefa */
+  .fnode-task .fnode-box { width: 210px; border-radius: 10px; background: #fff; border: 1.5px solid var(--cinza-borda); box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); padding: 14px 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .fnode-task.selected .fnode-box { border-color: var(--azul); box-shadow: 0 0 0 3px rgba(48,188,254,0.18), 0 2px 8px rgba(0,0,0,0.06); }
+  .fnode-task-label { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 12.5px; color: var(--preto); line-height: 1.35; }
+  .fnode-task-meta { display: flex; align-items: center; gap: 7px; }
+  .fnode-task-owner { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 7px; flex-shrink: 0; }
+  .fnode-task-area { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cinza-texto); }
+
+  /* Decisão */
+  .fnode-decision { width: 136px; height: 136px; }
+  .fnode-decision .fnode-box { width: 136px; height: 136px; transform: rotate(45deg); background: #fff; border: 1.5px solid var(--cinza-borda); box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+  .fnode-decision.selected .fnode-box { border-color: var(--azul); box-shadow: 0 0 0 3px rgba(48,188,254,0.18); }
+  .fnode-decision-inner { transform: rotate(-45deg); text-align: center; padding: 6px; width: 96px; }
+  .fnode-decision-label { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 11px; color: var(--preto); line-height: 1.3; }
+
+  /* Drawer */
+  .flow-detail { position: absolute; top: 0; right: 0; width: 296px; height: 100%; background: #fff; border-left: 1px solid var(--cinza-borda); padding: 36px 28px; display: flex; flex-direction: column; gap: 20px; transform: translateX(100%); transition: transform 0.25s ease; z-index: 10; overflow-y: auto; box-shadow: -4px 0 24px rgba(0,0,0,0.06); }
+  .flow-detail.open { transform: translateX(0); }
+  .detail-close { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: var(--cinza-texto); font-size: 20px; line-height: 1; padding: 4px 8px; border-radius: 5px; transition: background 0.15s, color 0.15s; }
+  .detail-close:hover { background: var(--cinza-sup); color: var(--preto); }
+  .detail-eyebrow { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--cinza-texto); }
+  .detail-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.5px; color: var(--preto); line-height: 1.25; }
+  .detail-divider { height: 1px; background: var(--cinza-borda); }
+  .detail-field { display: flex; flex-direction: column; gap: 6px; }
+  .detail-field-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza-texto); }
+  .detail-field-value { font-family: 'DM Sans', sans-serif; font-size: 13px; color: #444; line-height: 1.6; }
+  .detail-owner-row { display: flex; align-items: center; gap: 9px; }
+  .detail-owner-av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 9px; flex-shrink: 0; }
+
+  /* Controles */
+  .flow-controls { position: absolute; bottom: 28px; left: 28px; display: flex; align-items: center; gap: 0; background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07); z-index: 5; }
+  .zoom-btn { width: 36px; height: 36px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; font-size: 16px; transition: background 0.15s, color 0.15s; font-family: 'DM Mono', monospace; }
+  .zoom-btn:hover { background: var(--cinza-sup); color: var(--preto); }
+  .zoom-sep { width: 1px; height: 22px; background: var(--cinza-borda); }
+  .zoom-pct { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--cinza-texto); padding: 0 12px; min-width: 52px; text-align: center; }
+
+  /* Legenda */
+  .flow-legend { position: absolute; bottom: 28px; right: 28px; background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); z-index: 5; }
+  .legend-row { display: flex; align-items: center; gap: 9px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--cinza-texto); }
+  .legend-pill { width: 30px; height: 14px; border-radius: 99px; background: var(--preto); flex-shrink: 0; }
+  .legend-rect { width: 30px; height: 18px; border-radius: 3px; background: #fff; border: 1.5px solid var(--cinza-borda); flex-shrink: 0; }
+  .legend-diamond { width: 14px; height: 14px; background: #fff; border: 1.5px solid var(--cinza-borda); transform: rotate(45deg); border-radius: 2px; margin: 0 8px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <a href="#" class="sidebar-logo">doc<span>s</span>o</a>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item">
+      <div class="nav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="1.5" width="5" height="5" rx="1"/><rect x="9.5" y="1.5" width="5" height="5" rx="1"/><rect x="1.5" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/></svg></div>
+      Dashboard
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M8 2l6 6-6 6"/></svg></div>
+      Studio
+    </a>
+    <a href="#" class="nav-item active">
+      <div class="nav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M2 8h12M2 12.5h7"/></svg></div>
+      Biblioteca
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">MR</div>
+      <div><div class="user-name">Mariana Rocha</div><div class="user-role">Admin</div></div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+
+  <div class="process-topbar">
+    <div class="breadcrumb">
+      <a href="#">Biblioteca</a><span class="breadcrumb-sep">/</span>
+      <span style="color:#bbb;">RH</span><span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Onboarding de novos colaboradores</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-ghost"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6.5" r="5.5"/><line x1="6.5" y1="4" x2="6.5" y2="6.5"/><circle cx="6.5" cy="9" r="0.5" fill="currentColor"/></svg>Histórico</button>
+      <button class="btn-ghost"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5V11h1.5l5-5-1.5-1.5-5 5zM10.5 3.5l-1-1a.7.7 0 0 0-1 0l-.9.9 1.5 1.5.9-.9a.7.7 0 0 0 0-1z"/></svg>Editar</button>
+      <button class="btn-ghost" onclick="alert('Link copiado.')"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="2.5" r="1.5"/><circle cx="10" cy="10.5" r="1.5"/><circle cx="3" cy="6.5" r="1.5"/><line x1="4.4" y1="7.3" x2="8.6" y2="9.7"/><line x1="8.6" y1="3.3" x2="4.4" y2="5.7"/></svg>Compartilhar</button>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn active" id="tab-doc" onclick="switchTab('doc')">
+      <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="1" width="9" height="11" rx="1.5"/><line x1="4.5" y1="4.5" x2="8.5" y2="4.5"/><line x1="4.5" y1="7" x2="8.5" y2="7"/><line x1="4.5" y1="9.5" x2="6.5" y2="9.5"/></svg>
+      Documento
+    </button>
+    <button class="tab-btn" id="tab-flow" onclick="switchTab('flow')">
+      <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="4" height="3" rx="1"/><rect x="8" y="5" width="4" height="3" rx="1"/><rect x="1" y="9" width="4" height="3" rx="1"/><path d="M5 2.5h2a1 1 0 0 1 1 1v1"/><path d="M5 10.5h2a1 1 0 0 0 1-1v-1"/></svg>
+      Fluxograma
+    </button>
+  </div>
+
+  <!-- VIEW DOC -->
+  <div class="tab-view visible" id="view-doc">
+    <div class="process-body">
+      <div class="process-content">
+        <div class="content-inner">
+          <div class="process-meta">
+            <div class="meta-tag">RH</div>
+            <div class="status-pill status-publicado"><div class="dot"></div>Publicado</div>
+            <div class="meta-sep">·</div>
+            <div class="meta-date">Atualizado em 08 mar 2025</div>
+          </div>
+          <h1 class="process-title">Onboarding de novos colaboradores</h1>
+          <p class="process-desc">Garante que cada novo membro do time tenha uma chegada estruturada — com acesso, contexto e as pessoas certas desde o primeiro dia. Aplicável a todas as contratações CLT e PJ a partir de 2024.</p>
+          <div class="owners-row">
+            <div class="owners-label">Responsáveis</div>
+            <div class="owners-list">
+              <div class="owner-chip"><div class="owner-av" style="background:#30BCFE;color:#0A0A0A;">MR</div>Mariana Rocha</div>
+              <div class="owner-chip"><div class="owner-av" style="background:#39BD3D;color:#fff;">FS</div>Felipe Souza</div>
+              <div class="owner-chip"><div class="owner-av" style="background:#FADB02;color:#0A0A0A;">AC</div>Ana Costa</div>
+            </div>
+          </div>
+          <div class="section-block" id="sec-1">
+            <div class="section-eyebrow">— Seção 01</div>
+            <div class="section-title">Pré-chegada</div>
+            <div class="steps-list">
+              <div class="step done" onclick="toggleStep(this)">
+                <div class="step-left"><div class="step-num">1</div></div>
+                <div class="step-right"><div class="step-card"><div class="step-header"><div class="step-name">Enviar e-mail de boas-vindas com agenda da primeira semana</div><div class="step-owner-chip"><div class="soc-dot" style="background:#30BCFE;color:#0a0a0a;">MR</div>RH</div></div><div class="step-desc">Incluir link do manual de cultura, acesso ao Notion e contato do buddy designado.</div></div></div>
+              </div>
+              <div class="step done" onclick="toggleStep(this)">
+                <div class="step-left"><div class="step-num">2</div></div>
+                <div class="step-right"><div class="step-card"><div class="step-header"><div class="step-name">Provisionar acessos e equipamentos</div><div class="step-owner-chip"><div class="soc-dot" style="background:#39BD3D;color:#fff;">FS</div>Tech</div></div><div class="step-desc">Criar conta G Suite, Slack, Notion e solicitar equipamento com 5 dias de antecedência.</div><div class="attachments"><div class="attach-chip"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="1" width="8" height="10" rx="1"/><line x1="4" y1="4" x2="8" y2="4"/></svg>checklist-acessos.pdf</div></div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-block" id="sec-2">
+            <div class="section-eyebrow">— Seção 02</div>
+            <div class="section-title">Primeiro dia</div>
+            <div class="steps-list">
+              <div class="step done" onclick="toggleStep(this)">
+                <div class="step-left"><div class="step-num">3</div></div>
+                <div class="step-right"><div class="step-card"><div class="step-header"><div class="step-name">Reunião de boas-vindas com o gestor direto</div><div class="step-owner-chip"><div class="soc-dot" style="background:#FADB02;color:#0a0a0a;">AC</div>Gestão</div></div><div class="step-desc">Apresentar o time, alinhar expectativas dos primeiros 30 dias e entregar plano de onboarding individual.</div></div></div>
+              </div>
+              <div class="step" onclick="toggleStep(this)">
+                <div class="step-left"><div class="step-num">4</div></div>
+                <div class="step-right"><div class="step-card"><div class="step-header"><div class="step-name">Tour pelos processos da área no Docso</div><div class="step-owner-chip"><div class="soc-dot" style="background:#30BCFE;color:#0a0a0a;">MR</div>RH</div></div><div class="step-desc">Guiar o colaborador pela biblioteca de processos da sua área. Destaque para os 3 processos mais usados.</div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-block" id="sec-3">
+            <div class="section-eyebrow">— Seção 03</div>
+            <div class="section-title">Primeira semana</div>
+            <div class="steps-list">
+              <div class="step" onclick="toggleStep(this)">
+                <div class="step-left"><div class="step-num">5</div></div>
+                <div class="step-right"><div class="step-card"><div class="step-header"><div class="step-name">Check-in de alinhamento com buddy</div><div class="step-owner-chip"><div class="soc-dot" style="background:#39BD3D;color:#fff;">FS</div>Buddy</div></div><div class="step-desc">Conversa informal para tirar dúvidas do dia a dia, cultura e dinâmica do time.</div></div></div>
+              </div>
+              <div class="step" onclick="toggleStep(this)">
+                <div class="step-left"><div class="step-num">6</div></div>
+                <div class="step-right"><div class="step-card"><div class="step-header"><div class="step-name">Feedback de onboarding (formulário)</div><div class="step-owner-chip"><div class="soc-dot" style="background:#30BCFE;color:#0a0a0a;">MR</div>RH</div></div><div class="step-desc">Coletar percepção sobre a experiência de chegada para iterar no processo.</div><div class="attachments"><div class="attach-chip"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 1v7M3.5 5.5L6 8l2.5-2.5"/><path d="M2 10h8"/></svg>form-feedback-onboarding</div></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="process-toc">
+        <div class="toc-label">— Índice</div>
+        <a class="toc-item active" href="#sec-1" onclick="setTocActive(this)"><span class="toc-num">01</span>Pré-chegada</a>
+        <a class="toc-item" href="#sec-2" onclick="setTocActive(this)"><span class="toc-num">02</span>Primeiro dia</a>
+        <a class="toc-item" href="#sec-3" onclick="setTocActive(this)"><span class="toc-num">03</span>Primeira semana</a>
+        <div class="toc-divider"></div>
+        <div class="toc-progress">
+          <div class="toc-prog-label"><span class="toc-prog-text">Progresso</span><span class="toc-prog-pct" id="progPct">50%</span></div>
+          <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:50%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW FLUXOGRAMA -->
+  <div class="tab-view" id="view-flow">
+    <div class="flow-view" id="flowView">
+      <svg id="flowSvg"></svg>
+      <div id="flowCanvas"></div>
+
+      <div class="flow-controls">
+        <button class="zoom-btn" onclick="zoomIn()">+</button>
+        <div class="zoom-sep"></div>
+        <div class="zoom-pct" id="zoomLabel">100%</div>
+        <div class="zoom-sep"></div>
+        <button class="zoom-btn" onclick="zoomOut()">−</button>
+        <div class="zoom-sep"></div>
+        <button class="zoom-btn" title="Centralizar" onclick="resetView()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8"/></svg>
+        </button>
+      </div>
+
+      <div class="flow-legend">
+        <div class="legend-row"><div class="legend-pill"></div>Início / Fim</div>
+        <div class="legend-row"><div class="legend-rect"></div>Tarefa</div>
+        <div class="legend-row"><div class="legend-diamond"></div>Decisão</div>
+      </div>
+
+      <div class="flow-detail" id="flowDetail">
+        <button class="detail-close" onclick="closeDetail()">×</button>
+        <div class="detail-eyebrow" id="det-eyebrow">— Tarefa</div>
+        <div class="detail-title" id="det-title">—</div>
+        <div class="detail-divider"></div>
+        <div class="detail-field">
+          <div class="detail-field-label">Responsável</div>
+          <div class="detail-owner-row">
+            <div class="detail-owner-av" id="det-av"></div>
+            <div class="detail-field-value" id="det-owner">—</div>
+          </div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Área</div>
+          <div class="detail-field-value" id="det-area">—</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Descrição</div>
+          <div class="detail-field-value" id="det-desc">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── TABS ── */
+function switchTab(t) {
+  ['doc','flow'].forEach(id => {
+    document.getElementById('view-' + id).classList.toggle('visible', id === t);
+    document.getElementById('tab-' + id).classList.toggle('active', id === t);
+  });
+  if (t === 'flow') setTimeout(renderFlow, 60);
+}
+
+/* ── DOC ── */
+function toggleStep(el) { el.classList.toggle('done'); updateProgress(); }
+function updateProgress() {
+  const all = document.querySelectorAll('.step').length;
+  const done = document.querySelectorAll('.step.done').length;
+  const pct = Math.round(done / all * 100);
+  document.getElementById('progPct').textContent = pct + '%';
+  document.getElementById('progFill').style.width = pct + '%';
+}
+function setTocActive(el) { document.querySelectorAll('.toc-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+updateProgress();
+
+/* ── FLUXOGRAMA ── */
+const NW = { terminal: 148, task: 210, decision: 136 };
+const NH = { terminal: 46,  task: 76,  decision: 136 };
+
+const NODES = [
+  { id:'start', type:'terminal', label:'Início',    x:296, y:30 },
+  { id:'n1',  type:'task', label:'Enviar e-mail de boas-vindas', owner:'MR', ownerName:'Mariana Rocha', ownerColor:'#30BCFE', ownerTxt:'#0a0a0a', area:'RH',     desc:'Incluir manual de cultura, acesso ao Notion e contato do buddy designado.', x:196, y:124 },
+  { id:'n2',  type:'task', label:'Provisionar acessos e equipamentos', owner:'FS', ownerName:'Felipe Souza', ownerColor:'#39BD3D', ownerTxt:'#fff', area:'Tech',  desc:'Criar conta G Suite, Slack, Notion e solicitar equipamento com 5 dias de antecedência.', x:196, y:256 },
+  { id:'d1',  type:'decision', label:'Equipamento disponível?', x:232, y:390 },
+  { id:'n2b', type:'task', label:'Acionar fornecedor urgente', owner:'FS', ownerName:'Felipe Souza', ownerColor:'#39BD3D', ownerTxt:'#fff', area:'Tech', desc:'Contato de emergência com fornecedor para entrega expressa.', x:20, y:396 },
+  { id:'n3',  type:'task', label:'Reunião de boas-vindas com gestor', owner:'AC', ownerName:'Ana Costa', ownerColor:'#FADB02', ownerTxt:'#0a0a0a', area:'Gestão', desc:'Apresentar o time, alinhar expectativas dos 30 primeiros dias.', x:196, y:580 },
+  { id:'n4',  type:'task', label:'Tour pelos processos no Docso', owner:'MR', ownerName:'Mariana Rocha', ownerColor:'#30BCFE', ownerTxt:'#0a0a0a', area:'RH', desc:'Guiar o colaborador pela biblioteca de processos da área.', x:196, y:712 },
+  { id:'n5',  type:'task', label:'Check-in com buddy', owner:'FS', ownerName:'Felipe Souza', ownerColor:'#39BD3D', ownerTxt:'#fff', area:'Buddy', desc:'Conversa informal para tirar dúvidas do dia a dia e dinâmica do time.', x:196, y:844 },
+  { id:'n6',  type:'task', label:'Feedback de onboarding', owner:'MR', ownerName:'Mariana Rocha', ownerColor:'#30BCFE', ownerTxt:'#0a0a0a', area:'RH', desc:'Coletar percepção sobre a chegada para iterar no processo.', x:196, y:976 },
+  { id:'end', type:'terminal', label:'Concluído', x:296, y:1108 },
+];
+
+const EDGES = [
+  { from:'start', to:'n1' },
+  { from:'n1', to:'n2' },
+  { from:'n2', to:'d1' },
+  { from:'d1', to:'n2b', label:'Não' },
+  { from:'d1', to:'n3',  label:'Sim' },
+  { from:'n2b', to:'n3' },
+  { from:'n3', to:'n4' },
+  { from:'n4', to:'n5' },
+  { from:'n5', to:'n6' },
+  { from:'n6', to:'end' },
+];
+
+let scale = 1, tx = 60, ty = 40;
+let dragging = false, ds = {}, dt = {};
+let rendered = false;
+
+function port(n, side) {
+  const w = NW[n.type], h = NH[n.type];
+  if (side === 'bottom') return { x: n.x + w/2, y: n.y + h };
+  if (side === 'top')    return { x: n.x + w/2, y: n.y };
+  if (side === 'left')   return { x: n.x,       y: n.y + h/2 };
+  if (side === 'right')  return { x: n.x + w,   y: n.y + h/2 };
+}
+
+function drawEdges() {
+  const svg = document.getElementById('flowSvg');
+  const nm = {};
+  NODES.forEach(n => nm[n.id] = n);
+  let html = `<defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0.5 L0,5.5 L6.5,3 z" fill="#C0C0C0"/>
+    </marker>
+  </defs>`;
+
+  EDGES.forEach(e => {
+    const fn = nm[e.from], tn = nm[e.to];
+    if (!fn || !tn) return;
+    let fp, tp;
+    if (e.from === 'd1' && e.to === 'n2b') {
+      fp = port(fn, 'left');
+      tp = port(tn, 'right');
+    } else {
+      fp = port(fn, 'bottom');
+      tp = port(tn, 'top');
+    }
+    const sx = fp.x * scale + tx, sy = fp.y * scale + ty;
+    const ex = tp.x * scale + tx, ey = tp.y * scale + ty;
+    const dy = (ey - sy) * 0.5;
+
+    let d;
+    if (e.from === 'd1' && e.to === 'n2b') {
+      const dx = Math.abs(ex - sx) * 0.8;
+      d = `M${sx},${sy} C${sx-dx},${sy} ${ex+dx*0.4},${ey} ${ex},${ey}`;
+    } else {
+      d = `M${sx},${sy} C${sx},${sy+dy} ${ex},${ey-dy} ${ex},${ey}`;
+    }
+
+    html += `<path d="${d}" fill="none" stroke="#D4D4D4" stroke-width="1.5" marker-end="url(#arr)"/>`;
+
+    if (e.label) {
+      const lx = (sx + ex) / 2, ly = (sy + ey) / 2;
+      html += `<rect x="${lx-16}" y="${ly-9}" width="32" height="17" rx="4" fill="white" stroke="#E4E4E4" stroke-width="1"/>
+               <text x="${lx}" y="${ly+4.5}" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#A0A0A0" letter-spacing="0.5">${e.label}</text>`;
+    }
+  });
+
+  svg.innerHTML = html;
+}
+
+function applyTransform() {
+  document.getElementById('flowCanvas').style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+  drawEdges();
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%';
+}
+
+function renderFlow() {
+  if (rendered) { applyTransform(); return; }
+  rendered = true;
+
+  const canvas = document.getElementById('flowCanvas');
+  canvas.innerHTML = '';
+
+  NODES.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'fnode fnode-' + n.type;
+    el.style.cssText = `left:${n.x}px;top:${n.y}px;`;
+    el.dataset.id = n.id;
+
+    if (n.type === 'terminal') {
+      el.innerHTML = `<div class="fnode-box"><div class="fnode-label">${n.label}</div></div>`;
+    } else if (n.type === 'task') {
+      el.innerHTML = `<div class="fnode-box">
+        <div class="fnode-task-label">${n.label}</div>
+        <div class="fnode-task-meta">
+          <div class="fnode-task-owner" style="background:${n.ownerColor};color:${n.ownerTxt}">${n.owner}</div>
+          <div class="fnode-task-area">${n.area}</div>
+        </div>
+      </div>`;
+      el.addEventListener('click', () => openDetail(n));
+    } else if (n.type === 'decision') {
+      el.innerHTML = `<div class="fnode-box"><div class="fnode-decision-inner"><div class="fnode-decision-label">${n.label}</div></div></div>`;
+    }
+
+    canvas.appendChild(el);
+  });
+
+  // Auto-fit
+  const view = document.getElementById('flowView');
+  let maxY = 0;
+  NODES.forEach(n => maxY = Math.max(maxY, n.y + NH[n.type]));
+  const availH = view.offsetHeight - 80;
+  const availW = view.offsetWidth - 340;
+  scale = Math.min(1, availH / maxY, availW / 560);
+  scale = Math.round(scale * 10) / 10;
+  tx = Math.max(40, (view.offsetWidth - 340 - 560 * scale) / 2 + 20);
+  ty = 36;
+
+  applyTransform();
+
+  // Pan
+  const fv = document.getElementById('flowView');
+  fv.addEventListener('mousedown', e => {
+    if (e.target.closest('.fnode,.flow-detail,.flow-controls,.flow-legend')) return;
+    dragging = true;
+    ds = { x: e.clientX, y: e.clientY };
+    dt = { tx, ty };
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    tx = dt.tx + e.clientX - ds.x;
+    ty = dt.ty + e.clientY - ds.y;
+    applyTransform();
+  });
+  window.addEventListener('mouseup', () => { dragging = false; });
+
+  fv.addEventListener('wheel', e => {
+    e.preventDefault();
+    const f = e.deltaY > 0 ? 0.9 : 1.11;
+    const rect = fv.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const ns = Math.max(0.25, Math.min(2.5, scale * f));
+    tx = mx - (mx - tx) * (ns / scale);
+    ty = my - (my - ty) * (ns / scale);
+    scale = ns;
+    applyTransform();
+  }, { passive: false });
+}
+
+function openDetail(n) {
+  document.querySelectorAll('.fnode-task').forEach(el => el.classList.remove('selected'));
+  document.querySelector(`.fnode[data-id="${n.id}"]`)?.classList.add('selected');
+  document.getElementById('det-eyebrow').textContent = '— ' + n.area;
+  document.getElementById('det-title').textContent = n.label;
+  const av = document.getElementById('det-av');
+  av.textContent = n.owner;
+  av.style.background = n.ownerColor;
+  av.style.color = n.ownerTxt;
+  document.getElementById('det-owner').textContent = n.ownerName;
+  document.getElementById('det-area').textContent = n.area;
+  document.getElementById('det-desc').textContent = n.desc;
+  document.getElementById('flowDetail').classList.add('open');
+}
+function closeDetail() {
+  document.getElementById('flowDetail').classList.remove('open');
+  document.querySelectorAll('.fnode-task').forEach(el => el.classList.remove('selected'));
+}
+function zoomIn()  { scale = Math.min(2.5, scale * 1.15); applyTransform(); }
+function zoomOut() { scale = Math.max(0.25, scale * 0.87); applyTransform(); }
+function resetView() {
+  const fv = document.getElementById('flowView');
+  let maxY = 0;
+  NODES.forEach(n => maxY = Math.max(maxY, n.y + NH[n.type]));
+  scale = Math.min(1, (fv.offsetHeight - 80) / maxY, (fv.offsetWidth - 340) / 560);
+  scale = Math.round(scale * 10) / 10;
+  tx = Math.max(40, (fv.offsetWidth - 340 - 560 * scale) / 2 + 20);
+  ty = 36;
+  applyTransform();
+}
+</script>
+</body>
+</html>
