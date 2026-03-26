@@ -4,7 +4,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 
-import webhooks from './routes/webhooks.js'
+import auth from './routes/auth.js'
 import processes from './routes/processes.js'
 import captureSessions from './routes/captureSessions.js'
 import ai from './routes/ai.js'
@@ -12,8 +12,7 @@ import training from './routes/training.js'
 import members from './routes/members.js'
 
 const REQUIRED_ENV_VARS = [
-  'CLERK_SECRET_KEY',
-  'CLERK_WEBHOOK_SECRET',
+  'SUPABASE_URL',
   'DATABASE_URL',
   'ANTHROPIC_API_KEY',
   'RESEND_API_KEY',
@@ -46,7 +45,7 @@ app.use(
 
 app.get('/health', (c) => c.json({ ok: true }))
 
-app.route('/', webhooks)
+app.route('/', auth)
 app.route('/api/processes', processes)
 app.route('/api/capture-sessions', captureSessions)
 app.route('/api/ai', ai)

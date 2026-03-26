@@ -1,9 +1,13 @@
+import { supabase } from './supabase'
+
 const API_URL = import.meta.env.VITE_API_URL as string
 
 async function getToken(): Promise<string> {
-  // window.Clerk é injetado pelo ClerkProvider
-  const token = await (window as unknown as { Clerk: { session: { getToken: () => Promise<string> } } }).Clerk.session.getToken()
-  return token
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+  if (!session) throw new Error('Sem sessão ativa')
+  return session.access_token
 }
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {

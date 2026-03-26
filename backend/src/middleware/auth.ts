@@ -1,11 +1,26 @@
-import { verifyToken } from '@clerk/backend'
+import { jwtVerify, createRemoteJWKSet } from 'jose'
 import { createMiddleware } from 'hono/factory'
-import prisma from '../lib/prisma.js'
 
 type AuthVariables = {
   userId: string
   organizationId: string
   role: string
+}
+
+let _jwks: ReturnType<typeof createRemoteJWKSet> | null = null
+
+function getJWKS() {
+  if (!_jwks) {
+    const url = process.env.SUPABASE_URL
+    if (!url) throw new Error('SUPABASE_URL não configurada')
+    _jwks = createRemoteJWKSet(new URL(`${url}/auth/v1/.well-known/jwks.json`))
+  }
+  return _jwks
+}
+
+export async function verifyJWT(token: string) {
+  const { payload } = await jwtVerify(token, getJWKS())
+  return payload
 }
 
 export const authMiddleware = createMiddleware<{ Variables: AuthVariables }>(
@@ -15,19 +30,14 @@ export const authMiddleware = createMiddleware<{ Variables: AuthVariables }>(
       return c.json({ error: 'Token não fornecido', code: 'UNAUTHORIZED' }, 401)
     }
 
-    const token = authHeader.slice(7)
-
     try {
-      const payload = await verifyToken(token, {
-        secretKey: process.env.CLERK_SECRET_KEY,
-      })
+      const payload = await verifyJWT(authHeader.slice(7))
       const userId = payload.sub
+      const meta = payload['app_metadata'] as { organization_id?: string; role?: string } | undefined
+      const organizationId = meta?.organization_id
+      const role = meta?.role
 
-      const member = await prisma.organizationMember.findFirst({
-        where: { userId },
-      })
-
-      if (!member) {
+      if (!userId || !organizationId || !role) {
         return c.json(
           { error: 'Usuário não pertence a nenhuma organização', code: 'NO_ORGANIZATION' },
           403
@@ -35,8 +45,8 @@ export const authMiddleware = createMiddleware<{ Variables: AuthVariables }>(
       }
 
       c.set('userId', userId)
-      c.set('organizationId', member.organizationId)
-      c.set('role', member.role)
+      c.set('organizationId', organizationId)
+      c.set('role', role)
       await next()
     } catch {
       return c.json({ error: 'Token inválido', code: 'INVALID_TOKEN' }, 401)
