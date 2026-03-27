@@ -25,7 +25,7 @@ for (const key of REQUIRED_ENV_VARS) {
 }
 
 const isProd = process.env.NODE_ENV === 'production'
-const ALLOWED_ORIGINS = ['https://app.docso.app']
+const ALLOWED_ORIGINS = ['https://app.docso.app', 'https://docso-rho.vercel.app']
 
 const app = new Hono()
 
