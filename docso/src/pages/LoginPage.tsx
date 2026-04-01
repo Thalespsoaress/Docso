@@ -49,6 +49,7 @@ export default function LoginPage() {
       if (error) { setErro(error.message); return }
 
       if (!data.session) {
+        localStorage.setItem('docso_pending_org', nomeOrg.trim())
         setEmailConfirmacao(true)
         return
       }

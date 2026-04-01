@@ -19,8 +19,18 @@ const loginRoute = createRoute({
   component: LoginPage,
 })
 
+function decodeJwtPayload(token: string): Record<string, unknown> {
+  try {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+    return JSON.parse(atob(base64)) as Record<string, unknown>
+  } catch {
+    return {}
+  }
+}
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null | undefined>(undefined)
+  const [settingUpOrg, setSettingUpOrg] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -30,7 +40,36 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  if (session === undefined) return null
+  useEffect(() => {
+    if (!session || settingUpOrg) return
+
+    const claims = decodeJwtPayload(session.access_token)
+    const appMeta = claims['app_metadata'] as { organization_id?: string } | undefined
+    if (appMeta?.organization_id) return
+
+    const pendingOrg = localStorage.getItem('docso_pending_org')
+    if (!pendingOrg) return
+
+    setSettingUpOrg(true)
+    const apiUrl = import.meta.env.VITE_API_URL as string
+    fetch(`${apiUrl}/api/auth/setup-organization`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ name: pendingOrg }),
+    })
+      .then(async (res) => {
+        if (res.ok || res.status === 409) {
+          localStorage.removeItem('docso_pending_org')
+          await supabase.auth.refreshSession()
+        }
+      })
+      .finally(() => setSettingUpOrg(false))
+  }, [session, settingUpOrg])
+
+  if (session === undefined || settingUpOrg) return null
   if (!session) {
     router.navigate({ to: '/login', replace: true })
     return null
