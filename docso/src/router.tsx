@@ -1,5 +1,5 @@
 import { createRootRoute, createRoute, createRouter, Outlet, redirect } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from './lib/supabase'
 import type { Session } from '@supabase/supabase-js'
 import BibliotecaPage from './pages/BibliotecaPage'
@@ -31,6 +31,7 @@ function decodeJwtPayload(token: string): Record<string, unknown> {
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null | undefined>(undefined)
   const [settingUpOrg, setSettingUpOrg] = useState(false)
+  const setupAttempted = useRef(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -41,7 +42,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!session || settingUpOrg) return
+    if (!session || settingUpOrg || setupAttempted.current) return
 
     const claims = decodeJwtPayload(session.access_token)
     const appMeta = claims['app_metadata'] as { organization_id?: string } | undefined
@@ -50,6 +51,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const pendingOrg = localStorage.getItem('docso_pending_org')
     if (!pendingOrg) return
 
+    setupAttempted.current = true
     setSettingUpOrg(true)
     const apiUrl = import.meta.env.VITE_API_URL as string
     fetch(`${apiUrl}/api/auth/setup-organization`, {
