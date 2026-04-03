@@ -49,7 +49,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     if (appMeta?.organization_id) return
 
     const pendingOrg = localStorage.getItem('docso_pending_org')
-    if (!pendingOrg) return
+    if (!pendingOrg) {
+      router.navigate({ to: '/login', replace: true })
+      return
+    }
 
     setupAttempted.current = true
     setSettingUpOrg(true)
