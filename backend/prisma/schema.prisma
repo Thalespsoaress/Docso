@@ -3,21 +3,49 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Organization {
-  id        String   @id @default(uuid())
-  name      String
-  slug      String   @unique
-  plan      String   @default("trial")
-  createdAt DateTime @default(now())
+  id                   String   @id @default(uuid())
+  name                 String
+  slug                 String   @unique
+  plan                 String   @default("trial")
+  createdAt            DateTime @default(now())
+  fantasyName          String?
+  cnpj                 String?  @unique
+  segment              String?
+  employeeCountAtSignup String?
 
   members             OrganizationMember[]
   processes           Process[]
   captureSessions     CaptureSession[]
   trainingAssignments TrainingAssignment[]
+  onboarding          OnboardingData?
+  onboardingTokens    OnboardingToken[]
+}
+
+model OnboardingData {
+  id                 String    @id @default(uuid())
+  organizationId     String    @unique
+  documentationToday String?
+  mainProblem        String?
+  referralSource     String?
+  completedAt        DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model OnboardingToken {
+  id             String    @id @default(uuid())
+  token          String    @unique
+  organizationId String?
+  usedAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
 }
 
 model User {
