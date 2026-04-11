@@ -6,6 +6,7 @@ import BibliotecaPage from './pages/BibliotecaPage'
 import ProcessoPage from './pages/ProcessoPage'
 import StudioPage from './pages/StudioPage'
 import LoginPage from './pages/LoginPage'
+import OnboardingPage from './pages/OnboardingPage'
 
 function RootLayout() {
   return <Outlet />
@@ -122,6 +123,12 @@ const studioEditRoute = createRoute({
   ),
 })
 
+const setupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/setup/$token',
+  component: OnboardingPage,
+})
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -134,6 +141,7 @@ const indexRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
+  setupRoute,
   bibliotecaRoute,
   processoRoute,
   studioRoute,
