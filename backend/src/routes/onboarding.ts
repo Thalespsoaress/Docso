@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { nanoid } from 'nanoid'
+import { randomBytes } from 'crypto'
 import { verifyJWT } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
 
@@ -17,7 +17,7 @@ onboarding.post('/api/onboarding/tokens', async (c) => {
     return c.json({ error: 'Token inválido', code: 'INVALID_TOKEN' }, 401)
   }
 
-  const token = nanoid(32)
+  const token = randomBytes(24).toString('hex')
   await prisma.onboardingToken.create({ data: { token } })
 
   return c.json({ token }, 201)

@@ -169,7 +169,20 @@ export default function OnboardingPage() {
             </Campo>
 
             <Campo label="CNPJ">
-              <input style={styles.input} placeholder="00.000.000/0001-00" value={cnpj} onChange={e => setCnpj(e.target.value)} />
+              <input
+                style={styles.input}
+                placeholder="00.000.000/0001-00"
+                value={cnpj}
+                onChange={e => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 14)
+                  let masked = digits
+                  if (digits.length > 12) masked = digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, '$1.$2.$3/$4-$5')
+                  else if (digits.length > 8) masked = digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4})/, '$1.$2.$3/$4')
+                  else if (digits.length > 5) masked = digits.replace(/^(\d{2})(\d{3})(\d{0,3})/, '$1.$2.$3')
+                  else if (digits.length > 2) masked = digits.replace(/^(\d{2})(\d{0,3})/, '$1.$2')
+                  setCnpj(masked)
+                }}
+              />
             </Campo>
 
             <Campo label="Segmento">

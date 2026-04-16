@@ -35,6 +35,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
   const roleLabel = ROLE_LABEL[role] ?? 'Admin'
   const isHome = pathname === '/biblioteca' || pathname.startsWith('/processo/')
   const isStudio = pathname === '/studio'
+  const isMembros = pathname === '/membros'
 
   return (
     <aside className="sidebar">
@@ -138,6 +139,33 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
           </div>
           Analytics
         </a>
+
+        {role === 'admin' && (
+          <a
+            href="#"
+            className={`nav-item${isMembros ? ' active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault()
+              go(() => navigate({ to: '/membros' }))
+            }}
+          >
+            <div className="nav-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="6" cy="5" r="2.5" />
+                <path d="M1 13c0-2.76 2.24-4 5-4s5 1.24 5 4" />
+                <path d="M11 7c1.1 0 2 .9 2 2M13 7c1.1 0 2 .9 2 2v1.5" />
+              </svg>
+            </div>
+            Equipe
+          </a>
+        )}
       </nav>
 
       <div className="sidebar-footer">

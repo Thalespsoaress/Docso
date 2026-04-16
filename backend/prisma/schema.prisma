@@ -25,6 +25,7 @@ model Organization {
   trainingAssignments TrainingAssignment[]
   onboarding          OnboardingData?
   onboardingTokens    OnboardingToken[]
+  invites             Invite[]
 }
 
 model OnboardingData {
@@ -48,6 +49,20 @@ model OnboardingToken {
   organization Organization? @relation(fields: [organizationId], references: [id])
 }
 
+model Invite {
+  id             String    @id @default(uuid())
+  organizationId String
+  email          String
+  role           String
+  token          String    @unique
+  invitedBy      String
+  usedAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  inviter      User         @relation(fields: [invitedBy], references: [id])
+}
+
 model User {
   id        String   @id
   email     String   @unique
@@ -59,6 +74,7 @@ model User {
   captureSessionsCreated CaptureSession[]
   assignedBy             TrainingAssignment[] @relation("AssignedBy")
   assignedTo             TrainingAssignment[] @relation("AssignedTo")
+  invitesSent            Invite[]
 }
 
 model OrganizationMember {

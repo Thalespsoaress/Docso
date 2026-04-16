@@ -9,7 +9,7 @@ import processes from './routes/processes.js'
 import captureSessions from './routes/captureSessions.js'
 import ai from './routes/ai.js'
 import training from './routes/training.js'
-import members from './routes/members.js'
+import members, { createInviteRoutes } from './routes/members.js'
 import onboarding from './routes/onboarding.js'
 
 const REQUIRED_ENV_VARS = [
@@ -52,6 +52,7 @@ app.route('/api/capture-sessions', captureSessions)
 app.route('/api/ai', ai)
 app.route('/api/training', training)
 app.route('/api/members', members)
+app.route('/', createInviteRoutes())
 app.route('/', onboarding)
 
 app.notFound((c) => c.json({ error: 'Rota não encontrada', code: 'NOT_FOUND' }, 404))

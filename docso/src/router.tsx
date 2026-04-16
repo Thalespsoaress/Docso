@@ -7,6 +7,8 @@ import ProcessoPage from './pages/ProcessoPage'
 import StudioPage from './pages/StudioPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
+import MembrosPage from './pages/MembrosPage'
+import ConvitePage from './pages/ConvitePage'
 
 function RootLayout() {
   return <Outlet />
@@ -123,6 +125,22 @@ const studioEditRoute = createRoute({
   ),
 })
 
+const membrosRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/membros',
+  component: () => (
+    <ProtectedRoute>
+      <MembrosPage />
+    </ProtectedRoute>
+  ),
+})
+
+const conviteRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/convite/$token',
+  component: ConvitePage,
+})
+
 const setupRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/setup/$token',
@@ -142,10 +160,12 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
   setupRoute,
+  conviteRoute,
   bibliotecaRoute,
   processoRoute,
   studioRoute,
   studioEditRoute,
+  membrosRoute,
 ])
 
 export const router = createRouter({ routeTree })
