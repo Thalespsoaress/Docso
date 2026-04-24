@@ -1,27 +1,8 @@
 import { Hono } from 'hono'
-import { randomBytes } from 'crypto'
 import { verifyJWT } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
 
 const onboarding = new Hono()
-
-// Gera um token de onboarding (uso interno — superadmin chama isso)
-onboarding.post('/api/onboarding/tokens', async (c) => {
-  const authHeader = c.req.header('Authorization')
-  if (!authHeader?.startsWith('Bearer ')) {
-    return c.json({ error: 'Token não fornecido', code: 'UNAUTHORIZED' }, 401)
-  }
-  try {
-    await verifyJWT(authHeader.slice(7))
-  } catch {
-    return c.json({ error: 'Token inválido', code: 'INVALID_TOKEN' }, 401)
-  }
-
-  const token = randomBytes(24).toString('hex')
-  await prisma.onboardingToken.create({ data: { token } })
-
-  return c.json({ token }, 201)
-})
 
 // Valida token (chamado pelo frontend ao carregar a página /setup/:token)
 onboarding.get('/api/onboarding/:token', async (c) => {
@@ -30,8 +11,11 @@ onboarding.get('/api/onboarding/:token', async (c) => {
 
   if (!record) return c.json({ error: 'Token inválido', code: 'INVALID_TOKEN' }, 404)
   if (record.usedAt) return c.json({ error: 'Token já utilizado', code: 'TOKEN_USED' }, 410)
+  if (record.expiresAt && record.expiresAt < new Date()) {
+    return c.json({ error: 'Token expirado', code: 'TOKEN_EXPIRED' }, 410)
+  }
 
-  return c.json({ valid: true })
+  return c.json({ valid: true, email: record.email ?? null })
 })
 
 // Completa o onboarding — etapa 1 e 2 (empresa + contexto)
@@ -41,6 +25,9 @@ onboarding.post('/api/onboarding/:token/setup-org', async (c) => {
 
   if (!record) return c.json({ error: 'Token inválido', code: 'INVALID_TOKEN' }, 404)
   if (record.usedAt) return c.json({ error: 'Token já utilizado', code: 'TOKEN_USED' }, 410)
+  if (record.expiresAt && record.expiresAt < new Date()) {
+    return c.json({ error: 'Token expirado', code: 'TOKEN_EXPIRED' }, 410)
+  }
 
   const authHeader = c.req.header('Authorization')
   if (!authHeader?.startsWith('Bearer ')) {

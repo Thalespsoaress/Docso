@@ -3,6 +3,8 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
+import { secureHeaders } from 'hono/secure-headers'
+import { bodyLimit } from 'hono/body-limit'
 
 import auth from './routes/auth.js'
 import processes from './routes/processes.js'
@@ -11,6 +13,8 @@ import ai from './routes/ai.js'
 import training from './routes/training.js'
 import members, { createInviteRoutes } from './routes/members.js'
 import onboarding from './routes/onboarding.js'
+import docsoAdmin from './routes/docsoAdmin.js'
+import { rateLimiter } from './lib/rateLimiter.js'
 
 const REQUIRED_ENV_VARS = [
   'SUPABASE_URL',
@@ -31,6 +35,8 @@ const ALLOWED_ORIGINS = ['https://app.docso.app', 'https://docso-rho.vercel.app'
 const app = new Hono()
 
 app.use('*', logger())
+app.use('*', secureHeaders())
+app.use('*', bodyLimit({ maxSize: 10 * 1024 * 1024 })) // 10 MB global
 app.use(
   '*',
   cors({
@@ -44,6 +50,12 @@ app.use(
   })
 )
 
+// Rate limiting em rotas públicas sensíveis
+app.use('/api/training/*', rateLimiter({ windowMs: 60_000, limit: 30 }))
+app.use('/api/invite/*', rateLimiter({ windowMs: 60_000, limit: 20 }))
+app.use('/api/onboarding/*', rateLimiter({ windowMs: 60_000, limit: 15 }))
+app.use('/api/auth/*', rateLimiter({ windowMs: 60_000, limit: 10 }))
+
 app.get('/health', (c) => c.json({ ok: true }))
 
 app.route('/', auth)
@@ -54,6 +66,7 @@ app.route('/api/training', training)
 app.route('/api/members', members)
 app.route('/', createInviteRoutes())
 app.route('/', onboarding)
+app.route('/api/docso-admin', docsoAdmin)
 
 app.notFound((c) => c.json({ error: 'Rota não encontrada', code: 'NOT_FOUND' }, 404))
 app.onError((err, c) => {

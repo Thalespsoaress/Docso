@@ -42,6 +42,7 @@ export default function OnboardingPage() {
   const navigate = useNavigate()
 
   const [tokenValido, setTokenValido] = useState<boolean | null>(null)
+  const [emailPrefill, setEmailPrefill] = useState('')
   const [step, setStep] = useState<Step>(1)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
@@ -65,9 +66,11 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     fetch(`${API_URL}/api/onboarding/${token}`)
-      .then(r => {
-        if (r.ok) setTokenValido(true)
-        else setTokenValido(false)
+      .then(async r => {
+        if (!r.ok) { setTokenValido(false); return }
+        const data = await r.json() as { valid: boolean; email: string | null }
+        setTokenValido(true)
+        if (data.email) setEmailPrefill(data.email)
       })
       .catch(() => setTokenValido(false))
   }, [token])
@@ -81,7 +84,7 @@ export default function OnboardingPage() {
     setCarregando(true)
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: emailPrefill || email,
         password: senha,
         options: { data: { full_name: nome.trim() } },
       })
@@ -259,7 +262,14 @@ export default function OnboardingPage() {
             </Campo>
 
             <Campo label="Email">
-              <input style={styles.input} type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+              <input
+                style={{ ...styles.input, ...(emailPrefill ? { color: '#666', cursor: 'not-allowed' } : {}) }}
+                type="email"
+                placeholder="seu@email.com"
+                value={emailPrefill || email}
+                readOnly={!!emailPrefill}
+                onChange={e => { if (!emailPrefill) setEmail(e.target.value) }}
+              />
             </Campo>
 
             <Campo label="Senha">

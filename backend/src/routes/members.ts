@@ -5,6 +5,23 @@ import { authMiddleware } from '../middleware/auth.js'
 import { verifyJWT } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
 
+const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 dias
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function maskEmail(email: string): string {
+  const [local, domain] = email.split('@')
+  const visible = local.length > 2 ? local.slice(0, 2) : local[0]
+  return `${visible}***@${domain}`
+}
+
 type AuthVars = { Variables: { userId: string; organizationId: string; role: string } }
 
 const members = new Hono<AuthVars>()
@@ -79,8 +96,9 @@ members.post('/invite', async (c) => {
     }
 
     const token = randomBytes(24).toString('hex')
+    const expiresAt = new Date(Date.now() + INVITE_TTL_MS)
     await prisma.invite.create({
-      data: { organizationId, email, role: inv.role, token, invitedBy },
+      data: { organizationId, email, role: inv.role, token, invitedBy, expiresAt },
     })
 
     const link = `${FRONTEND_URL}/convite/${token}`
@@ -98,8 +116,8 @@ members.post('/invite', async (c) => {
       subject: `Você foi convidado para ${org.name} no Docso`,
       html: `
         <p>Olá!</p>
-        <p>Você foi convidado para entrar na organização <strong>${org.name}</strong> no Docso.</p>
-        <p><a href="${link}">Aceitar convite</a></p>
+        <p>Você foi convidado para entrar na organização <strong>${escapeHtml(org.name)}</strong> no Docso.</p>
+        <p><a href="${escapeHtml(link)}">Aceitar convite</a></p>
         <p style="color:#999;font-size:12px">Se não esperava este email, pode ignorá-lo.</p>
       `,
     })
@@ -149,8 +167,16 @@ export function createInviteRoutes() {
 
     if (!invite) return c.json({ error: 'Convite inválido', code: 'INVALID_TOKEN' }, 404)
     if (invite.usedAt) return c.json({ error: 'Convite já utilizado', code: 'TOKEN_USED' }, 410)
+    if (invite.expiresAt && invite.expiresAt < new Date()) {
+      return c.json({ error: 'Convite expirado', code: 'TOKEN_EXPIRED' }, 410)
+    }
 
-    return c.json({ valid: true, email: invite.email, role: invite.role, orgName: invite.organization.name })
+    return c.json({
+      valid: true,
+      email: maskEmail(invite.email),
+      role: invite.role,
+      orgName: invite.organization.name,
+    })
   })
 
   // Aceita convite — usuário já cadastrado faz login e chama essa rota
@@ -178,6 +204,15 @@ export function createInviteRoutes() {
 
     if (!invite) return c.json({ error: 'Convite inválido', code: 'INVALID_TOKEN' }, 404)
     if (invite.usedAt) return c.json({ error: 'Convite já utilizado', code: 'TOKEN_USED' }, 410)
+    if (invite.expiresAt && invite.expiresAt < new Date()) {
+      return c.json({ error: 'Convite expirado', code: 'TOKEN_EXPIRED' }, 410)
+    }
+
+    // Garante que o convite pertence ao usuário autenticado
+    const user = await prisma.user.findUnique({ where: { id: userId } })
+    if (!user || user.email.toLowerCase() !== invite.email.toLowerCase()) {
+      return c.json({ error: 'Este convite não foi enviado para você', code: 'FORBIDDEN' }, 403)
+    }
 
     const existing = await prisma.organizationMember.findFirst({
       where: { organizationId: invite.organizationId, userId },

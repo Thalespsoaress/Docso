@@ -42,8 +42,10 @@ model OnboardingData {
 model OnboardingToken {
   id             String    @id @default(uuid())
   token          String    @unique
+  email          String?
   organizationId String?
   usedAt         DateTime?
+  expiresAt      DateTime?
   createdAt      DateTime  @default(now())
 
   organization Organization? @relation(fields: [organizationId], references: [id])
@@ -57,6 +59,7 @@ model Invite {
   token          String    @unique
   invitedBy      String
   usedAt         DateTime?
+  expiresAt      DateTime?
   createdAt      DateTime  @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id])

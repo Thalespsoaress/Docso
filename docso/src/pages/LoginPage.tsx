@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
-import logo from '../assets/logo-wordmark.svg'
+import monogramLight from '../assets/monogram-light.svg'
 import './LoginPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
 export default function LoginPage() {
+  const semAcesso = useMemo(() => new URLSearchParams(window.location.search).get('erro') === 'sem-acesso', [])
   const [modo, setModo] = useState<'entrar' | 'cadastrar'>('entrar')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -98,7 +99,7 @@ export default function LoginPage() {
         <div className="login-layout">
           <div className="login-card-col">
             <div className="right-inner">
-              <img src={logo} alt="docso" style={{ height: 22, width: 'auto', display: 'block', marginBottom: 32 }} />
+              <img src={monogramLight} alt="docso" style={{ height: 40, width: 'auto', display: 'block', marginBottom: 32 }} />
               <div className="form-titulo">Confirme<br />seu email.</div>
               <div className="form-sub" style={{ marginTop: 16 }}>
                 Enviamos um link para <strong>{email}</strong>.<br />
@@ -151,7 +152,7 @@ export default function LoginPage() {
 
         <div className="login-card-col">
           <div className="right-inner">
-            <img src={logo} alt="docso" style={{ height: 22, width: 'auto', display: 'block', marginBottom: 32 }} />
+            <img src={monogramLight} alt="docso" style={{ height: 40, width: 'auto', display: 'block', marginBottom: 32 }} />
 
             <div className="form-titulo">
               {modo === 'entrar' ? <>Bom te ver<br />de volta.</> : <>Crie sua<br />conta.</>}
@@ -236,6 +237,12 @@ export default function LoginPage() {
                   <span className="checkbox-texto">Lembrar de mim</span>
                 </label>
                 <a href="#" className="esqueci">Esqueci a senha</a>
+              </div>
+            )}
+
+            {semAcesso && !erro && (
+              <div style={{ color: '#FE7451', fontSize: 13, marginBottom: 8, fontFamily: "'DM Sans', sans-serif" }}>
+                Sua conta não está vinculada a nenhuma organização. Entre em contato com o administrador.
               </div>
             )}
 

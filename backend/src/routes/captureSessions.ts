@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { bodyLimit } from 'hono/body-limit'
 import { authMiddleware } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
 
@@ -7,6 +8,7 @@ type AuthVars = { Variables: { userId: string; organizationId: string } }
 const captureSessions = new Hono<AuthVars>()
 
 captureSessions.use('*', authMiddleware)
+captureSessions.use('POST', bodyLimit({ maxSize: 5 * 1024 * 1024 })) // 5 MB por sessão
 
 captureSessions.post('/', async (c) => {
   const organizationId = c.get('organizationId')

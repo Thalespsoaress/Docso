@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
 import MembrosPage from './pages/MembrosPage'
 import ConvitePage from './pages/ConvitePage'
+import DocsoAdminPage from './pages/DocsoAdminPage'
 
 function RootLayout() {
   return <Outlet />
@@ -53,7 +54,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
     const pendingOrg = localStorage.getItem('docso_pending_org')
     if (!pendingOrg) {
-      router.navigate({ to: '/login', replace: true })
+      router.navigate({ to: '/login', search: { erro: 'sem-acesso' }, replace: true })
       return
     }
 
@@ -141,6 +142,16 @@ const conviteRoute = createRoute({
   component: ConvitePage,
 })
 
+const docsoAdminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/docso-admin',
+  component: () => (
+    <ProtectedRoute>
+      <DocsoAdminPage />
+    </ProtectedRoute>
+  ),
+})
+
 const setupRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/setup/$token',
@@ -166,6 +177,7 @@ const routeTree = rootRoute.addChildren([
   studioRoute,
   studioEditRoute,
   membrosRoute,
+  docsoAdminRoute,
 ])
 
 export const router = createRouter({ routeTree })
