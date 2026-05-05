@@ -1,10 +1,11 @@
 import { createRootRoute, createRoute, createRouter, Outlet, redirect } from '@tanstack/react-router'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabase'
 import type { Session } from '@supabase/supabase-js'
 import BibliotecaPage from './pages/BibliotecaPage'
 import ProcessoPage from './pages/ProcessoPage'
 import StudioPage from './pages/StudioPage'
+import StudioLandingPage from './pages/StudioLandingPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
 import MembrosPage from './pages/MembrosPage'
@@ -32,13 +33,16 @@ function decodeJwtPayload(token: string): Record<string, unknown> {
   }
 }
 
+// Inicia a busca da sessão imediatamente ao importar o módulo,
+// antes de qualquer render do React.
+const initialSessionPromise = supabase.auth.getSession()
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+
   const [session, setSession] = useState<Session | null | undefined>(undefined)
-  const [settingUpOrg, setSettingUpOrg] = useState(false)
-  const setupAttempted = useRef(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    initialSessionPromise.then(({ data }) => setSession(data.session))
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_, s) => setSession(s))
@@ -46,43 +50,49 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!session || settingUpOrg || setupAttempted.current) return
+    if (session === undefined) return
+    if (!session) { router.navigate({ to: '/login', replace: true }); return }
 
     const claims = decodeJwtPayload(session.access_token)
     const appMeta = claims['app_metadata'] as { organization_id?: string } | undefined
-    if (appMeta?.organization_id) return
+    if (!appMeta?.organization_id) {
+      router.navigate({ to: '/login', search: { erro: 'sem-acesso' }, replace: true })
+    }
+  }, [session])
 
-    const pendingOrg = localStorage.getItem('docso_pending_org')
-    if (!pendingOrg) {
+  if (session === undefined) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }} />
+  )
+  return <>{children}</>
+}
+
+function AdminManagerRoute({ children }: { children: React.ReactNode }) {
+  const [session, setSession] = useState<Session | null | undefined>(undefined)
+
+  useEffect(() => {
+    initialSessionPromise.then(({ data }) => setSession(data.session))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => setSession(s))
+    return () => subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (session === undefined) return
+    if (!session) { router.navigate({ to: '/login', replace: true }); return }
+
+    const claims = decodeJwtPayload(session.access_token)
+    const appMeta = claims['app_metadata'] as { organization_id?: string; role?: string } | undefined
+    if (!appMeta?.organization_id) {
       router.navigate({ to: '/login', search: { erro: 'sem-acesso' }, replace: true })
       return
     }
+    if (appMeta.role !== 'admin' && appMeta.role !== 'manager') {
+      router.navigate({ to: '/biblioteca', replace: true })
+    }
+  }, [session])
 
-    setupAttempted.current = true
-    setSettingUpOrg(true)
-    const apiUrl = import.meta.env.VITE_API_URL as string
-    fetch(`${apiUrl}/api/auth/setup-organization`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify({ name: pendingOrg }),
-    })
-      .then(async (res) => {
-        if (res.ok || res.status === 409) {
-          localStorage.removeItem('docso_pending_org')
-          await supabase.auth.refreshSession()
-        }
-      })
-      .finally(() => setSettingUpOrg(false))
-  }, [session, settingUpOrg])
-
-  if (session === undefined || settingUpOrg) return null
-  if (!session) {
-    router.navigate({ to: '/login', replace: true })
-    return null
-  }
+  if (session === undefined) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }} />
+  )
   return <>{children}</>
 }
 
@@ -110,9 +120,19 @@ const studioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/studio',
   component: () => (
-    <ProtectedRoute>
+    <AdminManagerRoute>
+      <StudioLandingPage />
+    </AdminManagerRoute>
+  ),
+})
+
+const studioNovoRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/studio/novo',
+  component: () => (
+    <AdminManagerRoute>
       <StudioPage />
-    </ProtectedRoute>
+    </AdminManagerRoute>
   ),
 })
 
@@ -120,9 +140,9 @@ const studioEditRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/studio/$id',
   component: () => (
-    <ProtectedRoute>
+    <AdminManagerRoute>
       <StudioPage />
-    </ProtectedRoute>
+    </AdminManagerRoute>
   ),
 })
 
@@ -175,6 +195,7 @@ const routeTree = rootRoute.addChildren([
   bibliotecaRoute,
   processoRoute,
   studioRoute,
+  studioNovoRoute,
   studioEditRoute,
   membrosRoute,
   docsoAdminRoute,

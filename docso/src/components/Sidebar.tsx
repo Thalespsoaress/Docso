@@ -34,8 +34,9 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
   const userInitials = name ? initials(name) : '?'
   const roleLabel = ROLE_LABEL[role] ?? 'Admin'
   const isHome = pathname === '/biblioteca' || pathname.startsWith('/processo/')
-  const isStudio = pathname === '/studio'
+  const isStudio = pathname === '/studio' || pathname.startsWith('/studio/')
   const isMembros = pathname === '/membros'
+  const canAccessStudio = role === 'admin' || role === 'manager'
 
   return (
     <aside className="sidebar">
@@ -101,28 +102,30 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
           Home
         </a>
 
-        <a
-          href="#"
-          className={`nav-item${isStudio ? ' active' : ''}`}
-          onClick={(e) => {
-            e.preventDefault()
-            go(() => navigate({ to: '/studio' }))
-          }}
-        >
-          <div className="nav-icon">
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M2 8h12M8 2l6 6-6 6" />
-            </svg>
-          </div>
-          Studio
-        </a>
+        {canAccessStudio && (
+          <a
+            href="#"
+            className={`nav-item${isStudio ? ' active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault()
+              go(() => navigate({ to: '/studio' }))
+            }}
+          >
+            <div className="nav-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M2 8h12M8 2l6 6-6 6" />
+              </svg>
+            </div>
+            Studio
+          </a>
+        )}
 
         <a href="#" className="nav-item" onClick={(e) => e.preventDefault()}>
           <div className="nav-icon">

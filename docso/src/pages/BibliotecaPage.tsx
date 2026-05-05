@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { api } from '../lib/api'
 import { useCurrentUser } from '../hooks/useCurrentUser'
@@ -65,38 +65,22 @@ function StatusPill({ status }: { status: Status }) {
 
 function ListRow({
   process: p,
-  onPublish,
   onNavigate,
 }: {
   process: Process
-  onPublish: (id: string) => void
   onNavigate: (id: string) => void
 }) {
-  const [hovered, setHovered] = useState(false)
-  const isDraft = p.status === 'draft'
-
   return (
     <div
       className="list-row"
       style={{ borderBottom: '1px solid var(--cinza-borda)', borderRadius: 0 }}
       onClick={() => onNavigate(p.id)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <div className="list-name">{p.title}</div>
       <div className="list-area">{p.executor ?? '—'}</div>
       <StatusPill status={p.status} />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
-        {isDraft && hovered ? (
-          <button
-            className="btn-publish-row"
-            onClick={e => { e.stopPropagation(); onPublish(p.id) }}
-          >
-            Publicar
-          </button>
-        ) : (
-          <div className="list-date">{p.updatedAt}</div>
-        )}
+        <div className="list-date">{p.updatedAt}</div>
       </div>
     </div>
   )
@@ -121,7 +105,6 @@ export default function BibliotecaPage() {
   const { name } = useCurrentUser()
   const [query, setQuery] = useState('')
   const [view, setView] = useState<'cards' | 'list'>('cards')
-  const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const firstName = name.split(' ')[0] || 'você'
@@ -130,28 +113,6 @@ export default function BibliotecaPage() {
     queryKey: ['processes'],
     queryFn: () => api.get<ApiProcess[]>('/api/processes').then(list => list.map(toProcess)),
   })
-
-  const publishMutation = useMutation({
-    mutationFn: (id: string) => api.patch(`/api/processes/${id}`, { status: 'published' }),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ['processes'] })
-      const prev = queryClient.getQueryData<Process[]>(['processes'])
-      queryClient.setQueryData<Process[]>(['processes'], old =>
-        old?.map(p => p.id === id ? { ...p, status: 'published' } : p) ?? []
-      )
-      return { prev }
-    },
-    onError: (_err, _id, ctx) => {
-      queryClient.setQueryData(['processes'], ctx?.prev)
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['processes'] })
-    },
-  })
-
-  function handlePublish(id: string) {
-    publishMutation.mutate(id)
-  }
 
   const filtered = useMemo(() => {
     if (!query.trim()) return processes
@@ -176,13 +137,6 @@ export default function BibliotecaPage() {
               <div className="greeting-label">— Home</div>
               <div className="greeting-title">Olá, {firstName}.</div>
             </div>
-            <button className="btn-novo" onClick={() => navigate({ to: '/studio' })}>
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="7" y1="1" x2="7" y2="13"/>
-                <line x1="1" y1="7" x2="13" y2="7"/>
-              </svg>
-              Novo processo
-            </button>
           </div>
 
           {/* TOOLBAR */}
@@ -302,7 +256,11 @@ export default function BibliotecaPage() {
               </div>
               <div>
                 {filtered.map(p => (
-                  <ListRow key={p.id} process={p} onPublish={handlePublish} onNavigate={id => navigate({ to: '/processo/$id', params: { id } })} />
+                  <ListRow
+                    key={p.id}
+                    process={p}
+                    onNavigate={id => navigate({ to: '/processo/$id', params: { id } })}
+                  />
                 ))}
               </div>
             </div>
