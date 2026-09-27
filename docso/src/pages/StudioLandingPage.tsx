@@ -131,6 +131,15 @@ export default function StudioLandingPage() {
           </div>
           <div style={{ flex: 1 }} />
           <div className="topbar-actions">
+            <button className="btn-ghost" onClick={() => navigate({ to: '/mapeamento' })}>
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
+                <circle cx="7" cy="7" r="5.5"/>
+                <path d="M5 7.5c.4.8 1.1 1.5 2 1.5s1.6-.7 2-1.5"/>
+                <line x1="5" y1="5.5" x2="5" y2="5.5" strokeWidth="2"/>
+                <line x1="9" y1="5.5" x2="9" y2="5.5" strokeWidth="2"/>
+              </svg>
+              Mapear com IA
+            </button>
             <button className="btn-solid" onClick={() => navigate({ to: '/studio/novo' })}>
               <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={11} height={11}>
                 <line x1="7" y1="1" x2="7" y2="13"/><line x1="1" y1="7" x2="13" y2="7"/>

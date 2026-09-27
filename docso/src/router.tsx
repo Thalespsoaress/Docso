@@ -11,6 +11,8 @@ import OnboardingPage from './pages/OnboardingPage'
 import MembrosPage from './pages/MembrosPage'
 import ConvitePage from './pages/ConvitePage'
 import DocsoAdminPage from './pages/DocsoAdminPage'
+import TreinamentoPage from './pages/TreinamentoPage'
+import MapeamentoPage from './pages/MapeamentoPage'
 
 function RootLayout() {
   return <Outlet />
@@ -178,6 +180,22 @@ const setupRoute = createRoute({
   component: OnboardingPage,
 })
 
+const treinamentoRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/treinamento/$token',
+  component: TreinamentoPage,
+})
+
+const mapeamentoRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/mapeamento',
+  component: () => (
+    <AdminManagerRoute>
+      <MapeamentoPage />
+    </AdminManagerRoute>
+  ),
+})
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -192,6 +210,8 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   setupRoute,
   conviteRoute,
+  treinamentoRoute,
+  mapeamentoRoute,
   bibliotecaRoute,
   processoRoute,
   studioRoute,

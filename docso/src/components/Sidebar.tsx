@@ -127,22 +127,6 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
           </a>
         )}
 
-        <a href="#" className="nav-item" onClick={(e) => e.preventDefault()}>
-          <div className="nav-icon">
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M2 13V8m4 5V5m4 8V3m4 10V6" />
-            </svg>
-          </div>
-          Analytics
-        </a>
-
         {role === 'admin' && (
           <a
             href="#"

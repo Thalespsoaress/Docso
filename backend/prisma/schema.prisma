@@ -9,15 +9,17 @@ datasource db {
 }
 
 model Organization {
-  id                   String   @id @default(uuid())
+  id                   String    @id @default(uuid())
   name                 String
-  slug                 String   @unique
-  plan                 String   @default("trial")
-  createdAt            DateTime @default(now())
+  slug                 String    @unique
+  plan                 String    @default("trial")
+  createdAt            DateTime  @default(now())
   fantasyName          String?
-  cnpj                 String?  @unique
+  cnpj                 String?   @unique
   segment              String?
   employeeCountAtSignup String?
+  aiCallsMonth         Int       @default(0)
+  aiResetAt            DateTime?
 
   members             OrganizationMember[]
   processes           Process[]
@@ -106,6 +108,7 @@ model Process {
   steps          Json
   gateways       Json?
   metadata       Json?
+  quiz           Json?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   publishedAt    DateTime?

@@ -3,20 +3,14 @@ import { supabase } from '../lib/supabase'
 import monogramLight from '../assets/monogram-light.svg'
 import './LoginPage.css'
 
-const API_URL = import.meta.env.VITE_API_URL as string
-
 export default function LoginPage() {
   const semAcesso = useMemo(() => new URLSearchParams(window.location.search).get('erro') === 'sem-acesso', [])
-  const [modo, setModo] = useState<'entrar' | 'cadastrar'>('entrar')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [nome, setNome] = useState('')
-  const [nomeOrg, setNomeOrg] = useState('')
   const [senhaVisivel, setSenhaVisivel] = useState(false)
   const [lembrar, setLembrar] = useState(false)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
-  const [emailConfirmacao, setEmailConfirmacao] = useState(false)
 
   async function handleEntrar() {
     setErro('')
@@ -33,92 +27,11 @@ export default function LoginPage() {
     }
   }
 
-  async function handleCadastrar() {
-    setErro('')
-    if (!nome.trim()) { setErro('Informe seu nome'); return }
-    if (!nomeOrg.trim()) { setErro('Informe o nome da sua empresa'); return }
-    if (senha.length < 6) { setErro('A senha precisa ter ao menos 6 caracteres'); return }
-
-    setCarregando(true)
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password: senha,
-        options: { data: { full_name: nome.trim() } },
-      })
-
-      if (error) { setErro(error.message); return }
-
-      if (!data.session) {
-        localStorage.setItem('docso_pending_org', nomeOrg.trim())
-        setEmailConfirmacao(true)
-        return
-      }
-
-      const res = await fetch(`${API_URL}/api/auth/setup-organization`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.session.access_token}`,
-        },
-        body: JSON.stringify({ name: nomeOrg.trim() }),
-      })
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({})) as { error?: string }
-        setErro(body.error ?? 'Erro ao criar organização')
-        return
-      }
-
-      await supabase.auth.refreshSession()
-      window.location.href = '/biblioteca'
-    } finally {
-      setCarregando(false)
-    }
-  }
-
   async function handleGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/biblioteca` },
     })
-  }
-
-  function handleSubmit() {
-    if (modo === 'entrar') handleEntrar()
-    else handleCadastrar()
-  }
-
-  if (emailConfirmacao) {
-    return (
-      <div className="login-root">
-        <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" className="login-bg-svg" aria-hidden="true">
-          <path className="metro-train" style={{ animationDuration: '6s', animationDelay: '0s' }} d="M 220 -30 L 220 430 L 1300 430" fill="none" stroke="#30BCFE" strokeWidth="22" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <div className="login-bg-gradient" />
-        <div className="login-layout">
-          <div className="login-card-col">
-            <div className="right-inner">
-              <img src={monogramLight} alt="docso" style={{ height: 40, width: 'auto', display: 'block', marginBottom: 32 }} />
-              <div className="form-titulo">Confirme<br />seu email.</div>
-              <div className="form-sub" style={{ marginTop: 16 }}>
-                Enviamos um link para <strong>{email}</strong>.<br />
-                Clique no link para ativar sua conta.
-              </div>
-              <button className="btn-entrar" style={{ marginTop: 32 }} onClick={() => setEmailConfirmacao(false)}>
-                Voltar ao login
-              </button>
-            </div>
-          </div>
-          <div className="login-headline-col">
-            <div className="left-middle">
-              <div className="left-headline">Seu<br />processo<span style={{ color: '#30BCFE', fontFamily: "'DM Sans', sans-serif" }}>.</span><br />No lugar<br />certo<span style={{ color: '#39BD3D', fontFamily: "'DM Sans', sans-serif" }}>.</span></div>
-              <div className="left-sub">Documente como seu time trabalha, treine quem é novo e retenha conhecimento.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -154,30 +67,7 @@ export default function LoginPage() {
           <div className="right-inner">
             <img src={monogramLight} alt="docso" style={{ height: 40, width: 'auto', display: 'block', marginBottom: 32 }} />
 
-            <div className="form-titulo">
-              {modo === 'entrar' ? <>Bom te ver<br />de volta.</> : <>Crie sua<br />conta.</>}
-            </div>
-            <div className="form-sub">
-              {modo === 'entrar'
-                ? <><a href="#" onClick={e => { e.preventDefault(); setModo('cadastrar'); setErro('') }}>Criar conta</a></>
-                : <>Já tem conta? <a href="#" onClick={e => { e.preventDefault(); setModo('entrar'); setErro('') }}>Entrar</a></>
-              }
-            </div>
-
-            {modo === 'cadastrar' && (
-              <div className="campo">
-                <label htmlFor="nome">Nome completo</label>
-                <input
-                  type="text"
-                  id="nome"
-                  placeholder="Seu nome"
-                  autoComplete="name"
-                  value={nome}
-                  onChange={e => setNome(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-                />
-              </div>
-            )}
+            <div className="form-titulo">Bom te ver<br />de volta.</div>
 
             <div className="campo">
               <label htmlFor="email">Email</label>
@@ -188,7 +78,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                onKeyDown={e => e.key === 'Enter' && handleEntrar()}
               />
             </div>
 
@@ -199,10 +89,10 @@ export default function LoginPage() {
                   type={senhaVisivel ? 'text' : 'password'}
                   id="senha"
                   placeholder="••••••••"
-                  autoComplete={modo === 'entrar' ? 'current-password' : 'new-password'}
+                  autoComplete="current-password"
                   value={senha}
                   onChange={e => setSenha(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                  onKeyDown={e => e.key === 'Enter' && handleEntrar()}
                 />
                 <button
                   className="senha-toggle"
@@ -214,31 +104,15 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {modo === 'cadastrar' && (
-              <div className="campo">
-                <label htmlFor="nomeOrg">Nome da empresa</label>
-                <input
-                  type="text"
-                  id="nomeOrg"
-                  placeholder="Acme Ltda"
-                  value={nomeOrg}
-                  onChange={e => setNomeOrg(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-                />
-              </div>
-            )}
-
-            {modo === 'entrar' && (
-              <div className="form-opcoes">
-                <label className="checkbox-label" onClick={() => setLembrar(v => !v)}>
-                  <div className={`checkbox-custom${lembrar ? ' checked' : ''}`}>
-                    {lembrar && <span className="checkbox-check" />}
-                  </div>
-                  <span className="checkbox-texto">Lembrar de mim</span>
-                </label>
-                <a href="#" className="esqueci">Esqueci a senha</a>
-              </div>
-            )}
+            <div className="form-opcoes">
+              <label className="checkbox-label" onClick={() => setLembrar(v => !v)}>
+                <div className={`checkbox-custom${lembrar ? ' checked' : ''}`}>
+                  {lembrar && <span className="checkbox-check" />}
+                </div>
+                <span className="checkbox-texto">Lembrar de mim</span>
+              </label>
+              <a href="#" className="esqueci">Esqueci a senha</a>
+            </div>
 
             {semAcesso && !erro && (
               <div style={{ color: '#FE7451', fontSize: 13, marginBottom: 8, fontFamily: "'DM Sans', sans-serif" }}>
@@ -252,8 +126,8 @@ export default function LoginPage() {
               </div>
             )}
 
-            <button className="btn-entrar" type="button" onClick={handleSubmit} disabled={carregando}>
-              {carregando ? 'Aguarde...' : modo === 'entrar' ? 'Entrar' : 'Criar conta'}
+            <button className="btn-entrar" type="button" onClick={handleEntrar} disabled={carregando}>
+              {carregando ? 'Aguarde...' : 'Entrar'}
             </button>
 
             <div className="divisor">

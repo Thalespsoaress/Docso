@@ -46,6 +46,8 @@ processes.post('/', async (c) => {
     executor?: string
     frequency?: string
     steps?: unknown[]
+    metadata?: object
+    quiz?: unknown[]
   }>()
 
   if (!body.title) {
@@ -61,6 +63,8 @@ processes.post('/', async (c) => {
       executor: body.executor,
       frequency: body.frequency,
       steps: (body.steps ?? []) as object[],
+      ...(body.metadata !== undefined && { metadata: body.metadata }),
+      ...(body.quiz !== undefined && { quiz: body.quiz as object[] }),
     },
   })
 
@@ -98,6 +102,8 @@ processes.patch('/:id', async (c) => {
     steps?: unknown[]
     gateways?: unknown[]
     status?: string
+    metadata?: object
+    quiz?: unknown[]
   }>()
 
   const existing = await prisma.process.findFirst({ where: { id, organizationId } })
@@ -123,6 +129,8 @@ processes.patch('/:id', async (c) => {
       ...(body.steps !== undefined && { steps: body.steps as object[] }),
       ...(body.gateways !== undefined && { gateways: body.gateways as object[] }),
       ...(body.status !== undefined && { status: body.status }),
+      ...(body.metadata !== undefined && { metadata: body.metadata }),
+      ...(body.quiz !== undefined && { quiz: body.quiz as object[] }),
       ...(publishedAt && { publishedAt }),
     },
   })

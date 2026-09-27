@@ -3,6 +3,7 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import Sidebar from '../components/Sidebar'
+import FlowView, { type Step as FlowStep, type Gateway as FlowGateway } from '../components/FlowView'
 
 type Lane      = { id: string; title: string }
 type StudioStep = { id: string; title: string; description: string; laneId: string }
@@ -18,12 +19,27 @@ type StudioGateway    = {
   branches: StudioBranch[]
 }
 
+type Analise = {
+  gargalos: string[]
+  riscos: string[]
+  melhorias: string[]
+}
+
+type QuizQuestion = {
+  id: string
+  question: string
+  options: [string, string, string, string]
+  correct: 0 | 1 | 2 | 3
+}
+
 type ExistingProcess = {
   id: string
   title: string
   objective: string | null
   executor: string | null
   frequency: string | null
+  metadata?: { analise?: Analise } | null
+  quiz?: QuizQuestion[] | null
   steps: { order: number; title: string; description?: string; sectionTitle?: string; sectionIndex?: number }[]
   gateways?: {
     id: string
@@ -164,6 +180,13 @@ export default function StudioPage() {
   const [gateways, setGateways] = useState<StudioGateway[]>([])
   const [gwColorPicker, setGwColorPicker] = useState<{ gwId: string; branchId: string } | null>(null)
 
+  const [analise, setAnalise] = useState<Analise | null>(null)
+  const [analiseOpen, setAnaliseOpen] = useState(true)
+  const [quiz, setQuiz] = useState<QuizQuestion[]>([])
+  const [quizGenerating, setQuizGenerating] = useState(false)
+
+  const [tab, setTab] = useState<'edit' | 'flow'>('edit')
+
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
   const [savedAt, setSavedAt]       = useState<Date | null>(null)
   const [processId, setProcessId]   = useState<string | null>(editId ?? null)
@@ -205,6 +228,8 @@ export default function StudioPage() {
     })
     setSteps(loadedSteps)
     setGateways(loadGateways(existingProcess.gateways, loadedSteps, sortedLanes))
+    if (existingProcess.metadata?.analise) setAnalise(existingProcess.metadata.analise)
+    if (Array.isArray(existingProcess.quiz)) setQuiz(existingProcess.quiz as QuizQuestion[])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingProcess])
 
@@ -220,7 +245,9 @@ export default function StudioPage() {
     steps:     flattenSteps(steps, lanes),
     gateways:  flattenGateways(gateways, steps, lanes),
     status,
-  }), [title, objective, frequency, steps, lanes, gateways])
+    ...(analise ? { metadata: { analise } } : {}),
+    quiz: quiz.length > 0 ? quiz : [],
+  }), [title, objective, frequency, steps, lanes, gateways, analise, quiz])
 
   const doSave = useCallback(async (status = 'draft') => {
     if (isSavingRef.current) return
@@ -405,6 +432,9 @@ export default function StudioPage() {
 
   const breadcrumbTitle = title.trim() || 'Novo processo'
 
+  const flowSteps: FlowStep[] = flattenSteps(steps, lanes)
+  const flowGateways: FlowGateway[] = flattenGateways(gateways, steps, lanes)
+
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }} onClick={() => setGwColorPicker(null)}>
       <Sidebar onNavigate={tryLeave} />
@@ -440,6 +470,22 @@ export default function StudioPage() {
             )}
             {!deleteConfirmOpen && (
               <>
+                <button className="btn-ghost" onClick={() => {
+                  sessionStorage.setItem('mapeamento-processo', JSON.stringify({
+                    processId: processId ?? editId ?? null,
+                    title: title.trim() || 'Sem título',
+                    objective: objective.trim() || null,
+                    executor: lanes.map(l => l.title).filter(Boolean).join(', ') || null,
+                    frequency: frequency.trim() || null,
+                    steps: flattenSteps(steps, lanes),
+                  }))
+                  navigate({ to: '/mapeamento' })
+                }}>
+                  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
+                    <path d="M2 10V7a5 5 0 0 1 10 0v3"/><path d="M2 10h10"/><circle cx="7" cy="13" r="1"/>
+                  </svg>
+                  Refinar com IA
+                </button>
                 <button className="btn-ghost" onClick={handleDiscard}>Descartar</button>
                 <button className="btn-solid" onClick={handlePublish}>Publicar</button>
               </>
@@ -447,8 +493,30 @@ export default function StudioPage() {
           </div>
         </div>
 
+        {/* TABS */}
+        <div className="tabs-bar">
+          <button className={`tab-btn${tab === 'edit' ? ' active' : ''}`} onClick={() => setTab('edit')}>
+            <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9.5V11h1.5l5-5-1.5-1.5-5 5zM10.5 3.5l-1-1a.7.7 0 0 0-1 0l-.9.9 1.5 1.5.9-.9a.7.7 0 0 0 0-1z"/></svg>
+            Editar
+          </button>
+          <button className={`tab-btn${tab === 'flow' ? ' active' : ''}`} onClick={() => setTab('flow')}>
+            <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="1" width="4" height="3" rx="1"/><rect x="8" y="5" width="4" height="3" rx="1"/><rect x="1" y="9" width="4" height="3" rx="1"/><path d="M5 2.5h2a1 1 0 0 1 1 1v1"/><path d="M5 10.5h2a1 1 0 0 0 1-1v-1"/></svg>
+            Fluxograma
+          </button>
+        </div>
+
+        {/* VIEW FLUXOGRAMA */}
+        {tab === 'flow' && flowSteps.length > 0 && (
+          <FlowView steps={flowSteps} gateways={flowGateways} processId={processId ?? 'draft'} />
+        )}
+        {tab === 'flow' && flowSteps.length === 0 && (
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--cinza-texto)', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>
+            Adicione etapas para visualizar o fluxograma.
+          </div>
+        )}
+
         {/* EDITOR */}
-        <div className="editor-scroll">
+        {tab === 'edit' && <div className="editor-scroll">
           <div className="editor-inner">
 
             {/* INFO CARD */}
@@ -753,8 +821,120 @@ export default function StudioPage() {
               </div>
             </div>
 
+            {/* QUIZ */}
+            <div className="card">
+              <div className="card-header" style={{ borderBottom: quiz.length > 0 ? '1px solid var(--cinza-sup)' : 'none' }}>
+                <div className="card-section-title">Quiz</div>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'var(--cinza-texto)' }}>
+                  Perguntas para validar o entendimento — mínimo 70% para concluir
+                </span>
+              </div>
+
+              {quiz.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {quiz.map((q, qi) => (
+                    <QuizQuestionEditor
+                      key={q.id}
+                      question={q}
+                      index={qi}
+                      onChange={updated => setQuiz(prev => prev.map((x, i) => i === qi ? updated : x))}
+                      onRemove={() => setQuiz(prev => prev.filter((_, i) => i !== qi))}
+                    />
+                  ))}
+                </div>
+              )}
+
+              <div style={{ padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button
+                  onClick={() => setQuiz(prev => [...prev, {
+                    id: generateId(),
+                    question: '',
+                    options: ['', '', '', ''],
+                    correct: 0,
+                  }])}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 0.5, color: 'var(--cinza-texto)', padding: 0 }}
+                >
+                  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={10} height={10}>
+                    <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>
+                  </svg>
+                  Adicionar pergunta
+                </button>
+
+                {processId && steps.length > 0 && (
+                  <button
+                    onClick={async () => {
+                      setQuizGenerating(true)
+                      try {
+                        const res = await api.post<{ questions: QuizQuestion[] }>('/api/ai/generate-quiz', {
+                          processId,
+                          count: 4,
+                        })
+                        setQuiz(res.questions)
+                      } finally {
+                        setQuizGenerating(false)
+                      }
+                    }}
+                    disabled={quizGenerating}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: quizGenerating ? 'default' : 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 0.5, color: quizGenerating ? 'var(--cinza-fraco)' : 'var(--azul)', padding: 0 }}
+                  >
+                    {quizGenerating ? (
+                      <>
+                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={10} height={10} style={{ animation: 'spin 1s linear infinite' }}>
+                          <path d="M7 2a5 5 0 1 1-3.5 1.5"/>
+                        </svg>
+                        Gerando...
+                      </>
+                    ) : (
+                      <>
+                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width={11} height={11}>
+                          <path d="M7 1l1.5 3.5L12 6 8.5 7.5 7 11 5.5 7.5 2 6l3.5-1.5z"/>
+                        </svg>
+                        Gerar com IA
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* ANÁLISE DA IA */}
+            <div className="card">
+              <div
+                className="card-header"
+                style={{ borderBottom: analiseOpen ? '1px solid var(--cinza-sup)' : 'none', cursor: 'pointer', userSelect: 'none' }}
+                onClick={() => setAnaliseOpen(p => !p)}
+              >
+                <div className="card-section-title">Análise da IA</div>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, background: 'var(--cinza-sup)', color: 'var(--cinza-texto)', padding: '2px 8px', borderRadius: 99 }}>
+                  sugestões
+                </span>
+                <span style={{ marginLeft: 'auto', fontFamily: "'DM Mono', monospace", fontSize: 14, color: 'var(--cinza-texto)' }}>
+                  {analiseOpen ? '−' : '+'}
+                </span>
+              </div>
+              {analiseOpen && (
+                <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {analise ? (
+                    <>
+                      <StudioAnaliseGroup label="Gargalos" items={analise.gargalos} color="#FE7451" />
+                      <StudioAnaliseGroup label="Riscos" items={analise.riscos} color="#FADB02" />
+                      <StudioAnaliseGroup label="Melhorias" items={analise.melhorias} color="#30BCFE" />
+                    </>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '4px 0' }}>
+                      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--cinza-texto)', lineHeight: 1.5 }}>
+                        Nenhuma análise ainda. Clique em{' '}
+                        <strong style={{ color: 'var(--preto)' }}>Refinar com IA</strong>{' '}
+                        para gerar sugestões baseadas neste processo.
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
-        </div>
+        </div>}
       </div>
 
       {showExitModal && (
@@ -769,6 +949,93 @@ export default function StudioPage() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function QuizQuestionEditor({
+  question: q, index, onChange, onRemove,
+}: {
+  question: QuizQuestion
+  index: number
+  onChange: (updated: QuizQuestion) => void
+  onRemove: () => void
+}) {
+  return (
+    <div style={{ padding: '16px 24px', borderTop: '1px solid var(--cinza-sup)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: '#A0A0A0', paddingTop: 11, flexShrink: 0 }}>
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <input
+          className="field-input"
+          style={{ flex: 1, fontSize: 13 }}
+          placeholder="Pergunta..."
+          value={q.question}
+          onChange={e => onChange({ ...q, question: e.target.value })}
+        />
+        <button
+          onClick={onRemove}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C0C0C0', fontSize: 18, lineHeight: 1, padding: '4px', borderRadius: 4, flexShrink: 0 }}
+        >×</button>
+      </div>
+      <div style={{ paddingLeft: 26, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {q.options.map((opt, oi) => (
+          <div key={oi} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => onChange({ ...q, correct: oi as 0 | 1 | 2 | 3 })}
+              style={{
+                width: 16, height: 16, borderRadius: '50%', flexShrink: 0, cursor: 'pointer',
+                border: `2px solid ${q.correct === oi ? '#30BCFE' : '#D0D0D0'}`,
+                background: q.correct === oi ? '#30BCFE' : '#fff',
+                transition: 'all 0.12s',
+              }}
+              title="Marcar como correta"
+            />
+            <input
+              className="field-input"
+              style={{ flex: 1, fontSize: 12.5 }}
+              placeholder={`Opção ${oi + 1}${oi === 0 ? ' — marque o círculo para indicar a correta' : ''}`}
+              value={opt}
+              onChange={e => {
+                const opts = [...q.options] as [string, string, string, string]
+                opts[oi] = e.target.value
+                onChange({ ...q, options: opts })
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function StudioAnaliseGroup({ label, items, color }: { label: string; items: string[]; color: string }) {
+  if (items.length === 0) return null
+  return (
+    <div>
+      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)', marginBottom: 6 }}>
+        {label}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {items.map((item, i) => (
+          <div
+            key={i}
+            style={{
+              padding: '8px 12px',
+              background: `${color}0D`,
+              borderLeft: `2px solid ${color}`,
+              borderRadius: '0 6px 6px 0',
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 12.5,
+              color: '#444',
+              lineHeight: 1.5,
+            }}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

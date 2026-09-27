@@ -32,7 +32,6 @@ export default function ConvitePage() {
         if (!r.ok) { setMode('invalid'); return }
         const data = await r.json() as InviteInfo
         setInvite(data)
-        setEmail(data.email)
         setMode('choose')
       })
       .catch(() => setMode('invalid'))
@@ -63,7 +62,7 @@ export default function ConvitePage() {
     setCarregando(true)
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: invite!.email,
+        email,
         password: senha,
         options: { data: { full_name: nome.trim() } },
       })
