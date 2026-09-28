@@ -438,7 +438,7 @@ export default function MapeamentoPage() {
                 </svg>
               </button>
             </div>
-            <div style={{ maxWidth: 640, margin: '6px auto 0', fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: '#C0C0C0' }}>
+            <div style={{ maxWidth: 640, margin: '6px auto 0', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
               Enter para enviar · Shift+Enter para nova linha
             </div>
           </div>
@@ -490,14 +490,14 @@ function ProcessoCard({
         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14, color: '#0A0A0A', letterSpacing: '-0.3px' }}>
           Processo mapeado
         </span>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: '#A0A0A0', background: '#F0F0F0', padding: '2px 8px', borderRadius: 99 }}>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', background: '#F0F0F0', padding: '2px 8px', borderRadius: 99 }}>
           revise antes de criar
         </span>
       </div>
 
       {/* Título editável */}
       <div style={{ padding: '14px 20px', borderBottom: '1px solid #F0F0F0' }}>
-        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: '#A0A0A0', textTransform: 'uppercase', marginBottom: 6 }}>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 6 }}>
           Nome do processo
         </div>
         <input
@@ -512,7 +512,7 @@ function ProcessoCard({
           }}
         />
         {processo.executor && (
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 1, color: '#A0A0A0', marginTop: 8 }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginTop: 8 }}>
             {processo.executor}{processo.frequency ? ` · ${processo.frequency}` : ''}
           </div>
         )}
@@ -520,7 +520,7 @@ function ProcessoCard({
 
       {/* Etapas editáveis */}
       <div style={{ borderBottom: '1px solid #F0F0F0' }}>
-        <div style={{ padding: '10px 20px 6px', fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: '#A0A0A0', textTransform: 'uppercase' }}>
+        <div style={{ padding: '10px 20px 6px', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
           Etapas — {processo.steps.length}
         </div>
         {processo.steps.map(step => {
@@ -535,12 +535,12 @@ function ProcessoCard({
                 }}
                 onClick={() => setExpandedStep(isExpanded ? null : step.order)}
               >
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: '#C0C0C0', flexShrink: 0, width: 18 }}>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', flexShrink: 0, width: 18 }}>
                   {String(step.order).padStart(2, '0')}
                 </span>
                 {step.sectionTitle && (
                   <span style={{
-                    fontFamily: "'DM Mono', monospace", fontSize: 8, letterSpacing: 1,
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12,
                     color: '#fff', background: '#0A0A0A', padding: '2px 6px', borderRadius: 4, flexShrink: 0,
                   }}>
                     {step.sectionTitle}
@@ -585,10 +585,10 @@ function ProcessoCard({
       {hasAnalise && (
         <div style={{ padding: '14px 20px', borderBottom: '1px solid #F0F0F0' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: '#A0A0A0', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
               Análise da IA
             </span>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, background: '#F0F0F0', color: '#888', padding: '2px 7px', borderRadius: 99 }}>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, background: '#F0F0F0', color: '#888', padding: '2px 7px', borderRadius: 99 }}>
               sugestões
             </span>
           </div>
@@ -672,7 +672,7 @@ function AnaliseInicialCard({ analise }: { analise: AnaliseInicial }) {
         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 14, color: '#0A0A0A', letterSpacing: '-0.3px' }}>
           Como o processo está hoje
         </span>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: '#A0A0A0', background: '#F0F0F0', padding: '2px 8px', borderRadius: 99 }}>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', background: '#F0F0F0', padding: '2px 8px', borderRadius: 99 }}>
           leitura inicial
         </span>
       </div>
@@ -695,7 +695,7 @@ function AnaliseGroup({ label, items, color }: { label: string; items: string[];
   if (items.length === 0) return null
   return (
     <div>
-      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: '#A0A0A0', marginBottom: 6 }}>
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 6 }}>
         {label}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

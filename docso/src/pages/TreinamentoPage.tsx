@@ -151,7 +151,7 @@ export default function TreinamentoPage() {
           )}
 
           <div style={styles.processHeader}>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, color: '#A0A0A0', textTransform: 'uppercase', marginBottom: 12 }}>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 12 }}>
               — Treinamento
             </div>
             <h1 style={styles.processTitle}>{assignment.process.title}</h1>
@@ -172,7 +172,7 @@ export default function TreinamentoPage() {
             <div style={styles.progressBlock}>
               <div style={styles.progressLabel}>
                 <span style={{ color: '#666', fontFamily: "'DM Sans', sans-serif", fontSize: 13 }}>Progresso</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: '#0A0A0A' }}>{progress}%</span>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#0A0A0A' }}>{progress}%</span>
               </div>
               <div style={styles.progressBar}>
                 <div style={{ ...styles.progressFill, width: `${progress}%` }} />
@@ -190,7 +190,7 @@ export default function TreinamentoPage() {
 
           {steps.length > 0 && (
             <div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, color: '#A0A0A0', textTransform: 'uppercase', marginBottom: 16 }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 16 }}>
                 — Passos
               </div>
               <div style={styles.stepsList}>
@@ -212,7 +212,7 @@ export default function TreinamentoPage() {
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14, color: done ? '#A0A0A0' : '#0A0A0A', textDecoration: done ? 'line-through' : 'none', marginBottom: step.description ? 6 : 0, lineHeight: 1.4 }}>
-                          <span style={{ color: '#C8C8C8', fontFamily: "'DM Mono', monospace", fontSize: 11, marginRight: 10 }}>
+                          <span style={{ color: '#A0A0A0', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, marginRight: 10 }}>
                             {String(step.order).padStart(2, '0')}
                           </span>
                           {step.title}
@@ -236,7 +236,7 @@ export default function TreinamentoPage() {
           {/* Quiz — aparece após todas as etapas concluídas */}
           {hasQuiz && allStepsDone && hasStarted && !isCompleted && (
             <div style={{ marginTop: 40 }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, color: '#A0A0A0', textTransform: 'uppercase', marginBottom: 16 }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 16 }}>
                 — Quiz
               </div>
 
@@ -255,7 +255,7 @@ export default function TreinamentoPage() {
                   return (
                     <div key={q.id} style={{ background: '#fff', border: '1px solid #E4E4E4', borderRadius: 12, padding: '20px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
                       <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14, color: '#0A0A0A', lineHeight: 1.4 }}>
-                        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: '#C0C0C0', marginRight: 8 }}>{String(qi + 1).padStart(2, '0')}</span>
+                        <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginRight: 8 }}>{String(qi + 1).padStart(2, '0')}</span>
                         {q.question}
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -381,7 +381,7 @@ const styles = {
   processTitle: { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: '-0.5px', color: '#0A0A0A', margin: '0 0 12px 0', lineHeight: 1.2 },
   processObjective: { fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#666', lineHeight: 1.7, margin: '0 0 16px 0' },
   processMeta: { display: 'flex', gap: 8, flexWrap: 'wrap' as const },
-  metaTag: { fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 0.5, color: '#666', background: '#F0F0F0', padding: '3px 10px', borderRadius: 99 },
+  metaTag: { fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, color: '#666', background: '#F0F0F0', padding: '3px 10px', borderRadius: 99 },
   progressBlock: { marginBottom: 32 },
   progressLabel: { display: 'flex', justifyContent: 'space-between', marginBottom: 8 },
   progressBar: { height: 4, background: '#E4E4E4', borderRadius: 2, overflow: 'hidden' },

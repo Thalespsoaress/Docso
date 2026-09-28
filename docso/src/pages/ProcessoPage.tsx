@@ -143,7 +143,7 @@ function AtribuirModal({
                   {m.user.email}
                 </div>
               </div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 1, color: '#C0C0C0', textTransform: 'uppercase' }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
                 {m.role === 'admin' ? 'Admin' : m.role === 'manager' ? 'Gerente' : 'Membro'}
               </div>
             </div>
@@ -213,11 +213,11 @@ function AnaliseSection({ analise }: { analise: Analise }) {
           cursor: 'pointer', padding: 0, marginBottom: open ? 16 : 0,
         }}
       >
-        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)' }}>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>
           — Análise da IA
         </div>
         <div style={{
-          fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1,
+          fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12,
           background: '#F0F0F0', color: '#888', padding: '2px 7px', borderRadius: 99,
         }}>
           sugestões
@@ -234,7 +234,7 @@ function AnaliseSection({ analise }: { analise: Analise }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {analise.gargalos.length > 0 && (
             <div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: '#A0A0A0', marginBottom: 6 }}>Gargalos</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 6 }}>Gargalos</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {analise.gargalos.map((t, i) => <AnaliseItem key={i} text={t} color="#FE7451" />)}
               </div>
@@ -242,7 +242,7 @@ function AnaliseSection({ analise }: { analise: Analise }) {
           )}
           {analise.riscos.length > 0 && (
             <div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: '#A0A0A0', marginBottom: 6 }}>Riscos</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 6 }}>Riscos</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {analise.riscos.map((t, i) => <AnaliseItem key={i} text={t} color="#FADB02" />)}
               </div>
@@ -250,7 +250,7 @@ function AnaliseSection({ analise }: { analise: Analise }) {
           )}
           {analise.melhorias.length > 0 && (
             <div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: '#A0A0A0', marginBottom: 6 }}>Melhorias sugeridas</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 6 }}>Melhorias sugeridas</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {analise.melhorias.map((t, i) => <AnaliseItem key={i} text={t} color="#30BCFE" />)}
               </div>

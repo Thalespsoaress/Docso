@@ -575,7 +575,7 @@ export default function StudioPage() {
               <div style={{ padding: '12px 24px' }}>
                 <button
                   onClick={addLane}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 0.5, color: 'var(--cinza-texto)', padding: 0 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', padding: 0 }}
                 >
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={10} height={10}>
                     <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>
@@ -690,7 +690,7 @@ export default function StudioPage() {
                                 </button>
                               ))}
                             </div>
-                            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)' }}>
+                            <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>
                               {GW_TYPE_LABELS[stepGateway.type]}
                             </span>
                             <input
@@ -721,7 +721,7 @@ export default function StudioPage() {
                                         onClick={e => e.stopPropagation()}
                                         style={{ position: 'absolute', top: 26, left: 0, zIndex: 20, background: '#fff', border: '1.5px solid var(--cinza-borda)', borderRadius: 10, padding: '10px 12px', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', gap: 8 }}
                                       >
-                                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 8, letterSpacing: 2, color: 'var(--cinza-texto)', textTransform: 'uppercase' }}>Cor do caminho</div>
+                                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>Cor do caminho</div>
                                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
                                           {GW_PALETTE.map(color => (
                                             <button
@@ -796,7 +796,7 @@ export default function StudioPage() {
 
                           <button
                             onClick={() => addBranch(stepGateway.id)}
-                            style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: '1.5px dashed var(--cinza-borda)', borderRadius: 6, cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--cinza-texto)', padding: '5px 12px', letterSpacing: 0.5 }}
+                            style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: '1.5px dashed var(--cinza-borda)', borderRadius: 6, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', padding: '5px 12px'}}
                           >
                             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={10} height={10}>
                               <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>
@@ -849,7 +849,7 @@ export default function StudioPage() {
                     options: ['', '', '', ''],
                     correct: 0,
                   }])}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 0.5, color: 'var(--cinza-texto)', padding: 0 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', padding: 0 }}
                 >
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={10} height={10}>
                     <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>
@@ -872,7 +872,7 @@ export default function StudioPage() {
                       }
                     }}
                     disabled={quizGenerating}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: quizGenerating ? 'default' : 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 0.5, color: quizGenerating ? 'var(--cinza-fraco)' : 'var(--azul)', padding: 0 }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: quizGenerating ? 'default' : 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: quizGenerating ? 'var(--cinza-fraco)' : 'var(--azul)', padding: 0 }}
                   >
                     {quizGenerating ? (
                       <>
@@ -902,10 +902,10 @@ export default function StudioPage() {
                 onClick={() => setAnaliseOpen(p => !p)}
               >
                 <div className="card-section-title">Análise da IA</div>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, background: 'var(--cinza-sup)', color: 'var(--cinza-texto)', padding: '2px 8px', borderRadius: 99 }}>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, background: 'var(--cinza-sup)', color: 'var(--cinza-texto)', padding: '2px 8px', borderRadius: 99 }}>
                   sugestões
                 </span>
-                <span style={{ marginLeft: 'auto', fontFamily: "'DM Mono', monospace", fontSize: 14, color: 'var(--cinza-texto)' }}>
+                <span style={{ marginLeft: 'auto', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 14, color: 'var(--cinza-texto)' }}>
                   {analiseOpen ? '−' : '+'}
                 </span>
               </div>
@@ -961,7 +961,7 @@ function QuizQuestionEditor({
   return (
     <div style={{ padding: '16px 24px', borderTop: '1px solid var(--cinza-sup)', display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: '#A0A0A0', paddingTop: 11, flexShrink: 0 }}>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', paddingTop: 11, flexShrink: 0 }}>
           {String(index + 1).padStart(2, '0')}
         </span>
         <input
@@ -1011,7 +1011,7 @@ function StudioAnaliseGroup({ label, items, color }: { label: string; items: str
   if (items.length === 0) return null
   return (
     <div>
-      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)', marginBottom: 6 }}>
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', marginBottom: 6 }}>
         {label}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

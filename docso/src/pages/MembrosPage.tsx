@@ -122,8 +122,8 @@ export default function MembrosPage() {
                     <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--cinza-texto)', marginTop: 2 }}>{m.user.email}</div>
                   </div>
                   <div style={{
-                    fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1,
-                    color: 'var(--cinza-texto)', textTransform: 'uppercase',
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5,
+                    color: 'var(--cinza-texto)',
                   }}>
                     {ROLE_LABEL[m.role] ?? m.role}
                   </div>

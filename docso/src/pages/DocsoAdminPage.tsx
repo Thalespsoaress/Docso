@@ -109,7 +109,7 @@ export default function DocsoAdminPage() {
                   style={{
                     flex: 1, minWidth: 200, padding: '9px 13px',
                     border: '1px solid var(--cinza-borda)', borderRadius: 8,
-                    fontFamily: "'DM Mono', monospace", fontSize: 12,
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12,
                     background: 'var(--cinza-sup)', color: 'var(--preto)', outline: 'none',
                   }}
                 />
@@ -132,7 +132,7 @@ export default function DocsoAdminPage() {
 
         {/* Lista de organizações */}
         <div>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1, color: 'var(--cinza-texto)', textTransform: 'uppercase', marginBottom: 12 }}>— Organizações</div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, color: 'var(--cinza-texto)', marginBottom: 12 }}>— Organizações</div>
 
           {isLoading ? (
             <div style={{ color: 'var(--cinza-texto)', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>Carregando...</div>
@@ -158,16 +158,14 @@ export default function DocsoAdminPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <span style={{
-                      fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1,
-                      textTransform: 'uppercase', padding: '3px 8px', borderRadius: 4,
+                      fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, padding: '3px 8px', borderRadius: 4,
                       background: org.plan === 'active' ? '#e8f9e8' : 'var(--cinza-sup)',
                       color: org.plan === 'active' ? 'var(--verde-texto)' : 'var(--cinza-medio)',
                     }}>
                       {PLAN_LABEL[org.plan] ?? org.plan}
                     </span>
                     <span style={{
-                      fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1,
-                      textTransform: 'uppercase', padding: '3px 8px', borderRadius: 4,
+                      fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, padding: '3px 8px', borderRadius: 4,
                       background: org.onboardingDone ? '#e8f9e8' : '#fff8e0',
                       color: org.onboardingDone ? 'var(--verde-texto)' : 'var(--amarelo-texto)',
                     }}>

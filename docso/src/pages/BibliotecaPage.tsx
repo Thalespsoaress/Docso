@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { api } from '../lib/api'
 import { useCurrentUser } from '../hooks/useCurrentUser'
 import Sidebar from '../components/Sidebar'
+import BrandLoader from '../components/BrandLoader'
 
 type Status = 'published' | 'draft' | 'archived'
 
@@ -81,21 +82,6 @@ function ListRow({
       <StatusPill status={p.status} />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
         <div className="list-date">{p.updatedAt}</div>
-      </div>
-    </div>
-  )
-}
-
-function SkeletonCard() {
-  return (
-    <div className="skeleton-card">
-      <div className="skeleton-card-header">
-        <div className="skeleton-line" style={{ height: 16, width: '60%' }} />
-        <div className="skeleton-line" style={{ height: 20, width: 72, borderRadius: 99 }} />
-      </div>
-      <div className="skeleton-card-footer">
-        <div className="skeleton-line" style={{ height: 20, width: 64, borderRadius: 4 }} />
-        <div className="skeleton-line" style={{ height: 12, width: 80 }} />
       </div>
     </div>
   )
@@ -194,11 +180,8 @@ export default function BibliotecaPage() {
             <div className="section-label">{sectionLabel}</div>
           )}
 
-          {/* SKELETON LOADING */}
           {isLoading && (
-            <div className="cards-grid">
-              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
-            </div>
+            <div style={{ height: 320 }}><BrandLoader inline /></div>
           )}
 
           {/* ESTADO VAZIO — sem resultados */}
@@ -233,7 +216,7 @@ export default function BibliotecaPage() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       {p.stepsCount > 0 && (
-                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: 'var(--cinza-texto)' }}>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'var(--cinza-texto)', whiteSpace: 'nowrap' }}>
                           {p.stepsCount} etapa{p.stepsCount !== 1 ? 's' : ''}
                         </div>
                       )}

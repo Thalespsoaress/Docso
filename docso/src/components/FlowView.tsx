@@ -438,10 +438,8 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
                 }}>
                   <span style={{
                     transform: 'rotate(-90deg)',
-                    fontFamily: "'DM Mono', monospace",
-                    fontSize: 9,
-                    letterSpacing: 2,
-                    textTransform: 'uppercase',
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
+                    fontSize: 12,
                     color: '#B0B0B0',
                     whiteSpace: 'nowrap',
                     maxWidth: h - 20,
@@ -560,7 +558,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
               <polygon points="2,2 12,7 2,12" fill="#0A0A0A" />
             </svg>
           </div>
-          <div style={{ textAlign: 'center', fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1.5, color: '#B0B0B0', marginTop: 8, pointerEvents: 'none' }}>INÍCIO</div>
+          <div style={{ textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginTop: 8, pointerEvents: 'none' }}>Início</div>
         </div>
 
         {/* Cards de etapa — fluxo principal */}
@@ -594,7 +592,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
               <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, color: '#0A0A0A', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } as CSSProperties}>
                 {s.title}
               </div>
-              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: sel ? '#30BCFE' : '#C8C8C8', letterSpacing: 0.5, pointerEvents: 'none' }}>
+              <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: sel ? '#30BCFE' : '#A0A0A0', pointerEvents: 'none' }}>
                 {String(i + 1).padStart(2, '0')}
               </span>
             </div>
@@ -647,7 +645,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {gw.branches.map(branch => (
                           <div key={branch.id} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 0.5, color: 'var(--cinza-texto)', flexShrink: 0 }}>
+                            <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', flexShrink: 0 }}>
                               {branch.label}
                             </span>
                             <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#444', lineHeight: 1.4 }}>
@@ -693,7 +691,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
                       <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, color: '#0A0A0A', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } as CSSProperties}>
                         {bs.title}
                       </div>
-                      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: sel ? '#30BCFE' : '#C8C8C8', letterSpacing: 0.5, pointerEvents: 'none' }}>
+                      <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: sel ? '#30BCFE' : '#A0A0A0', pointerEvents: 'none' }}>
                         {String(bsi + 1).padStart(2, '0')}
                       </span>
                     </div>
@@ -709,7 +707,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
           <div style={{ width: EVT_R * 2, height: EVT_R * 2, borderRadius: '50%', background: '#30BCFE', boxShadow: '0 2px 8px rgba(48,188,254,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ width: 14, height: 14, borderRadius: 2, background: '#0A0A0A', pointerEvents: 'none' }} />
           </div>
-          <div style={{ textAlign: 'center', fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1.5, color: '#B0B0B0', marginTop: 8, pointerEvents: 'none' }}>FIM</div>
+          <div style={{ textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginTop: 8, pointerEvents: 'none' }}>Fim</div>
         </div>
       </div>
 
@@ -717,7 +715,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
       <div className="flow-controls" style={{ position: 'absolute', bottom: 28, left: 28, display: 'flex', alignItems: 'center', background: '#fff', border: '1.5px solid var(--cinza-borda)', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', zIndex: 5 }}>
         <button onClick={() => applyTransform(Math.min(3, stateRef.current.scale * 1.15), stateRef.current.tx, stateRef.current.ty)} style={{ width: 36, height: 36, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: '#666' }}>+</button>
         <div style={{ width: 1, height: 22, background: 'var(--cinza-borda)' }} />
-        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--cinza-texto)', padding: '0 12px', minWidth: 52, textAlign: 'center' }}>{Math.round(scale * 100)}%</div>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', padding: '0 12px', minWidth: 52, textAlign: 'center' }}>{Math.round(scale * 100)}%</div>
         <div style={{ width: 1, height: 22, background: 'var(--cinza-borda)' }} />
         <button onClick={() => applyTransform(Math.max(0.2, stateRef.current.scale * 0.87), stateRef.current.tx, stateRef.current.ty)} style={{ width: 36, height: 36, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: '#666' }}>−</button>
       </div>
@@ -731,7 +729,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
           posRef.current = l
           setTimeout(() => doFit(drawerOpenRef.current), 0)
         }}
-        style={{ position: 'absolute', bottom: 28, left: 168, height: 36, background: '#fff', border: '1.5px solid var(--cinza-borda)', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)', zIndex: 5, padding: '0 14px', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--cinza-texto)', letterSpacing: 0.5 }}
+        style={{ position: 'absolute', bottom: 28, left: 168, height: 36, background: '#fff', border: '1.5px solid var(--cinza-borda)', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)', zIndex: 5, padding: '0 14px', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)'}}
       >
         Resetar layout
       </button>
@@ -740,7 +738,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
       {selectedDetail && (
         <div className="flow-drawer" style={{ position: 'absolute', top: 0, right: 0, width: 296, height: '100%', background: '#fff', borderLeft: '1px solid var(--cinza-borda)', padding: '36px 28px', display: 'flex', flexDirection: 'column', gap: 20, zIndex: 10, overflowY: 'auto', boxShadow: '-4px 0 24px rgba(0,0,0,0.06)' }}>
           <button onClick={() => setSelectedDetail(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--cinza-texto)', fontSize: 20, lineHeight: 1, padding: '4px 8px', borderRadius: 5 }}>×</button>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--cinza-texto)' }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>
             {selectedDetail.branchLabel ? `— ${selectedDetail.branchLabel}` : `— Etapa ${String(steps.findIndex(s => s.order === selectedDetail.order) + 1).padStart(2, '0')}`}
           </div>
           <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: 17, letterSpacing: -0.5, color: 'var(--preto)', lineHeight: 1.25 }}>{selectedDetail.title}</div>
@@ -748,7 +746,7 @@ export default function FlowView({ steps, gateways, processId }: { steps: Step[]
             <>
               <div style={{ height: 1, background: 'var(--cinza-borda)' }} />
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)' }}>Descrição</div>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>Descrição</div>
                 <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#444', lineHeight: 1.6 }}>{selectedDetail.description}</div>
               </div>
             </>

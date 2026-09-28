@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { api } from '../lib/api'
 import Sidebar from '../components/Sidebar'
+import BrandLoader from '../components/BrandLoader'
 
 type Status = 'published' | 'draft' | 'archived'
 
@@ -30,10 +31,10 @@ const STATUS_LABEL: Record<Status, string> = {
   archived: 'Desatualizado',
 }
 
-const STATUS_DOT: Record<Status, string> = {
-  published: '#39BD3D',
-  draft: '#FADB02',
-  archived: '#FE7451',
+const STATUS_CLASS: Record<Status, string> = {
+  published: 'status-publicado',
+  draft: 'status-rascunho',
+  archived: 'status-desatualizado',
 }
 
 function toProcess(p: ApiProcess): Process {
@@ -72,11 +73,13 @@ function ProcessRow({ process: p, onEdit }: { process: Process; onEdit: () => vo
       <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--cinza-texto)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
         {p.executor ?? '—'}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: STATUS_DOT[p.status], flexShrink: 0 }} />
-        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'var(--cinza-texto)' }}>{STATUS_LABEL[p.status]}</span>
+      <div>
+        <div className={`status-pill ${STATUS_CLASS[p.status]}`}>
+          <div className="dot" />
+          {STATUS_LABEL[p.status]}
+        </div>
       </div>
-      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: 'var(--cinza-texto)' }}>
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12.5, color: 'var(--cinza-texto)' }}>
         {p.updatedAt}
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -126,7 +129,7 @@ export default function StudioLandingPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: '#F2F2F2' }}>
 
         <div className="process-topbar">
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)' }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>
             Studio
           </div>
           <div style={{ flex: 1 }} />
@@ -176,23 +179,14 @@ export default function StudioLandingPage() {
               />
             </div>
             {!isLoading && (
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 1, color: 'var(--cinza-texto)', flexShrink: 0 }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', flexShrink: 0 }}>
                 {filtered.length} processo{filtered.length !== 1 ? 's' : ''}
               </div>
             )}
           </div>
 
           {isLoading && (
-            <div style={{ background: '#fff', border: '1px solid var(--cinza-borda)', borderRadius: 10, overflow: 'hidden' }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} style={{ padding: '16px 20px', borderBottom: i < 4 ? '1px solid var(--cinza-borda)' : 'none', display: 'flex', gap: 16, alignItems: 'center' }}>
-                  <div style={{ flex: 1, height: 13, background: '#F0F0F0', borderRadius: 4 }} />
-                  <div style={{ width: 90, height: 13, background: '#F0F0F0', borderRadius: 4 }} />
-                  <div style={{ width: 70, height: 18, background: '#F0F0F0', borderRadius: 99 }} />
-                  <div style={{ width: 80, height: 13, background: '#F0F0F0', borderRadius: 4 }} />
-                </div>
-              ))}
-            </div>
+            <div style={{ height: 320 }}><BrandLoader inline /></div>
           )}
 
           {!isLoading && filtered.length > 0 && (
@@ -205,7 +199,7 @@ export default function StudioLandingPage() {
                 background: '#FAFAFA',
               }}>
                 {['Nome', 'Área', 'Status', 'Atualizado', ''].map((col, i) => (
-                  <div key={i} style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--cinza-texto)' }}>{col}</div>
+                  <div key={i} style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>{col}</div>
                 ))}
               </div>
               {filtered.map(p => (

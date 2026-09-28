@@ -259,10 +259,9 @@
 }
 
 .divisor-texto {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
   color: var(--cinza-texto);
 }
 

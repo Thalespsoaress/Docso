@@ -70,15 +70,15 @@ Agências, consultorias e escritórios brasileiros com 5 a 50 funcionários.
 ## Design system
 
 ### Fontes
-- Logo: **Geist** 500, tracking `-0.06em` (inline, fallback `-apple-system, sans-serif`)
-- Títulos de tela (form-titulo, headlines de marketing): **Plus Jakarta Sans** 700, tracking negativo
-- Headlines grandes do painel escuro: **Syne** 800, tracking negativo
+- Logo: arquivo SVG (`src/assets/logo-{preto,branco}.svg`) — nunca recriar em texto
+- Títulos de tela e headlines (inclusive no painel escuro): **Plus Jakarta Sans** 700–800, tracking negativo
 - Corpo/interface: **DM Sans** 300 ou 400, line-height 1.7
-- Labels, eyebrow, código, botão primário: **DM Mono** / **Plus Jakarta Sans**
+- Labels, eyebrow, tags, cabeçalhos de coluna, datas e números: **DM Sans** 500, 12px, sem caixa alta forçada e sem letter-spacing (DM Mono não é mais usada)
+- Botão primário: **Plus Jakarta Sans** 600
 
-Importar do Google Fonts:
+Importar do Google Fonts (já está no `index.html`):
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 ```
 
 ### Cores
@@ -103,6 +103,18 @@ Importar do Google Fonts:
 - Cor como sinalização, nunca como decoração
 - Azul = ação primária
 - Interface ensina pelo comportamento, não por jargão técnico
+
+### Componentes da marca (logo "ponto fundido")
+Reutilize estes em vez de criar variações:
+
+- **Carregamento → `BrandLoader`** (`src/components/BrandLoader.tsx`): símbolo do logo com o ponto azul pulsando. Usar em toda espera por dados — nada de skeleton, spinner genérico ou texto "Carregando...".
+  - Tela inteira: `<BrandLoader />` (fundo claro) ou `<BrandLoader dark />` (telas pretas: convite, onboarding)
+  - Dentro de uma área da página: `<div style={{ height: 320 }}><BrandLoader inline /></div>` (ex.: lista de processos na Home e no Studio)
+- **Ponto final de headline → `.brand-dot`**: envolve a última palavra; troca o "." pelo ponto azul da marca e nunca quebra linha sozinho. Ex.: `Olá, <span className="brand-dot">{nome}</span>`
+- **Ponto fundido → `.brand-dot.fused`**: só para palavras terminadas em "o", em Plus Jakarta Sans 800. Reproduz o símbolo do logo no próprio "o". Em fundo claro, defina `--dot-cut` com a cor do fundo; se o texto tiver `letter-spacing`, informe em `--ls`. Ex.: login "processo." / "certo."
+- **Status de processo → `.status-pill`** + `status-publicado` (verde) / `status-rascunho` (amarelo) / `status-desatualizado` (vermelho), com `<div className="dot" />`. DM Sans 500 12px, só a primeira letra maiúscula. Mesma tag em todas as telas.
+- **E-mails → `emailLayout()`** (`backend/src/lib/email.ts`): layout único dos e-mails transacionais (logo, título, texto, botão, rodapé). Todo texto interpolado passa por `escapeHtml()`.
+- **Assets**: logos em `src/assets/logo-{preto,branco}.svg`; kit completo em `Guias/logo-ponto-fundido/`. Não recriar o logo em texto.
 
 ---
 
