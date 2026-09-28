@@ -4,17 +4,9 @@ import { randomBytes } from 'crypto'
 import { authMiddleware } from '../middleware/auth.js'
 import { verifyJWT } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
+import { escapeHtml, emailLayout } from '../lib/email.js'
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 dias
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
 
 function maskEmail(email: string): string {
   const [local, domain] = email.split('@')
@@ -113,13 +105,12 @@ members.post('/invite', async (c) => {
     const { error: sendError } = await resend.emails.send({
       from: 'Docso <noreply@docso.app>',
       to: email,
-      subject: `Você foi convidado para ${org.name} no Docso`,
-      html: `
-        <p>Olá!</p>
-        <p>Você foi convidado para entrar na organização <strong>${escapeHtml(org.name)}</strong> no Docso.</p>
-        <p><a href="${escapeHtml(link)}">Aceitar convite</a></p>
-        <p style="color:#999;font-size:12px">Se não esperava este email, pode ignorá-lo.</p>
-      `,
+      subject: `Seu convite para ${org.name} no Docso`,
+      html: emailLayout({
+        titulo: `Seu convite para ${escapeHtml(org.name)}`,
+        corpo: `<p style="margin:0">O time de <strong style="color:#0A0A0A">${escapeHtml(org.name)}</strong> usa o Docso para documentar processos e treinar quem chega. Aceite o convite para acessar.</p>`,
+        cta: { label: 'Aceitar convite', href: link },
+      }),
     })
     if (sendError) {
       console.error('Resend error:', sendError)

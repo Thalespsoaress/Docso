@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto'
 import { Resend } from 'resend'
 import { authMiddleware } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
+import { escapeHtml, emailLayout } from '../lib/email.js'
 
 type AuthVars = { Variables: { userId: string; organizationId: string; role: string } }
 
@@ -103,14 +104,12 @@ protectedRoutes.post('/', async (c) => {
       from: 'Docso <noreply@docso.app>',
       to: email,
       subject: `Novo treinamento: ${processRecord.title}`,
-      html: `
-        <p>Olá, ${name}!</p>
-        <p>Você recebeu um novo treinamento em <strong>${org.name}</strong>:</p>
-        <p><strong>${processRecord.title}</strong></p>
-        ${processRecord.objective ? `<p>${processRecord.objective}</p>` : ''}
-        <p><a href="${link}">Acessar treinamento</a></p>
-        <p style="color:#999;font-size:12px">Se não esperava este email, pode ignorá-lo.</p>
-      `,
+      html: emailLayout({
+        titulo: escapeHtml(processRecord.title),
+        corpo: `<p style="margin:0 0 12px">${escapeHtml(name.split(' ')[0])}, você tem um novo treinamento em <strong style="color:#0A0A0A">${escapeHtml(org.name)}</strong>.</p>`
+          + (processRecord.objective ? `<p style="margin:0;color:#666666">${escapeHtml(processRecord.objective)}</p>` : ''),
+        cta: { label: 'Começar treinamento', href: link },
+      }),
     })
 
     results.push({ userId, status: sendError ? 'error' : 'assigned' })
