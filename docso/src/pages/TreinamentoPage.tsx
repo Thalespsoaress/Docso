@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import logoPreto from '../assets/logo-preto.svg'
+import BrandLoader from '../components/BrandLoader'
 import { useParams } from '@tanstack/react-router'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { api } from '../lib/api'
@@ -97,20 +98,13 @@ export default function TreinamentoPage() {
     await completeMutation.mutateAsync(quizAnswers.map(a => a ?? -1))
   }
 
-  if (isLoading) {
-    return (
-      <div style={styles.centered}>
-        <div style={{ color: '#A0A0A0', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>
-          Carregando treinamento...
-        </div>
-      </div>
-    )
-  }
+  if (isLoading) return <BrandLoader />
 
   if (isError || !assignment) {
     return (
       <div style={styles.centered}>
         <div style={{ textAlign: 'center' }}>
+          <img src={logoPreto} alt="docso" style={{ height: 22, width: 'auto', display: 'block', margin: '0 auto 32px' }} />
           <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 20, color: '#0A0A0A', marginBottom: 8 }}>
             Treinamento não encontrado
           </div>
@@ -152,7 +146,7 @@ export default function TreinamentoPage() {
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#39BD3D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3,9 7,13 15,5" />
               </svg>
-              <span>Treinamento concluído! Bom trabalho, {assignment.assignee.name.split(' ')[0]}.</span>
+              <span>Treinamento concluído. Bom trabalho, {assignment.assignee.name.split(' ')[0]}.</span>
             </div>
           )}
 
@@ -247,7 +241,7 @@ export default function TreinamentoPage() {
               </div>
 
               {quizResult && !quizResult.passed && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(254,116,81,0.08)', border: '1px solid rgba(254,116,81,0.2)', borderRadius: 10, marginBottom: 20, fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: '#FE7451', fontWeight: 500 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(254,116,81,0.08)', border: '1px solid rgba(254,116,81,0.2)', borderRadius: 10, marginBottom: 20, fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: 'var(--vermelho-texto)', fontWeight: 500 }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <circle cx="8" cy="8" r="6.5"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/>
                   </svg>
@@ -382,7 +376,7 @@ const styles = {
   centered: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAFAFA' },
   main: { flex: 1, display: 'flex', justifyContent: 'center', padding: '48px 24px 80px' },
   inner: { width: '100%', maxWidth: 640 },
-  completedBanner: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(57, 189, 61, 0.08)', border: '1px solid rgba(57, 189, 61, 0.2)', borderRadius: 10, marginBottom: 32, fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: '#39BD3D', fontWeight: 500 },
+  completedBanner: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(57, 189, 61, 0.08)', border: '1px solid rgba(57, 189, 61, 0.2)', borderRadius: 10, marginBottom: 32, fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: 'var(--verde-texto)', fontWeight: 500 },
   processHeader: { marginBottom: 32 },
   processTitle: { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: '-0.5px', color: '#0A0A0A', margin: '0 0 12px 0', lineHeight: 1.2 },
   processObjective: { fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#666', lineHeight: 1.7, margin: '0 0 16px 0' },

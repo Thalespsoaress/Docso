@@ -13,6 +13,7 @@ import ConvitePage from './pages/ConvitePage'
 import DocsoAdminPage from './pages/DocsoAdminPage'
 import TreinamentoPage from './pages/TreinamentoPage'
 import MapeamentoPage from './pages/MapeamentoPage'
+import BrandLoader from './components/BrandLoader'
 
 function RootLayout() {
   return <Outlet />
@@ -62,9 +63,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     }
   }, [session])
 
-  if (session === undefined) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }} />
-  )
+  if (session === undefined) return <BrandLoader />
   return <>{children}</>
 }
 
@@ -92,9 +91,7 @@ function AdminManagerRoute({ children }: { children: React.ReactNode }) {
     }
   }, [session])
 
-  if (session === undefined) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }} />
-  )
+  if (session === undefined) return <BrandLoader />
   return <>{children}</>
 }
 

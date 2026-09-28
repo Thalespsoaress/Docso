@@ -43,7 +43,7 @@ type ApiResponse =
   | ({ type: 'analise_inicial' } & AnaliseInicial)
 
 const PRIMEIRA_MENSAGEM =
-  'Olá! Vou te ajudar a mapear um processo. Para começar: qual é o nome do processo que você quer documentar, e qual é o objetivo principal dele?'
+  'Vamos mapear um processo. Para começar: qual é o nome do processo que você quer documentar, e qual é o objetivo principal dele?'
 
 const STORAGE_KEY = 'docso-mapeamento-session'
 
@@ -445,12 +445,6 @@ export default function MapeamentoPage() {
         )}
       </div>
 
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
     </div>
   )
 }

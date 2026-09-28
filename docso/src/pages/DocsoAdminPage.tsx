@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { api } from '../lib/api'
+import logoPreto from '../assets/logo-preto.svg'
 
 type Org = {
   id: string
@@ -52,7 +53,7 @@ export default function DocsoAdminPage() {
   if (isError) {
     return (
       <div style={styles.center}>
-        <div style={{ color: '#FE7451', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>
+        <div style={{ color: 'var(--vermelho-texto)', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>
           Acesso negado. Seu email não está autorizado.
         </div>
       </div>
@@ -64,7 +65,7 @@ export default function DocsoAdminPage() {
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
 
         <div style={{ marginBottom: 40 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1, color: 'var(--cinza-texto)', textTransform: 'uppercase', marginBottom: 6 }}>— Docso</div>
+          <img src={logoPreto} alt="docso" style={{ height: 20, width: 'auto', display: 'block', marginBottom: 20 }} />
           <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: '-0.5px', color: 'var(--preto)' }}>Painel interno</div>
         </div>
 
@@ -118,7 +119,7 @@ export default function DocsoAdminPage() {
                     background: 'none', border: '1px solid var(--cinza-borda)',
                     borderRadius: 8, padding: '9px 16px',
                     fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-                    color: copiado ? '#39BD3D' : 'var(--cinza-texto)', cursor: 'pointer',
+                    color: copiado ? 'var(--verde-texto)' : 'var(--cinza-medio)', cursor: 'pointer',
                   }}
                 >
                   {copiado ? 'Copiado' : 'Copiar'}
@@ -160,7 +161,7 @@ export default function DocsoAdminPage() {
                       fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1,
                       textTransform: 'uppercase', padding: '3px 8px', borderRadius: 4,
                       background: org.plan === 'active' ? '#e8f9e8' : 'var(--cinza-sup)',
-                      color: org.plan === 'active' ? '#39BD3D' : 'var(--cinza-texto)',
+                      color: org.plan === 'active' ? 'var(--verde-texto)' : 'var(--cinza-medio)',
                     }}>
                       {PLAN_LABEL[org.plan] ?? org.plan}
                     </span>
@@ -168,7 +169,7 @@ export default function DocsoAdminPage() {
                       fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 1,
                       textTransform: 'uppercase', padding: '3px 8px', borderRadius: 4,
                       background: org.onboardingDone ? '#e8f9e8' : '#fff8e0',
-                      color: org.onboardingDone ? '#39BD3D' : '#b8860b',
+                      color: org.onboardingDone ? 'var(--verde-texto)' : 'var(--amarelo-texto)',
                     }}>
                       {org.onboardingDone ? 'Onboarding OK' : 'Pendente'}
                     </span>

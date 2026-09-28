@@ -55,13 +55,10 @@ type ExistingProcess = {
 
 type SaveStatus = 'idle' | 'saving' | 'saved'
 
-const GW_PALETTE = [
-  '#30BCFE', '#39BD3D', '#FE7451', '#FADB02',
-  '#EF476F', '#845EC2', '#00C9A7', '#4D96FF',
-  '#FF6B6B', '#F9C74F', '#06D6A0', '#FF9671',
-]
+// Só cores da marca: funcionais + neutros
+const GW_PALETTE = ['#30BCFE', '#39BD3D', '#FADB02', '#FE7451', '#0A0A0A', '#A0A0A0']
 
-const LANE_COLORS = ['#30BCFE', '#845EC2', '#39BD3D', '#FE7451', '#FADB02', '#00C9A7', '#4D96FF', '#FF6B6B']
+const LANE_COLORS = ['#30BCFE', '#39BD3D', '#FADB02', '#FE7451', '#0A0A0A', '#A0A0A0']
 
 const GW_TYPE_LABELS: Record<GatewayType, string> = {
   exclusive: 'Exclusivo',
@@ -388,7 +385,7 @@ export default function StudioPage() {
     setGateways(prev => prev.map(gw => gw.id === gwId ? { ...gw, [field]: value } : gw))
   }
   function addBranch(gwId: string) {
-    const colors = ['#30BCFE', '#845EC2', '#00C9A7', '#FADB02']
+    const colors = ['#30BCFE', '#FADB02', '#0A0A0A', '#A0A0A0']
     setGateways(prev => prev.map(gw => {
       if (gw.id !== gwId) return gw
       const color = colors[gw.branches.length % colors.length]
@@ -463,7 +460,7 @@ export default function StudioPage() {
             )}
             {deleteConfirmOpen && (
               <>
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'var(--vermelho)' }}>Confirmar exclusão?</span>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'var(--vermelho-texto)' }}>Confirmar exclusão?</span>
                 <button className="btn-ghost" onClick={() => setDeleteConfirmOpen(false)}>Cancelar</button>
                 <button className="btn-danger" onClick={handleDelete}>Apagar</button>
               </>
@@ -482,7 +479,7 @@ export default function StudioPage() {
                   navigate({ to: '/mapeamento' })
                 }}>
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
-                    <path d="M2 10V7a5 5 0 0 1 10 0v3"/><path d="M2 10h10"/><circle cx="7" cy="13" r="1"/>
+                    <path d="M7 1l1.5 3.5L12 6 8.5 7.5 7 11 5.5 7.5 2 6l3.5-1.5z"/>
                   </svg>
                   Refinar com IA
                 </button>
@@ -725,7 +722,7 @@ export default function StudioPage() {
                                         style={{ position: 'absolute', top: 26, left: 0, zIndex: 20, background: '#fff', border: '1.5px solid var(--cinza-borda)', borderRadius: 10, padding: '10px 12px', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', gap: 8 }}
                                       >
                                         <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 8, letterSpacing: 2, color: 'var(--cinza-texto)', textTransform: 'uppercase' }}>Cor do caminho</div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
                                           {GW_PALETTE.map(color => (
                                             <button
                                               key={color}
@@ -786,7 +783,7 @@ export default function StudioPage() {
 
                                 <button
                                   onClick={() => addBranchStep(stepGateway.id, branch.id)}
-                                  style={{ marginLeft: 28, display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: branch.color, padding: '2px 0' }}
+                                  style={{ marginLeft: 28, display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'var(--cinza-medio)', padding: '2px 0' }}
                                 >
                                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width={12} height={12}>
                                     <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>

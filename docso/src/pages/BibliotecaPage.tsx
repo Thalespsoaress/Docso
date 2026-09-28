@@ -135,7 +135,7 @@ export default function BibliotecaPage() {
           <div className="topbar">
             <div>
               <div className="greeting-label">— Home</div>
-              <div className="greeting-title">Olá, {firstName}.</div>
+              <div className="greeting-title">Olá, <span className="brand-dot">{firstName}</span></div>
             </div>
           </div>
 
@@ -213,7 +213,7 @@ export default function BibliotecaPage() {
               <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '13.5px', color: 'var(--cinza-texto)', lineHeight: 1.6, textAlign: 'center', maxWidth: '320px' }}>
                 {query.trim()
                   ? `Nenhum processo corresponde a "${query}".`
-                  : 'Crie o primeiro processo do seu time clicando em "Novo processo".'}
+                  : 'Os processos publicados pelo seu time aparecem aqui.'}
               </div>
             </div>
           )}
@@ -233,7 +233,7 @@ export default function BibliotecaPage() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       {p.stepsCount > 0 && (
-                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: '#C8C8C8' }}>
+                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: 'var(--cinza-texto)' }}>
                           {p.stepsCount} etapa{p.stepsCount !== 1 ? 's' : ''}
                         </div>
                       )}

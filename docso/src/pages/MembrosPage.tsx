@@ -103,14 +103,14 @@ export default function MembrosPage() {
           <div className="topbar">
             <div>
               <div className="greeting-label">— Equipe</div>
-              <div className="greeting-title">Membros</div>
+              <div className="greeting-title"><span className="brand-dot">Membros</span></div>
             </div>
           </div>
 
           {/* Membros ativos */}
           <div style={{ marginBottom: 40 }}>
             <div className="section-label">— Membros ativos</div>
-            <div style={{ marginTop: 12, border: '1px solid var(--cinza-borda)', borderRadius: 10, overflow: 'hidden' }}>
+            <div style={{ marginTop: 12, background: '#fff', border: '1px solid var(--cinza-borda)', borderRadius: 10, overflow: 'hidden' }}>
               {members.map((m, i) => (
                 <div key={m.id} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -136,7 +136,7 @@ export default function MembrosPage() {
           {isAdmin && invites.length > 0 && (
             <div style={{ marginBottom: 40 }}>
               <div className="section-label">— Convites pendentes</div>
-              <div style={{ marginTop: 12, border: '1px solid var(--cinza-borda)', borderRadius: 10, overflow: 'hidden' }}>
+              <div style={{ marginTop: 12, background: '#fff', border: '1px solid var(--cinza-borda)', borderRadius: 10, overflow: 'hidden' }}>
                 {invites.map((inv, i) => (
                   <div key={inv.id} style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -227,8 +227,8 @@ export default function MembrosPage() {
                   </button>
                 </div>
 
-                {feedback && <div style={{ color: '#39BD3D', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>{feedback}</div>}
-                {erro && <div style={{ color: '#FE7451', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>{erro}</div>}
+                {feedback && <div style={{ color: 'var(--verde-texto)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>{feedback}</div>}
+                {erro && <div style={{ color: 'var(--vermelho-texto)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>{erro}</div>}
               </div>
             </div>
           )}

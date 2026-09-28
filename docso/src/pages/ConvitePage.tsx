@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { supabase } from '../lib/supabase'
 import logo from '../assets/logo-branco.svg'
+import BrandLoader from '../components/BrandLoader'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -91,20 +92,14 @@ export default function ConvitePage() {
     }
   }
 
-  if (mode === 'loading') {
-    return (
-      <div style={styles.center}>
-        <div style={{ color: '#A0A0A0', fontFamily: "'DM Sans', sans-serif" }}>Verificando convite...</div>
-      </div>
-    )
-  }
+  if (mode === 'loading') return <BrandLoader dark />
 
   if (mode === 'invalid') {
     return (
       <div style={styles.center}>
         <div style={{ textAlign: 'center' }}>
           <img src={logo} alt="docso" style={{ height: 22, marginBottom: 32 }} />
-          <div style={styles.titulo}>Convite inválido ou já utilizado.</div>
+          <div style={styles.titulo}>Convite inválido ou já <span className="brand-dot">utilizado</span></div>
           <div style={{ color: '#A0A0A0', fontFamily: "'DM Sans', sans-serif", fontSize: 14, marginTop: 8 }}>
             Peça ao administrador que envie um novo convite.
           </div>
@@ -124,7 +119,7 @@ export default function ConvitePage() {
   if (mode === 'done') {
     return (
       <div style={styles.center}>
-        <div style={{ color: '#39BD3D', fontFamily: "'DM Sans', sans-serif" }}>Pronto! Redirecionando...</div>
+        <div style={{ color: '#39BD3D', fontFamily: "'DM Sans', sans-serif" }}>Pronto. Redirecionando...</div>
       </div>
     )
   }
@@ -136,7 +131,7 @@ export default function ConvitePage() {
 
         {mode === 'choose' && (
           <div>
-            <div style={styles.titulo}>Você foi convidado para</div>
+            <div style={styles.titulo}>Você recebeu um convite para</div>
             <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: '-0.5px', color: '#30BCFE', lineHeight: 1.2, marginBottom: 24 }}>
               {invite?.orgName}
             </div>

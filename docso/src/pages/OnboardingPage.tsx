@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { supabase } from '../lib/supabase'
 import logo from '../assets/logo-branco.svg'
+import BrandLoader from '../components/BrandLoader'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -126,20 +127,14 @@ export default function OnboardingPage() {
     }
   }
 
-  if (tokenValido === null) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }}>
-        <div style={{ color: '#A0A0A0', fontFamily: "'DM Sans', sans-serif" }}>Verificando...</div>
-      </div>
-    )
-  }
+  if (tokenValido === null) return <BrandLoader dark />
 
   if (tokenValido === false) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }}>
         <div style={{ textAlign: 'center' }}>
           <img src={logo} alt="docso" style={{ height: 22, marginBottom: 32 }} />
-          <div style={{ color: '#FAFAFA', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 20 }}>Link inválido ou já utilizado.</div>
+          <div style={{ color: '#FAFAFA', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 20 }}>Link inválido ou já <span className="brand-dot">utilizado</span></div>
           <div style={{ color: '#A0A0A0', fontFamily: "'DM Sans', sans-serif", fontSize: 14, marginTop: 8 }}>Entre em contato com a Docso para obter um novo link.</div>
         </div>
       </div>
@@ -160,7 +155,7 @@ export default function OnboardingPage() {
 
         {step === 1 && (
           <div>
-            <div style={styles.titulo}>Conta sobre<br />sua empresa.</div>
+            <div style={styles.titulo}>Conta sobre<br />sua <span className="brand-dot">empresa</span></div>
             <div style={styles.sub}>Etapa 1 de 3</div>
 
             <Campo label="Razão social">
@@ -254,7 +249,7 @@ export default function OnboardingPage() {
 
         {step === 3 && (
           <div>
-            <div style={styles.titulo}>Crie seu<br />acesso.</div>
+            <div style={styles.titulo}>Crie seu<br /><span className="brand-dot">acesso</span></div>
             <div style={styles.sub}>Etapa 3 de 3</div>
 
             <Campo label="Seu nome">
@@ -352,7 +347,7 @@ const styles = {
     cursor: 'pointer',
   } as React.CSSProperties,
   pillActive: {
-    background: '#0e2a38',
+    background: 'rgba(48,188,254,0.12)',
     border: '1px solid #30BCFE',
     color: '#30BCFE',
   } as React.CSSProperties,

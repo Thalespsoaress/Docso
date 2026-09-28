@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import { useCurrentUser } from '../hooks/useCurrentUser'
 import Sidebar from '../components/Sidebar'
+import BrandLoader from '../components/BrandLoader'
 import FlowView, { type Step, type Gateway } from '../components/FlowView'
 
 type Analise = {
@@ -150,10 +151,10 @@ function AtribuirModal({
         </div>
 
         {feedback && (
-          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#39BD3D', marginBottom: 12 }}>{feedback}</div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--verde-texto)', marginBottom: 12 }}>{feedback}</div>
         )}
         {erro && (
-          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#FE7451', marginBottom: 12 }}>{erro}</div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--vermelho-texto)', marginBottom: 12 }}>{erro}</div>
         )}
 
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
@@ -334,13 +335,7 @@ export default function ProcessoPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [process?.id, tab])
 
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, color: 'var(--preto)' }}>
-        Carregando...
-      </div>
-    )
-  }
+  if (isLoading) return <BrandLoader />
 
   if (!process) {
     return (

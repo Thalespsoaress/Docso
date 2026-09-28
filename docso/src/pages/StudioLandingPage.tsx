@@ -32,7 +32,7 @@ const STATUS_LABEL: Record<Status, string> = {
 
 const STATUS_DOT: Record<Status, string> = {
   published: '#39BD3D',
-  draft: '#A0A0A0',
+  draft: '#FADB02',
   archived: '#FE7451',
 }
 
@@ -133,10 +133,7 @@ export default function StudioLandingPage() {
           <div className="topbar-actions">
             <button className="btn-ghost" onClick={() => navigate({ to: '/mapeamento' })}>
               <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
-                <circle cx="7" cy="7" r="5.5"/>
-                <path d="M5 7.5c.4.8 1.1 1.5 2 1.5s1.6-.7 2-1.5"/>
-                <line x1="5" y1="5.5" x2="5" y2="5.5" strokeWidth="2"/>
-                <line x1="9" y1="5.5" x2="9" y2="5.5" strokeWidth="2"/>
+                <path d="M7 1l1.5 3.5L12 6 8.5 7.5 7 11 5.5 7.5 2 6l3.5-1.5z"/>
               </svg>
               Mapear com IA
             </button>
@@ -229,7 +226,7 @@ export default function StudioLandingPage() {
               <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: 'var(--cinza-texto)', lineHeight: 1.6, textAlign: 'center', maxWidth: 300 }}>
                 {query.trim()
                   ? `Nenhum processo corresponde a "${query}".`
-                  : 'Crie o primeiro processo clicando em "Novo processo".'}
+                  : 'Crie o primeiro processo em "Novo processo" ou mapeie um com a IA.'}
               </div>
             </div>
           )}

@@ -67,7 +67,7 @@ export default function LoginPage() {
           <div className="right-inner">
             <img src={logoPreto} alt="docso" style={{ height: 24, width: 'auto', display: 'block', marginBottom: 32 }} />
 
-            <div className="form-titulo">Bom te ver<br />de volta.</div>
+            <div className="form-titulo">Bom te ver<br />de <span className="brand-dot">volta</span></div>
 
             <div className="campo">
               <label htmlFor="email">Email</label>
@@ -115,13 +115,13 @@ export default function LoginPage() {
             </div>
 
             {semAcesso && !erro && (
-              <div style={{ color: '#FE7451', fontSize: 13, marginBottom: 8, fontFamily: "'DM Sans', sans-serif" }}>
+              <div className="form-erro">
                 Sua conta não está vinculada a nenhuma organização. Entre em contato com o administrador.
               </div>
             )}
 
             {erro && (
-              <div style={{ color: '#FE7451', fontSize: 13, marginBottom: 8, fontFamily: "'DM Sans', sans-serif" }}>
+              <div className="form-erro">
                 {erro}
               </div>
             )}
@@ -151,7 +151,7 @@ export default function LoginPage() {
         <div className="login-headline-col">
           <div className="left-middle">
             <div className="left-headline">
-              Seu<br />processo<span style={{ color: '#30BCFE', fontFamily: "'DM Sans', sans-serif" }}>.</span><br />No lugar<br />certo<span style={{ color: '#39BD3D', fontFamily: "'DM Sans', sans-serif" }}>.</span>
+              Seu<br /><span className="brand-dot fused">processo</span><br />No lugar<br /><span className="brand-dot fused">certo</span>
             </div>
             <div className="left-sub">
               Documente como seu time trabalha, treine quem é novo e retenha conhecimento.
