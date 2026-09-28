@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { supabase } from '../lib/supabase'
-import logo from '../assets/logo-wordmark.svg'
+import logo from '../assets/logo-branco.svg'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 

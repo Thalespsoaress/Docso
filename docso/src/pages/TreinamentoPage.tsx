@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import logoPreto from '../assets/logo-preto.svg'
 import { useParams } from '@tanstack/react-router'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { api } from '../lib/api'
@@ -137,10 +138,7 @@ export default function TreinamentoPage() {
   return (
     <div style={styles.page}>
       <header style={styles.header}>
-        <span style={styles.logo}>
-          docso
-          <span style={styles.logoDot} />
-        </span>
+        <img src={logoPreto} alt="docso" style={{ height: 20, width: 'auto', display: 'block' }} />
         <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#A0A0A0' }}>
           {assignment.organization.name}
         </div>
@@ -381,8 +379,6 @@ export default function TreinamentoPage() {
 const styles = {
   page: { minHeight: '100vh', background: '#FAFAFA', display: 'flex', flexDirection: 'column' as const },
   header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 32px', borderBottom: '1px solid #E4E4E4', background: '#FAFAFA' },
-  logo: { fontFamily: "'Geist', -apple-system, sans-serif", fontWeight: 500, fontSize: 20, letterSpacing: '-0.06em', color: '#0A0A0A', display: 'inline-flex', alignItems: 'baseline', userSelect: 'none' as const },
-  logoDot: { display: 'inline-block', width: '0.16em', height: '0.16em', borderRadius: '50%', background: '#30BCFE', marginLeft: '0.04em', position: 'relative' as const, top: '-0.02em', flexShrink: 0 },
   centered: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAFAFA' },
   main: { flex: 1, display: 'flex', justifyContent: 'center', padding: '48px 24px 80px' },
   inner: { width: '100%', maxWidth: 640 },

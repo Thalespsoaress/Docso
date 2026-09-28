@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
-import monogramLight from '../assets/monogram-light.svg'
+import logoPreto from '../assets/logo-preto.svg'
 import './LoginPage.css'
 
 export default function LoginPage() {
@@ -65,7 +65,7 @@ export default function LoginPage() {
 
         <div className="login-card-col">
           <div className="right-inner">
-            <img src={monogramLight} alt="docso" style={{ height: 40, width: 'auto', display: 'block', marginBottom: 32 }} />
+            <img src={logoPreto} alt="docso" style={{ height: 24, width: 'auto', display: 'block', marginBottom: 32 }} />
 
             <div className="form-titulo">Bom te ver<br />de volta.</div>
 

@@ -1,5 +1,6 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { useCurrentUser } from '../hooks/useCurrentUser'
+import logoBranco from '../assets/logo-branco.svg'
 
 const ROLE_LABEL: Record<string, string> = {
   admin: 'Admin',
@@ -48,34 +49,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
           go(() => navigate({ to: '/biblioteca' }))
         }}
       >
-        <span
-          style={{
-            fontFamily: "'Geist', -apple-system, sans-serif",
-            fontWeight: 500,
-            fontSize: 22,
-            letterSpacing: '-0.06em',
-            lineHeight: 1,
-            color: '#FAFAFA',
-            display: 'inline-flex',
-            alignItems: 'baseline',
-            userSelect: 'none',
-          }}
-        >
-          docso
-          <span
-            style={{
-              display: 'inline-block',
-              width: '0.16em',
-              height: '0.16em',
-              borderRadius: '50%',
-              background: '#30BCFE',
-              marginLeft: '0.04em',
-              position: 'relative',
-              top: '-0.02em',
-              flexShrink: 0,
-            }}
-          />
-        </span>
+        <img src={logoBranco} alt="docso" style={{ height: 20, width: 'auto', display: 'block' }} />
       </a>
 
       <nav className="sidebar-nav">
