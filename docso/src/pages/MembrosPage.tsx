@@ -95,7 +95,7 @@ export default function MembrosPage() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="app-shell">
       <Sidebar />
       <main className="main">
         <div className="main-inner">

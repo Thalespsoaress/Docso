@@ -13,6 +13,7 @@ import ConvitePage from './pages/ConvitePage'
 import DocsoAdminPage from './pages/DocsoAdminPage'
 import TreinamentoPage from './pages/TreinamentoPage'
 import MapeamentoPage from './pages/MapeamentoPage'
+import TreinamentosPage from './pages/TreinamentosPage'
 import BrandLoader from './components/BrandLoader'
 
 function RootLayout() {
@@ -193,6 +194,16 @@ const mapeamentoRoute = createRoute({
   ),
 })
 
+const treinamentosRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/treinamentos',
+  component: () => (
+    <AdminManagerRoute>
+      <TreinamentosPage />
+    </AdminManagerRoute>
+  ),
+})
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -215,6 +226,7 @@ const routeTree = rootRoute.addChildren([
   studioNovoRoute,
   studioEditRoute,
   membrosRoute,
+  treinamentosRoute,
   docsoAdminRoute,
 ])
 

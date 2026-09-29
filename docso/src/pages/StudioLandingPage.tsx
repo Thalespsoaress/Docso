@@ -53,9 +53,8 @@ function ProcessRow({ process: p, onEdit }: { process: Process; onEdit: () => vo
   const [hovered, setHovered] = useState(false)
   return (
     <div
+      className="studio-grid"
       style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 150px 130px 130px 90px',
         padding: '13px 20px',
         borderBottom: '1px solid var(--cinza-borda)',
         alignItems: 'center',
@@ -123,10 +122,10 @@ export default function StudioLandingPage() {
   }, [query, processes])
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="app-shell">
       <Sidebar />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: '#F2F2F2' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#F2F2F2' }}>
 
         <div className="process-topbar">
           <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)' }}>
@@ -149,7 +148,7 @@ export default function StudioLandingPage() {
           </div>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px' }}>
+        <div className="page-scroll">
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
             <div style={{ position: 'relative', flex: 1, maxWidth: 380 }}>
@@ -191,9 +190,7 @@ export default function StudioLandingPage() {
 
           {!isLoading && filtered.length > 0 && (
             <div style={{ background: '#fff', border: '1px solid var(--cinza-borda)', borderRadius: 10, overflow: 'hidden' }}>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 150px 130px 130px 90px',
+              <div className="studio-grid" style={{
                 padding: '9px 20px',
                 borderBottom: '1px solid var(--cinza-borda)',
                 background: '#FAFAFA',

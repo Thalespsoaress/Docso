@@ -351,3 +351,13 @@
   from { stroke-dashoffset: 2500; }
   to   { stroke-dashoffset: -90; }
 }
+
+/* ── RESPONSIVO ── */
+@media (max-width: 900px) {
+  .login-root { height: auto; min-height: 100dvh; overflow-x: hidden; }
+  .login-layout { width: 100%; height: auto; min-height: 100dvh; justify-content: center; }
+  .login-card-col { width: 100%; align-items: center; padding: 32px 16px; }
+  .login-headline-col { display: none; }
+  .right-inner { min-width: 0; padding: 28px 24px; }
+  .form-titulo { font-size: 30px; }
+}

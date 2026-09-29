@@ -433,10 +433,10 @@ export default function StudioPage() {
   const flowGateways: FlowGateway[] = flattenGateways(gateways, steps, lanes)
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }} onClick={() => setGwColorPicker(null)}>
+    <div className="app-shell" onClick={() => setGwColorPicker(null)}>
       <Sidebar onNavigate={tryLeave} />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: '#F2F2F2' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#F2F2F2' }}>
 
         {/* TOPBAR */}
         <div className="process-topbar">
@@ -935,8 +935,8 @@ export default function StudioPage() {
       </div>
 
       {showExitModal && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 12, padding: '32px 36px', width: 400, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: '28px 28px', width: '100%', maxWidth: 400, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 18, letterSpacing: -0.5, color: 'var(--preto)' }}>Descartar alterações?</div>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: '#666', lineHeight: 1.6 }}>As alterações não salvas serão perdidas.</div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>

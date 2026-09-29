@@ -111,7 +111,7 @@ export default function BibliotecaPage() {
   const sectionLabel = query.trim() ? `— Resultados para "${query}"` : '— Todos os processos'
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="app-shell">
       <Sidebar />
 
       <main className="main">

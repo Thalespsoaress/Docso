@@ -17,15 +17,22 @@ const FRONTEND_URL = process.env['FRONTEND_URL'] ?? 'https://app.docso.app'
 const protectedRoutes = new Hono<AuthVars>()
 protectedRoutes.use('*', authMiddleware)
 
-// Lista assignments do processo (admin/manager)
-protectedRoutes.get('/processo/:processId', async (c) => {
-  const organizationId = c.get('organizationId')
-  const { processId } = c.req.param()
+protectedRoutes.get('/', async (c) => {
+  const role = c.get('role')
+  if (role !== 'admin' && role !== 'manager') {
+    return c.json({ error: 'Sem permissão para ver treinamentos', code: 'FORBIDDEN' }, 403)
+  }
 
   const assignments = await prisma.trainingAssignment.findMany({
-    where: { processId, organizationId },
-    include: {
+    where: { organizationId: c.get('organizationId') },
+    select: {
+      id: true,
+      status: true,
+      createdAt: true,
+      startedAt: true,
+      completedAt: true,
       assignee: { select: { id: true, name: true, email: true } },
+      process: { select: { id: true, title: true } },
     },
     orderBy: { createdAt: 'desc' },
   })

@@ -92,11 +92,11 @@ function AtribuirModal({
     <div style={{
       position: 'fixed', inset: 0, zIndex: 50,
       background: 'rgba(0,0,0,0.4)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16,
     }}>
       <div style={{
-        background: '#fff', borderRadius: 12, padding: '28px 32px',
-        width: 440, maxHeight: '80vh', display: 'flex', flexDirection: 'column',
+        background: '#fff', borderRadius: 12, padding: '28px 28px',
+        width: '100%', maxWidth: 440, maxHeight: '80vh', display: 'flex', flexDirection: 'column',
         boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
       }}>
         <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 17, letterSpacing: -0.5, color: '#0A0A0A', marginBottom: 4 }}>
@@ -346,11 +346,11 @@ export default function ProcessoPage() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="app-shell">
       <Sidebar />
 
       {/* MAIN */}
-      <div style={{ flex: 1, height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#F2F2F2' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#F2F2F2' }}>
 
         {/* TOPBAR */}
         <div className="process-topbar">

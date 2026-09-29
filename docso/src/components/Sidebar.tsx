@@ -37,6 +37,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
   const isHome = pathname === '/biblioteca' || pathname.startsWith('/processo/')
   const isStudio = pathname === '/studio' || pathname.startsWith('/studio/')
   const isMembros = pathname === '/membros'
+  const isTreinamentos = pathname === '/treinamentos'
   const canAccessStudio = role === 'admin' || role === 'manager'
 
   return (
@@ -98,6 +99,32 @@ export default function Sidebar({ onNavigate }: { onNavigate?: (action: () => vo
               </svg>
             </div>
             Studio
+          </a>
+        )}
+
+        {canAccessStudio && (
+          <a
+            href="#"
+            className={`nav-item${isTreinamentos ? ' active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault()
+              go(() => navigate({ to: '/treinamentos' }))
+            }}
+          >
+            <div className="nav-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="8" cy="8" r="6" />
+                <polyline points="5.5,8 7.3,9.8 10.5,6.5" />
+              </svg>
+            </div>
+            Treinamentos
           </a>
         )}
 
