@@ -3,7 +3,8 @@ import { useNavigate } from '@tanstack/react-router'
 import { api } from '../lib/api'
 import Sidebar from '../components/Sidebar'
 
-type Message = { role: 'user' | 'assistant'; content: string }
+// display: texto mostrado no chat quando content leva contexto extra pra IA
+type Message = { role: 'user' | 'assistant'; content: string; display?: string }
 
 type ProcessoStep = {
   order: number
@@ -28,6 +29,8 @@ type ProcessoGerado = {
   steps: ProcessoStep[]
   analise: Analise
 }
+
+type Marca = 'nova' | 'alterada'
 
 type AnaliseInicial = {
   resumo: string
@@ -137,6 +140,9 @@ export default function MapeamentoPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(!!initialRef.current.processoContexto)
   const [creating, setCreating] = useState(false)
+  // Marcas por título: sobrevivem à renumeração quando a IA insere etapas
+  const [marcas, setMarcas] = useState<Record<string, Marca>>({})
+  const etapasAntesRef = useRef<ProcessoStep[] | null>(null)
   const refinarProcessIdRef = useRef<string | null>(initialRef.current.processoContexto?.processId ?? null)
   const refinarPrefixRef = useRef<{ context: string; pergunta: string } | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -180,13 +186,16 @@ export default function MapeamentoPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading, processoGerado])
 
-  async function handleSend() {
+  function handleSend() {
     const text = input.trim()
     if (!text || loading || processoGerado) return
-
-    const newMessages: Message[] = [...messages, { role: 'user', content: text }]
-    setMessages(newMessages)
     setInput('')
+    enviar(messages, { role: 'user', content: text })
+  }
+
+  async function enviar(historico: Message[], msg: Message) {
+    const newMessages: Message[] = [...historico, msg]
+    setMessages(newMessages)
     setLoading(true)
 
     try {
@@ -198,7 +207,7 @@ export default function MapeamentoPage() {
             { role: 'assistant' as const, content: refinarPrefixRef.current.pergunta },
           ]
         : []
-      const apiMessages = prefix.length > 0 ? [...prefix, ...sliced] : sliced
+      const apiMessages = [...prefix, ...sliced].map(m => ({ role: m.role, content: m.content }))
       const res = await api.post<ApiResponse>('/api/ai/mapear', {
         messages: apiMessages,
         ...(refinarProcessIdRef.current && { mode: 'refinar' }),
@@ -208,7 +217,20 @@ export default function MapeamentoPage() {
         setMessages(prev => [...prev, { role: 'assistant', content: res.content }])
       } else {
         const { type: _, ...data } = res
-        setProcessoGerado(data as ProcessoGerado)
+        const novo = data as ProcessoGerado
+        const antes = etapasAntesRef.current
+        if (antes) {
+          // ponytail: compara por título; etapa renomeada pela IA aparece como "nova"
+          const novas: Record<string, Marca> = {}
+          novo.steps.forEach(s => {
+            const old = antes.find(o => o.title === s.title)
+            if (!old) novas[s.title] = 'nova'
+            else if (old.description !== s.description || (old.notes ?? '') !== (s.notes ?? '')) novas[s.title] = 'alterada'
+          })
+          setMarcas(novas)
+          etapasAntesRef.current = null
+        }
+        setProcessoGerado(novo)
       }
     } catch {
       setMessages(prev => [
@@ -260,8 +282,34 @@ export default function MapeamentoPage() {
     }
   }
 
+  function continuarComMelhorias(melhorias: string[]) {
+    if (!processoGerado) return
+    const { steps, analise } = processoGerado
+    const pontos = [...analise.gargalos, ...analise.riscos]
+    const lista = melhorias.map(m => `• ${m}`).join('\n')
+    const content = [
+      `Quero aplicar estas melhorias na versão atual do processo:\n${lista}`,
+      pontos.length > 0 ? `Pontos de atenção a registrar nas etapas:\n${pontos.map(p => `• ${p}`).join('\n')}` : '',
+      `Versão atual do processo "${processoGerado.title}":\n${JSON.stringify(steps, null, 2)}`,
+    ].filter(Boolean).join('\n\n')
+
+    etapasAntesRef.current = steps
+    setMarcas({})
+    setProcessoGerado(null)
+    enviar(messages, { role: 'user', content, display: `Quero aplicar estas melhorias:\n${lista}` })
+  }
+
+  function descartarSugestao(tipo: keyof Analise, item: string) {
+    setProcessoGerado(prev => prev && {
+      ...prev,
+      analise: { ...prev.analise, [tipo]: prev.analise[tipo].filter(x => x !== item) },
+    })
+  }
+
   function resetSession() {
     localStorage.removeItem(STORAGE_KEY)
+    setMarcas({})
+    etapasAntesRef.current = null
     setMessages([{ role: 'assistant', content: PRIMEIRA_MENSAGEM }])
     setInput('')
     setProcessoGerado(null)
@@ -277,7 +325,7 @@ export default function MapeamentoPage() {
     }
   }
 
-  function updateStep(order: number, field: 'title' | 'description', value: string) {
+  function updateStep(order: number, field: 'title' | 'description' | 'notes', value: string) {
     setProcessoGerado(prev =>
       prev ? { ...prev, steps: prev.steps.map(s => s.order === order ? { ...s, [field]: value } : s) } : prev
     )
@@ -333,7 +381,7 @@ export default function MapeamentoPage() {
                     whiteSpace: 'pre-wrap',
                   }}
                 >
-                  {msg.content}
+                  {msg.display ?? msg.content}
                 </div>
               </div>
             ))}
@@ -369,13 +417,16 @@ export default function MapeamentoPage() {
               <ProcessoCard
                 processo={processoGerado}
                 creating={creating}
+                marcas={marcas}
                 temProcessoOrigem={!!refinarProcessIdRef.current}
                 onUpdateTitle={v => setProcessoGerado(prev => prev ? { ...prev, title: v } : prev)}
                 onUpdateStep={updateStep}
+                onContinuarComMelhorias={continuarComMelhorias}
+                onDescartar={descartarSugestao}
                 onCriar={handleCriar}
                 onAtualizar={handleAtualizar}
                 onReset={resetSession}
-                onContinuar={() => setProcessoGerado(null)}
+                onContinuar={() => { setMarcas({}); setProcessoGerado(null) }}
               />
             )}
 
@@ -450,25 +501,27 @@ export default function MapeamentoPage() {
 }
 
 function ProcessoCard({
-  processo, creating, temProcessoOrigem,
-  onUpdateTitle, onUpdateStep, onCriar, onAtualizar, onReset, onContinuar,
+  processo, creating, marcas, temProcessoOrigem,
+  onUpdateTitle, onUpdateStep, onContinuarComMelhorias, onDescartar, onCriar, onAtualizar, onReset, onContinuar,
 }: {
   processo: ProcessoGerado
   creating: boolean
+  marcas: Record<string, Marca>
   temProcessoOrigem: boolean
   onUpdateTitle: (v: string) => void
-  onUpdateStep: (order: number, field: 'title' | 'description', value: string) => void
+  onUpdateStep: (order: number, field: 'title' | 'description' | 'notes', value: string) => void
+  onContinuarComMelhorias: (melhorias: string[]) => void
+  onDescartar: (tipo: keyof Analise, item: string) => void
   onCriar: () => void
   onAtualizar: () => void
   onReset: () => void
   onContinuar: () => void
 }) {
   const [expandedStep, setExpandedStep] = useState<number | null>(null)
-
-  const hasAnalise =
-    processo.analise.gargalos.length > 0 ||
-    processo.analise.riscos.length > 0 ||
-    processo.analise.melhorias.length > 0
+  const [selecionadas, setSelecionadas] = useState<string[]>([])
+  const { gargalos, riscos, melhorias } = processo.analise
+  const hasDiagnostico = gargalos.length > 0 || riscos.length > 0
+  const totalMarcas = Object.keys(marcas).length
 
   return (
     <div style={{
@@ -555,6 +608,17 @@ function ProcessoCard({
                     color: '#0A0A0A', background: 'transparent', border: 'none', outline: 'none',
                   }}
                 />
+                {marcas[step.title] && (
+                  <span style={{
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12,
+                    color: '#0A0A0A', background: '#30BCFE26', padding: '2px 8px', borderRadius: 99, flexShrink: 0,
+                  }}>
+                    {marcas[step.title] === 'nova' ? 'Nova' : 'Alterada'}
+                  </span>
+                )}
+                {step.notes && (
+                  <div title="Tem ponto de atenção" style={{ width: 6, height: 6, borderRadius: '50%', background: '#FADB02', flexShrink: 0 }} />
+                )}
                 <svg viewBox="0 0 10 6" fill="none" stroke="#C0C0C0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
                   width={10} height={6}
                   style={{ transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', flexShrink: 0 }}>
@@ -574,6 +638,24 @@ function ProcessoCard({
                       borderRadius: 6, padding: '8px 10px', resize: 'vertical', outline: 'none',
                     }}
                   />
+                  {step.notes && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 4 }}>
+                        Ponto de atenção
+                      </div>
+                      <textarea
+                        value={step.notes}
+                        onChange={e => onUpdateStep(step.order, 'notes', e.target.value)}
+                        rows={2}
+                        style={{
+                          width: '100%', boxSizing: 'border-box',
+                          fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: '#444',
+                          lineHeight: 1.6, background: '#FADB020D', border: 'none', borderLeft: '2px solid #FADB02',
+                          borderRadius: '0 6px 6px 0', padding: '8px 10px', resize: 'vertical', outline: 'none',
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -581,22 +663,91 @@ function ProcessoCard({
         })}
       </div>
 
-      {/* Análise */}
-      {hasAnalise && (
+      {totalMarcas > 0 && (
+        <div style={{ padding: '12px 20px', borderBottom: '1px solid #F0F0F0', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#39BD3D', flexShrink: 0 }} />
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#444' }}>
+            Melhorias aplicadas · {totalMarcas} {totalMarcas === 1 ? 'etapa alterada' : 'etapas alteradas'}. Confira as marcadas acima.
+          </span>
+        </div>
+      )}
+
+      {/* Diagnóstico */}
+      {hasDiagnostico && (
         <div style={{ padding: '14px 20px', borderBottom: '1px solid #F0F0F0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
-              Análise da IA
-            </span>
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, background: '#F0F0F0', color: '#888', padding: '2px 7px', borderRadius: 99 }}>
-              sugestões
-            </span>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0', marginBottom: 12 }}>
+            Análise da IA
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <AnaliseGroup label="Gargalos" items={processo.analise.gargalos} color="#FE7451" />
-            <AnaliseGroup label="Riscos" items={processo.analise.riscos} color="#FADB02" />
-            <AnaliseGroup label="Melhorias" items={processo.analise.melhorias} color="#30BCFE" />
+            <AnaliseGroup label="Gargalos" items={gargalos} color="#FE7451"
+              disabled={creating} onDescartar={item => onDescartar('gargalos', item)} />
+            <AnaliseGroup label="Riscos" items={riscos} color="#FADB02"
+              disabled={creating} onDescartar={item => onDescartar('riscos', item)} />
           </div>
+        </div>
+      )}
+
+      {/* Melhorias */}
+      {melhorias.length > 0 && (
+        <div style={{ padding: '18px 20px', borderBottom: '1px solid #F0F0F0', background: '#FAFAFA' }}>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 15, color: '#0A0A0A', letterSpacing: '-0.3px' }}>
+            Melhorias sugeridas
+          </div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginTop: 2, marginBottom: 14 }}>
+            Escolha o que aplicar. A IA ajusta as etapas com você na conversa.
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {melhorias.map(m => {
+              const aplicada = selecionadas.includes(m)
+              return (
+                <div key={m} style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  background: '#fff', borderRadius: 10, padding: '12px 14px',
+                  border: `1px solid ${aplicada ? '#39BD3D' : '#E4E4E4'}`,
+                  transition: 'border-color 0.15s',
+                }}>
+                  <span style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: '#0A0A0A', lineHeight: 1.55 }}>
+                    {m}
+                  </span>
+                  <button
+                    onClick={() => setSelecionadas(prev => aplicada ? prev.filter(x => x !== m) : [...prev, m])}
+                    disabled={creating}
+                    aria-pressed={aplicada}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexShrink: 0,
+                      width: 104, // largura fixa: "Aplicar" → "✓ Aplicada" não empurra o texto
+                      background: aplicada ? '#39BD3D' : '#0A0A0A', color: '#FAFAFA',
+                      border: 'none', borderRadius: 8, padding: '7px 14px',
+                      fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 12.5,
+                      cursor: creating ? 'not-allowed' : 'pointer', transition: 'background 0.15s',
+                    }}
+                  >
+                    {aplicada && (
+                      <svg viewBox="0 0 12 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={11} height={9}>
+                        <polyline points="1,5 4.5,8.5 11,1.5" />
+                      </svg>
+                    )}
+                    {aplicada ? 'Aplicada' : 'Aplicar'}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+          {selecionadas.length > 0 && (
+            <button
+              onClick={() => onContinuarComMelhorias(selecionadas)}
+              disabled={creating}
+              style={{
+                marginTop: 14, width: '100%',
+                background: '#0A0A0A', color: '#FAFAFA', border: 'none', borderRadius: 8,
+                padding: '11px 20px', fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 600, fontSize: 13, letterSpacing: '-0.2px',
+                cursor: creating ? 'not-allowed' : 'pointer',
+              }}
+            >
+              Continuar conversa com {selecionadas.length} {selecionadas.length === 1 ? 'melhoria' : 'melhorias'}
+            </button>
+          )}
         </div>
       )}
 
@@ -691,7 +842,14 @@ function AnaliseInicialCard({ analise }: { analise: AnaliseInicial }) {
   )
 }
 
-function AnaliseGroup({ label, items, color }: { label: string; items: string[]; color: string }) {
+function AnaliseGroup({ label, items, color, disabled, onDescartar }: {
+  label: string
+  items: string[]
+  color: string
+  disabled?: boolean
+  onDescartar?: (item: string) => void
+}) {
+  const [hovered, setHovered] = useState<number | null>(null)
   if (items.length === 0) return null
   return (
     <div>
@@ -701,7 +859,9 @@ function AnaliseGroup({ label, items, color }: { label: string; items: string[];
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
         {items.map((item, i) => (
           <div
-            key={i}
+            key={item}
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}
             style={{
               display: 'flex', gap: 10, alignItems: 'flex-start',
               padding: '8px 10px',
@@ -710,9 +870,21 @@ function AnaliseGroup({ label, items, color }: { label: string; items: string[];
               borderRadius: '0 6px 6px 0',
             }}
           >
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: '#444', lineHeight: 1.5 }}>
+            <span style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: '#444', lineHeight: 1.5 }}>
               {item}
             </span>
+            {hovered === i && !disabled && onDescartar && (
+              <button
+                onClick={() => onDescartar(item)}
+                style={{
+                  flexShrink: 0, background: '#fff', border: '1px solid #E4E4E4', borderRadius: 6,
+                  padding: '3px 8px', fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
+                  fontSize: 12, color: '#666', cursor: 'pointer',
+                }}
+              >
+                Descartar
+              </button>
+            )}
           </div>
         ))}
       </div>

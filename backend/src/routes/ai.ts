@@ -194,7 +194,13 @@ ai.post('/generate-process', async (c) => {
 const REGRAS_FERRAMENTA = `Regras para preencher a ferramenta:
 - Se houver mais de um executor/área no processo, OBRIGATORIAMENTE preencha sectionTitle e sectionIndex em cada step. Exemplo: Vendedor → sectionIndex 0, Financeiro → sectionIndex 1, TI → sectionIndex 2. Todos os passos de um mesmo executor devem ter o mesmo sectionIndex.
 - Se o processo tiver apenas um executor, omita sectionTitle e sectionIndex.
-- Para a análise: baseie-se apenas no que foi descrito, não em genéricos. Se não houver problema evidente numa categoria, retorne array vazio. Cada item deve ser uma frase curta e específica.`
+- Para a análise: baseie-se apenas no que foi descrito, não em genéricos. Se não houver problema evidente numa categoria, retorne array vazio. Cada item deve ser uma frase curta e específica.
+
+Quando o usuário trouxer melhorias aprovadas de uma versão já gerada do processo:
+- Responda em texto corrido dizendo, em poucas linhas, como cada melhoria vai entrar no processo (qual etapa muda ou qual etapa nova surge).
+- Pergunte apenas o que faltar para aplicá-las de forma concreta (ex.: um prazo, um responsável, a ferramenta usada). Uma pergunta por vez.
+- Quando tiver o necessário, chame finalizar_mapeamento com as etapas atualizadas: melhorias incorporadas nas etapas e pontos de atenção registrados no campo notes da etapa onde acontecem. Se uma melhoria eliminar a causa de um ponto de atenção, não registre esse ponto. Mantenha como estão as etapas que nada afeta.
+- Na nova análise, não repita as melhorias já aplicadas.`
 
 const MAPPING_SYSTEM = `Você é um analista de processos sênior. Sua função é conduzir uma entrevista estruturada para mapear um processo de negócio de forma clara e objetiva.
 
