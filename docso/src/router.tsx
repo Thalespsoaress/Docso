@@ -197,6 +197,8 @@ const mapeamentoRoute = createRoute({
 const treinamentosRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/treinamentos',
+  validateSearch: (s: Record<string, unknown>): { processo?: string } =>
+    typeof s.processo === 'string' ? { processo: s.processo } : {},
   component: () => (
     <AdminManagerRoute>
       <TreinamentosPage />

@@ -23,8 +23,9 @@ protectedRoutes.get('/', async (c) => {
     return c.json({ error: 'Sem permissão para ver treinamentos', code: 'FORBIDDEN' }, 403)
   }
 
+  const processId = c.req.query('processId')
   const assignments = await prisma.trainingAssignment.findMany({
-    where: { organizationId: c.get('organizationId') },
+    where: { organizationId: c.get('organizationId'), ...(processId ? { processId } : {}) },
     select: {
       id: true,
       status: true,

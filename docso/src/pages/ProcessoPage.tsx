@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import { useCurrentUser } from '../hooks/useCurrentUser'
 import Sidebar from '../components/Sidebar'
 import BrandLoader from '../components/BrandLoader'
 import FlowView, { type Step, type Gateway } from '../components/FlowView'
+import { type Assignment, TRAINING_STATUS, andamento } from '../lib/training'
 
 type Analise = {
   gargalos: string[]
@@ -49,6 +50,7 @@ function AtribuirModal({
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [feedback, setFeedback] = useState('')
   const [erro, setErro] = useState('')
+  const queryClient = useQueryClient()
 
   const { data: members = [] } = useQuery({
     queryKey: ['members'],
@@ -68,6 +70,7 @@ function AtribuirModal({
       if (jaAtribuidos > 0) msg += ` ${jaAtribuidos} já ${jaAtribuidos === 1 ? 'tinha' : 'tinham'} treinamento pendente.`
       setFeedback(msg)
       setSelected(new Set())
+      queryClient.invalidateQueries({ queryKey: ['training-assignments'] })
     },
     onError: () => setErro('Erro ao atribuir treinamentos. Tente novamente.'),
   })
@@ -262,6 +265,63 @@ function AnaliseSection({ analise }: { analise: Analise }) {
   )
 }
 
+function TreinamentoResumo({ processId }: { processId: string }) {
+  const navigate = useNavigate()
+  const { data = [] } = useQuery({
+    queryKey: ['training-assignments', processId],
+    queryFn: () => api.get<Assignment[]>(`/api/training?processId=${processId}`),
+  })
+
+  // Uma linha por pessoa, a atribuição mais recente vence (API ordena por createdAt desc, Map mantém o último set)
+  const porPessoa = [...new Map([...data].reverse().map(a => [a.assignee.id, a] as const)).values()]
+  if (porPessoa.length === 0) return null
+
+  const concluidos = porPessoa.filter(a => a.status === 'completed').length
+  const faltam = porPessoa.filter(a => a.status !== 'completed')
+  const pct = Math.round((concluidos / porPessoa.length) * 100)
+
+  return (
+    <div style={{ background: '#fff', border: '1.5px solid var(--cinza-borda)', borderRadius: 10, padding: '18px 20px', marginBottom: 48, boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
+        <div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: 'var(--cinza-texto)', marginBottom: 4 }}>Treinamento</div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 15, letterSpacing: -0.3, color: 'var(--preto)' }}>
+            {concluidos} de {porPessoa.length} {porPessoa.length === 1 ? 'concluiu' : 'concluíram'}
+          </div>
+        </div>
+        <button
+          onClick={() => navigate({ to: '/treinamentos', search: { processo: processId } })}
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'var(--azul-texto)', whiteSpace: 'nowrap' }}
+        >
+          Ver no painel →
+        </button>
+      </div>
+      <div className="prog-bar"><div className="prog-fill" style={{ width: `${pct}%`, background: 'var(--verde)' }} /></div>
+
+      {faltam.length === 0 ? (
+        <div style={{ marginTop: 12, fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--verde-texto)' }}>Todos concluíram.</div>
+      ) : (
+        <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {faltam.slice(0, 5).map(a => {
+            const st = TRAINING_STATUS[a.status] ?? TRAINING_STATUS.pending
+            const and = andamento(a)
+            return (
+              <div key={a.id} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px 10px' }}>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 13, color: 'var(--preto)', flex: 1, minWidth: 120 }}>{a.assignee.name}</span>
+                <span className={`status-pill ${st.className}`}><span className="dot" />{st.label}</span>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: and.parado ? 'var(--vermelho-texto)' : 'var(--cinza-texto)', minWidth: 110, textAlign: 'right' }}>{and.texto}</span>
+              </div>
+            )
+          })}
+          {faltam.length > 5 && (
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'var(--cinza-texto)' }}>+ {faltam.length - 5} pendentes</div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 const STATUS_CLASS: Record<string, string> = {
   published: 'status-publicado',
   draft: 'status-rascunho',
@@ -433,6 +493,10 @@ export default function ProcessoPage() {
                     </div>
                   </div>
                 </div>
+
+                {canAssign && process.status === 'published' && (
+                  <TreinamentoResumo processId={process.id} />
+                )}
 
                 {steps.length > 0 && (
                   <div className="section-block">

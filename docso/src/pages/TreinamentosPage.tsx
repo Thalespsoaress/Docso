@@ -1,59 +1,25 @@
 import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import Sidebar from '../components/Sidebar'
 import BrandLoader from '../components/BrandLoader'
+import { type Assignment, type TrainingStatus as Status, TRAINING_STATUS as STATUS, andamento } from '../lib/training'
 
-type Status = 'pending' | 'in_progress' | 'completed'
-
-type Assignment = {
-  id: string
-  status: Status
-  createdAt: string
-  startedAt: string | null
-  completedAt: string | null
-  assignee: { id: string; name: string; email: string }
-  process: { id: string; title: string }
-}
-
-const STATUS: Record<Status, { label: string; className: string }> = {
-  pending: { label: 'Não iniciado', className: 'status-pendente' },
-  in_progress: { label: 'Em andamento', className: 'status-andamento' },
-  completed: { label: 'Concluído', className: 'status-concluido' },
-}
-
-const PARADO_DIAS = 7
 const GRID = '1fr 1fr 130px 150px'
-
-function diasDesde(iso: string) {
-  return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
-}
-
-function haDias(n: number) {
-  return n === 0 ? 'hoje' : n === 1 ? 'há 1 dia' : `há ${n} dias`
-}
-
-function andamento(a: Assignment) {
-  if (a.status === 'completed' && a.completedAt) {
-    return { texto: `Concluído em ${new Date(a.completedAt).toLocaleDateString('pt-BR')}`, parado: false }
-  }
-  const desde = a.status === 'in_progress' && a.startedAt ? a.startedAt : a.createdAt
-  const dias = diasDesde(desde)
-  return {
-    texto: `${a.status === 'in_progress' ? 'Iniciado' : 'Enviado'} ${haDias(dias)}`,
-    parado: dias >= PARADO_DIAS,
-  }
-}
 
 export default function TreinamentosPage() {
   const navigate = useNavigate()
   const [filtro, setFiltro] = useState<Status | 'all'>('all')
 
-  const { data: assignments = [], isLoading } = useQuery({
+  const { processo } = useSearch({ from: '/treinamentos' })
+
+  const { data: todos = [], isLoading } = useQuery({
     queryKey: ['training-assignments'],
     queryFn: () => api.get<Assignment[]>('/api/training'),
   })
+  const assignments = processo ? todos.filter(a => a.process.id === processo) : todos
+  const processoTitulo = processo ? todos.find(a => a.process.id === processo)?.process.title : undefined
 
   const count = (s: Status) => assignments.filter(a => a.status === s).length
   const concluidos = count('completed')
@@ -79,6 +45,18 @@ export default function TreinamentosPage() {
               <div className="greeting-title"><span className="brand-dot">Treinamentos</span></div>
             </div>
           </div>
+
+          {processoTitulo && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: -24, marginBottom: 28, fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--cinza-medio)' }}>
+              Processo: <strong style={{ fontWeight: 500, color: 'var(--preto)' }}>{processoTitulo}</strong>
+              <button
+                onClick={() => navigate({ to: '/treinamentos', search: {} })}
+                style={{ background: 'none', border: '1px solid var(--cinza-borda)', borderRadius: 99, padding: '2px 10px', fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'var(--cinza-medio)', cursor: 'pointer' }}
+              >
+                Ver todos
+              </button>
+            </div>
+          )}
 
           {isLoading ? (
             <div style={{ height: 320 }}><BrandLoader inline /></div>
