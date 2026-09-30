@@ -399,8 +399,9 @@ export default function ProcessoPage() {
 
   if (!process) {
     return (
-      <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, color: 'var(--preto)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 18, color: 'var(--preto)' }}>
         Processo não encontrado.
+        <button className="btn-ghost" onClick={() => navigate({ to: '/biblioteca' })}>Voltar para a Home</button>
       </div>
     )
   }
@@ -421,10 +422,12 @@ export default function ProcessoPage() {
             <span className="breadcrumb-current">{process.title}</span>
           </div>
           <div className="topbar-actions">
-            <button className="btn-ghost" onClick={() => navigate({ to: '/studio/$id', params: { id: process.id } })}>
-              <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9.5V11h1.5l5-5-1.5-1.5-5 5zM10.5 3.5l-1-1a.7.7 0 0 0-1 0l-.9.9 1.5 1.5.9-.9a.7.7 0 0 0 0-1z"/></svg>
-              Editar
-            </button>
+            {canAssign && (
+              <button className="btn-ghost" onClick={() => navigate({ to: '/studio/$id', params: { id: process.id } })}>
+                <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9.5V11h1.5l5-5-1.5-1.5-5 5zM10.5 3.5l-1-1a.7.7 0 0 0-1 0l-.9.9 1.5 1.5.9-.9a.7.7 0 0 0 0-1z"/></svg>
+                Editar
+              </button>
+            )}
             {canAssign && process.status === 'published' && (
               <button className="btn-ghost" onClick={() => setShowAtribuir(true)}>
                 <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="4" r="2.5"/><path d="M1 11c0-2.2 1.8-3.5 4-3.5"/><path d="M9 8v4M11 10H7"/></svg>

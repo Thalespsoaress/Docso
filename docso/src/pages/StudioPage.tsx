@@ -234,19 +234,20 @@ export default function StudioPage() {
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isSavingRef  = useRef(false)
 
-  const buildPayload = useCallback((status: string) => ({
+  // Sem status o PATCH mantém o atual: autosave não despublica processo publicado
+  const buildPayload = useCallback((status?: string) => ({
     title:     title.trim() || 'Sem título',
     objective: objective.trim() || null,
     executor:  lanes.map(l => l.title).filter(Boolean).join(', ') || null,
     frequency: frequency.trim() || null,
     steps:     flattenSteps(steps, lanes),
     gateways:  flattenGateways(gateways, steps, lanes),
-    status,
+    ...(status ? { status } : {}),
     ...(analise ? { metadata: { analise } } : {}),
     quiz: quiz.length > 0 ? quiz : [],
   }), [title, objective, frequency, steps, lanes, gateways, analise, quiz])
 
-  const doSave = useCallback(async (status = 'draft') => {
+  const doSave = useCallback(async (status?: string) => {
     if (isSavingRef.current) return
     if (!processId && !title.trim()) return
     isSavingRef.current = true
@@ -270,7 +271,7 @@ export default function StudioPage() {
 
   const scheduleSave = useCallback(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
-    saveTimerRef.current = setTimeout(() => doSave('draft'), 1000)
+    saveTimerRef.current = setTimeout(() => doSave(), 1000)
   }, [doSave])
 
   useEffect(() => {

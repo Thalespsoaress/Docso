@@ -12,9 +12,10 @@ processes.use('*', authMiddleware)
 
 processes.get('/', async (c) => {
   const organizationId = c.get('organizationId')
+  const isMember = !WRITER_ROLES.includes(c.get('role'))
 
   const items = await prisma.process.findMany({
-    where: { organizationId, status: { not: 'archived' } },
+    where: { organizationId, status: isMember ? 'published' : { not: 'archived' } },
     orderBy: { updatedAt: 'desc' },
     select: {
       id: true,
@@ -26,6 +27,7 @@ processes.get('/', async (c) => {
       createdAt: true,
       updatedAt: true,
       publishedAt: true,
+      steps: true,
       creator: { select: { id: true, name: true } },
     },
   })
@@ -48,6 +50,7 @@ processes.post('/', async (c) => {
     steps?: unknown[]
     metadata?: object
     quiz?: unknown[]
+    status?: string
   }>()
 
   if (!body.title) {
@@ -65,6 +68,7 @@ processes.post('/', async (c) => {
       steps: (body.steps ?? []) as object[],
       ...(body.metadata !== undefined && { metadata: body.metadata }),
       ...(body.quiz !== undefined && { quiz: body.quiz as object[] }),
+      ...(body.status === 'published' && { status: 'published', publishedAt: new Date() }),
     },
   })
 
@@ -82,6 +86,15 @@ processes.get('/:id', async (c) => {
 
   if (!process) {
     return c.json({ error: 'Processo não encontrado', code: 'NOT_FOUND' }, 404)
+  }
+
+  if (!WRITER_ROLES.includes(c.get('role'))) {
+    if (process.status !== 'published') {
+      return c.json({ error: 'Processo não encontrado', code: 'NOT_FOUND' }, 404)
+    }
+    // Gabarito do quiz só para quem edita; o membro faz o quiz pelo link de treinamento
+    const { quiz: _quiz, ...semQuiz } = process
+    return c.json(semQuiz)
   }
 
   return c.json(process)
