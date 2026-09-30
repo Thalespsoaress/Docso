@@ -4,7 +4,7 @@ import { createHash } from 'crypto'
 import { authMiddleware } from '../middleware/auth.js'
 import prisma from '../lib/prisma.js'
 
-type AuthVars = { Variables: { userId: string; organizationId: string } }
+type AuthVars = { Variables: { userId: string; organizationId: string; role: string } }
 
 const ai = new Hono<AuthVars>()
 
@@ -308,53 +308,159 @@ type MapeamentoResult = {
   analise: MapeamentoAnalise
 }
 
-const AI_MONTHLY_LIMITS: Record<string, number> = { trial: 30, active: 300 }
+const MAPEAMENTOS_MES: Record<string, number> = { trial: 10, active: 50 }
+// Rede de segurança: teto de chamadas brutas no mês (mapear + quiz) = franquia × isto
+const CHAMADAS_POR_MAPEAMENTO = 25
+const MAX_RESPOSTAS = 20
+const MAX_HISTORICO_CHARS = 80_000
+const AI_ROLES = ['admin', 'manager']
+
+async function usoIA(organizationId: string) {
+  const org = await prisma.organization.findUnique({
+    where: { id: organizationId },
+    select: { plan: true, aiCallsMonth: true, aiMappingsMonth: true, aiResetAt: true },
+  })
+  if (!org) return null
+  const now = new Date()
+  const expirado = !org.aiResetAt || org.aiResetAt <= now
+  const franquia = MAPEAMENTOS_MES[org.plan] ?? MAPEAMENTOS_MES.trial
+  return {
+    mapeamentos: { used: expirado ? 0 : org.aiMappingsMonth, limit: franquia },
+    chamadas: { used: expirado ? 0 : org.aiCallsMonth, limit: franquia * CHAMADAS_POR_MAPEAMENTO },
+    resetAt: expirado ? new Date(now.getFullYear(), now.getMonth() + 1, 1) : org.aiResetAt!,
+    expirado,
+  }
+}
+
+type UsoIA = NonNullable<Awaited<ReturnType<typeof usoIA>>>
+
+// ponytail: ler-e-incrementar não é atômico; chamadas simultâneas podem passar 1 do limite
+function registrarUso(organizationId: string, uso: UsoIA, novoMapeamento: boolean) {
+  return prisma.organization.update({
+    where: { id: organizationId },
+    data: uso.expirado
+      ? { aiCallsMonth: 1, aiMappingsMonth: novoMapeamento ? 1 : 0, aiResetAt: uso.resetAt }
+      : { aiCallsMonth: { increment: 1 }, ...(novoMapeamento && { aiMappingsMonth: { increment: 1 } }) },
+  })
+}
+
+const LIMITE_CHAMADAS = { error: 'Limite de uso de IA deste mês atingido.', code: 'AI_LIMIT_REACHED' }
+const SEM_PERMISSAO = { error: 'Sem permissão para usar a IA', code: 'FORBIDDEN' }
+
+ai.get('/usage', async (c) => {
+  const uso = await usoIA(c.get('organizationId'))
+  if (!uso) return c.json({ error: 'Organização não encontrada', code: 'NOT_FOUND' }, 404)
+  return c.json({ mapeamentos: uso.mapeamentos, chamadas: uso.chamadas, resetAt: uso.resetAt })
+})
+
+// ── Sessões de mapeamento ────────────────────────────────────────────────────
+
+ai.get('/mapeamentos/ativo', async (c) => {
+  if (!AI_ROLES.includes(c.get('role'))) return c.json(SEM_PERMISSAO, 403)
+  const sessao = await prisma.mappingSession.findFirst({
+    where: { organizationId: c.get('organizationId'), createdBy: c.get('userId'), status: 'active' },
+    orderBy: { updatedAt: 'desc' },
+    select: { id: true, respostas: true, state: true },
+  })
+  return c.json(sessao && { id: sessao.id, respostasRestantes: MAX_RESPOSTAS - sessao.respostas, state: sessao.state })
+})
+
+ai.patch('/mapeamentos/:id/estado', async (c) => {
+  if (!AI_ROLES.includes(c.get('role'))) return c.json(SEM_PERMISSAO, 403)
+  const { state } = await c.req.json<{ state: unknown }>()
+  if (JSON.stringify(state ?? null).length > 500_000) {
+    return c.json({ error: 'Estado grande demais', code: 'VALIDATION_ERROR' }, 400)
+  }
+  const { count } = await prisma.mappingSession.updateMany({
+    where: { id: c.req.param('id'), organizationId: c.get('organizationId'), createdBy: c.get('userId'), status: 'active' },
+    data: { state: state as object },
+  })
+  if (count === 0) return c.json({ error: 'Mapeamento não encontrado', code: 'NOT_FOUND' }, 404)
+  return c.json({ ok: true })
+})
+
+ai.post('/mapeamentos/:id/encerrar', async (c) => {
+  if (!AI_ROLES.includes(c.get('role'))) return c.json(SEM_PERMISSAO, 403)
+  const { status } = await c.req.json<{ status: string }>()
+  if (status !== 'concluido' && status !== 'descartado') {
+    return c.json({ error: 'Status inválido', code: 'VALIDATION_ERROR' }, 400)
+  }
+  await prisma.mappingSession.updateMany({
+    where: { id: c.req.param('id'), organizationId: c.get('organizationId'), createdBy: c.get('userId'), status: 'active' },
+    data: { status },
+  })
+  return c.json({ ok: true })
+})
 
 ai.post('/mapear', async (c) => {
+  if (!AI_ROLES.includes(c.get('role'))) return c.json(SEM_PERMISSAO, 403)
   const organizationId = c.get('organizationId')
+  const userId = c.get('userId')
   const body = await c.req.json<{
     messages: { role: 'user' | 'assistant'; content: string }[]
     mode?: 'entrevista' | 'refinar'
+    sessionId?: string
+    processId?: string
   }>()
 
   if (!Array.isArray(body.messages) || body.messages.length === 0) {
     return c.json({ error: 'messages é obrigatório', code: 'VALIDATION_ERROR' }, 400)
   }
-
-  // Verificar e registrar uso de IA
-  const org = await prisma.organization.findUnique({
-    where: { id: organizationId },
-    select: { plan: true, aiCallsMonth: true, aiResetAt: true },
-  })
-  if (!org) return c.json({ error: 'Organização não encontrada', code: 'NOT_FOUND' }, 404)
-
-  const now = new Date()
-  const resetNeeded = !org.aiResetAt || org.aiResetAt <= now
-  const currentCalls = resetNeeded ? 0 : org.aiCallsMonth
-  const limit = AI_MONTHLY_LIMITS[org.plan] ?? 30
-
-  if (currentCalls >= limit) {
-    return c.json({
-      error: `Limite de ${limit} gerações de IA atingido este mês. Aguarde o próximo ciclo ou faça upgrade do plano.`,
-      code: 'AI_LIMIT_REACHED',
-    }, 429)
+  const tamanho = body.messages.reduce((n, m) => n + String(m.content ?? '').length, 0)
+  if (tamanho > MAX_HISTORICO_CHARS || body.messages.length > MAX_RESPOSTAS * 3) {
+    return c.json({ error: 'Conversa longa demais. Crie o processo ou comece um novo mapeamento.', code: 'HISTORY_TOO_LONG' }, 400)
   }
 
-  const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-  await prisma.organization.update({
-    where: { id: organizationId },
-    data: {
-      aiCallsMonth: resetNeeded ? 1 : { increment: 1 },
-      ...(resetNeeded && { aiResetAt: nextReset }),
-    },
-  })
+  const uso = await usoIA(organizationId)
+  if (!uso) return c.json({ error: 'Organização não encontrada', code: 'NOT_FOUND' }, 404)
+  if (uso.chamadas.used >= uso.chamadas.limit) return c.json(LIMITE_CHAMADAS, 429)
+
+  let sessao
+  if (body.sessionId) {
+    sessao = await prisma.mappingSession.findFirst({
+      where: { id: body.sessionId, organizationId, createdBy: userId, status: 'active' },
+    })
+    if (!sessao) {
+      return c.json({ error: 'Este mapeamento não está mais ativo. Comece um novo.', code: 'MAPPING_NOT_FOUND' }, 404)
+    }
+    if (sessao.respostas >= MAX_RESPOSTAS) {
+      return c.json({
+        error: `Este mapeamento chegou ao limite de ${MAX_RESPOSTAS} respostas. Crie o processo ou comece um novo mapeamento.`,
+        code: 'MAPPING_TURN_LIMIT',
+      }, 429)
+    }
+  } else {
+    if (uso.mapeamentos.used >= uso.mapeamentos.limit) {
+      return c.json({ error: `Limite de ${uso.mapeamentos.limit} mapeamentos atingido este mês.`, code: 'AI_LIMIT_REACHED' }, 429)
+    }
+    const origem = body.mode === 'refinar' && body.processId
+      ? await prisma.process.findFirst({ where: { id: body.processId, organizationId }, select: { id: true } })
+      : null
+    await prisma.mappingSession.updateMany({
+      where: { organizationId, createdBy: userId, status: 'active' },
+      data: { status: 'descartado' },
+    })
+    sessao = await prisma.mappingSession.create({
+      data: { organizationId, createdBy: userId, processId: origem?.id ?? null },
+    })
+  }
+
+  const respostas = sessao.respostas + 1
+  await Promise.all([
+    prisma.mappingSession.update({ where: { id: sessao.id }, data: { respostas } }),
+    registrarUso(organizationId, uso, !body.sessionId),
+  ])
+  const meta = { sessionId: sessao.id, respostasRestantes: MAX_RESPOSTAS - respostas }
 
   const isFirstRefinamento = body.mode === 'refinar' && body.messages.length === 1
   const system = body.mode === 'refinar' ? REFINAR_SYSTEM : MAPPING_SYSTEM
   const tools = isFirstRefinamento ? [ANALISE_TOOL, FINALIZE_TOOL] : [FINALIZE_TOOL]
+  // Última resposta do mapeamento: a IA fecha o processo com o que já tem
   const tool_choice = isFirstRefinamento
-    ? { type: 'tool' as const, name: 'analisar_processo' }
-    : { type: 'auto' as const }
+    ? { type: 'tool' as const, name: ANALISE_TOOL.name }
+    : meta.respostasRestantes <= 0
+      ? { type: 'tool' as const, name: FINALIZE_TOOL.name }
+      : { type: 'auto' as const }
 
   let response: Awaited<ReturnType<typeof client.messages.create>>
   try {
@@ -368,7 +474,7 @@ ai.post('/mapear', async (c) => {
     })
   } catch (err) {
     console.error('[mapear] Anthropic error:', err)
-    return c.json({ error: 'Erro ao chamar a IA', code: 'AI_ERROR' }, 500)
+    return c.json({ error: 'Erro ao chamar a IA', code: 'AI_ERROR', ...meta }, 500)
   }
 
   // tool_use tem prioridade — quando a IA finaliza pode vir junto com texto
@@ -378,18 +484,19 @@ ai.post('/mapear', async (c) => {
     // IA ainda está na entrevista
     const textBlock = response.content.find(b => b.type === 'text')
     if (textBlock && textBlock.type === 'text') {
-      return c.json({ type: 'message', content: textBlock.text })
+      return c.json({ type: 'message', content: textBlock.text, ...meta })
     }
-    return c.json({ error: 'Resposta inesperada da IA', code: 'AI_ERROR' }, 500)
+    return c.json({ error: 'Resposta inesperada da IA', code: 'AI_ERROR', ...meta }, 500)
   }
 
   if (toolBlock.type !== 'tool_use') {
-    return c.json({ error: 'Resposta inesperada da IA', code: 'AI_ERROR' }, 500)
+    return c.json({ error: 'Resposta inesperada da IA', code: 'AI_ERROR', ...meta }, 500)
   }
 
   if (toolBlock.name === 'analisar_processo') {
     const input = toolBlock.input as { resumo: string; gargalos: string[]; riscos: string[]; melhorias: string[]; pergunta: string }
     return c.json({
+      ...meta,
       type: 'analise_inicial',
       resumo: input.resumo,
       gargalos: input.gargalos,
@@ -403,6 +510,7 @@ ai.post('/mapear', async (c) => {
 
   // Não cria no banco aqui — frontend revisa e confirma antes de criar
   return c.json({
+    ...meta,
     type: 'processo',
     title: result.title,
     objective: result.objective ?? '',
@@ -446,6 +554,7 @@ const QUIZ_TOOL: Anthropic.Tool = {
 }
 
 ai.post('/generate-quiz', async (c) => {
+  if (!AI_ROLES.includes(c.get('role'))) return c.json(SEM_PERMISSAO, 403)
   const organizationId = c.get('organizationId')
 
   const body = await c.req.json<{ processId: string; count?: number }>()
@@ -460,26 +569,10 @@ ai.post('/generate-quiz', async (c) => {
     return c.json({ error: 'Processo não encontrado', code: 'NOT_FOUND' }, 404)
   }
 
-  // Checar e incrementar limite de uso de IA
-  const org = await prisma.organization.findUnique({ where: { id: organizationId } })
-  if (!org) return c.json({ error: 'Organização não encontrada', code: 'NOT_FOUND' }, 404)
-
-  const AI_MONTHLY_LIMITS: Record<string, number> = { trial: 30, active: 300 }
-  const limit = AI_MONTHLY_LIMITS[org.plan] ?? 30
-  const now = new Date()
-  const resetNeeded = !org.aiResetAt || org.aiResetAt <= now
-  const currentCalls = resetNeeded ? 0 : (org.aiCallsMonth ?? 0)
-  if (currentCalls >= limit) {
-    return c.json({ error: 'Limite mensal de uso de IA atingido', code: 'AI_LIMIT_REACHED' }, 429)
-  }
-  const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-  await prisma.organization.update({
-    where: { id: organizationId },
-    data: {
-      aiCallsMonth: resetNeeded ? 1 : { increment: 1 },
-      ...(resetNeeded && { aiResetAt: nextReset }),
-    },
-  })
+  const uso = await usoIA(organizationId)
+  if (!uso) return c.json({ error: 'Organização não encontrada', code: 'NOT_FOUND' }, 404)
+  if (uso.chamadas.used >= uso.chamadas.limit) return c.json(LIMITE_CHAMADAS, 429)
+  await registrarUso(organizationId, uso, false)
 
   const count = Math.min(body.count ?? 4, 8)
   type Step = { order: number; title: string; description?: string }

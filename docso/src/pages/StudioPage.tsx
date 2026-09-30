@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../lib/api'
+import { useAiUsage, isAiLimitError } from '../hooks/useAiUsage'
 import Sidebar from '../components/Sidebar'
 import FlowView, { type Step as FlowStep, type Gateway as FlowGateway } from '../components/FlowView'
 
@@ -181,6 +182,8 @@ export default function StudioPage() {
   const [analiseOpen, setAnaliseOpen] = useState(true)
   const [quiz, setQuiz] = useState<QuizQuestion[]>([])
   const [quizGenerating, setQuizGenerating] = useState(false)
+  const [quizErro, setQuizErro] = useState('')
+  const ia = useAiUsage()
 
   const [tab, setTab] = useState<'edit' | 'flow'>('edit')
 
@@ -862,18 +865,23 @@ export default function StudioPage() {
                   <button
                     onClick={async () => {
                       setQuizGenerating(true)
+                      setQuizErro('')
                       try {
                         const res = await api.post<{ questions: QuizQuestion[] }>('/api/ai/generate-quiz', {
                           processId,
                           count: 4,
                         })
                         setQuiz(res.questions)
+                      } catch (err) {
+                        setQuizErro(isAiLimitError(err) ? ia.mensagemChamadas : 'Não foi possível gerar o quiz. Tente novamente.')
                       } finally {
                         setQuizGenerating(false)
+                        ia.refresh()
                       }
                     }}
-                    disabled={quizGenerating}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: quizGenerating ? 'default' : 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: quizGenerating ? 'var(--cinza-fraco)' : 'var(--azul)', padding: 0 }}
+                    disabled={quizGenerating || ia.chamadasEsgotadas}
+                    title={ia.chamadasEsgotadas ? ia.mensagemChamadas : undefined}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: quizGenerating || ia.chamadasEsgotadas ? 'default' : 'pointer', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: quizGenerating || ia.chamadasEsgotadas ? 'var(--cinza-fraco)' : 'var(--azul)', padding: 0 }}
                   >
                     {quizGenerating ? (
                       <>
@@ -893,6 +901,11 @@ export default function StudioPage() {
                   </button>
                 )}
               </div>
+              {(quizErro || (ia.chamadasEsgotadas && processId && steps.length > 0)) && (
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'var(--vermelho-texto)' }}>
+                  {quizErro || ia.mensagemChamadas}
+                </div>
+              )}
             </div>
 
             {/* ANÁLISE DA IA */}

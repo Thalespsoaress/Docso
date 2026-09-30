@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { api } from '../lib/api'
 import Sidebar from '../components/Sidebar'
+import { useAiUsage, aiErrorCode } from '../hooks/useAiUsage'
+import BrandLoader from '../components/BrandLoader'
 
 // display: texto mostrado no chat quando content leva contexto extra pra IA
 type Message = { role: 'user' | 'assistant'; content: string; display?: string }
@@ -40,34 +42,43 @@ type AnaliseInicial = {
   pergunta: string
 }
 
-type ApiResponse =
+type SessaoMeta = { sessionId: string; respostasRestantes: number }
+
+type ApiResponse = SessaoMeta & (
   | { type: 'message'; content: string }
   | ({ type: 'processo' } & Omit<ProcessoGerado, never>)
   | ({ type: 'analise_inicial' } & AnaliseInicial)
+)
+
+// Estado da tela salvo na sessão do servidor, para retomar em qualquer dispositivo
+type EstadoSalvo = {
+  messages: Message[]
+  processoGerado: ProcessoGerado | null
+  analiseInicial: AnaliseInicial | null
+  refinarPrefix: { context: string; pergunta: string } | null
+  refinarProcessId: string | null
+}
+
+type SessaoAtiva = { id: string; respostasRestantes: number; state: EstadoSalvo | null } | null
+
+// Códigos cujo texto do backend já é a mensagem certa para o usuário
+const ERROS_COM_MENSAGEM = ['AI_LIMIT_REACHED', 'MAPPING_TURN_LIMIT', 'MAPPING_NOT_FOUND', 'HISTORY_TOO_LONG']
+
+function textoDoErro(err: unknown, padrao: string) {
+  const code = aiErrorCode(err)
+  return code && ERROS_COM_MENSAGEM.includes(code) ? (err as Error).message : padrao
+}
+
+function extrairProcesso(res: Extract<ApiResponse, { type: 'processo' }>): ProcessoGerado {
+  return { title: res.title, objective: res.objective, executor: res.executor, frequency: res.frequency, steps: res.steps, analise: res.analise }
+}
+
+function sessaoDoErro(err: unknown) {
+  return (err as { body?: { sessionId?: string } }).body?.sessionId
+}
 
 const PRIMEIRA_MENSAGEM =
   'Vamos mapear um processo. Para começar: qual é o nome do processo que você quer documentar, e qual é o objetivo principal dele?'
-
-const STORAGE_KEY = 'docso-mapeamento-session'
-
-function buildAnaliseMessage(processo: ProcessoGerado): Message {
-  const { analise, title } = processo
-  const lines: string[] = [`Retomando o mapeamento de "${title}". Segue a análise:`]
-  if (analise.gargalos.length > 0) {
-    lines.push('\nGargalos:')
-    analise.gargalos.forEach(g => lines.push(`• ${g}`))
-  }
-  if (analise.riscos.length > 0) {
-    lines.push('\nRiscos:')
-    analise.riscos.forEach(r => lines.push(`• ${r}`))
-  }
-  if (analise.melhorias.length > 0) {
-    lines.push('\nMelhorias sugeridas:')
-    analise.melhorias.forEach(m => lines.push(`• ${m}`))
-  }
-  lines.push('\nO que você gostaria de ajustar?')
-  return { role: 'assistant', content: lines.join('\n') }
-}
 
 type ProcessoContexto = {
   processId?: string | null
@@ -93,71 +104,76 @@ function buildContextMessage(p: ProcessoContexto): string {
   return lines.join('\n')
 }
 
-function loadInitialState(): { messages: Message[]; processoGerado: ProcessoGerado | null; processoContexto: ProcessoContexto | null } {
-  const defaultMessages = [{ role: 'assistant' as const, content: PRIMEIRA_MENSAGEM }]
-
-  // Refinar a partir de processo existente (Studio → Mapear com IA)
-  const processoRaw = sessionStorage.getItem('mapeamento-processo')
-  if (processoRaw) {
-    sessionStorage.removeItem('mapeamento-processo')
-    localStorage.removeItem(STORAGE_KEY)
-    try {
-      const processoContexto = JSON.parse(processoRaw) as ProcessoContexto
-      return { messages: [], processoGerado: null, processoContexto }
-    } catch { /* ignore */ }
-  }
-
-  // Retomar sessão existente (com possível flag de refinar análise anterior)
+// Refinar a partir de processo existente (Studio → Refinar com IA)
+function lerProcessoContexto(): ProcessoContexto | null {
+  const raw = sessionStorage.getItem('mapeamento-processo')
+  if (!raw) return null
+  sessionStorage.removeItem('mapeamento-processo')
   try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (!saved) return { messages: defaultMessages, processoGerado: null, processoContexto: null }
-
-    const { messages: savedMsgs, processoGerado: savedProcesso } = JSON.parse(saved) as {
-      messages?: Message[]
-      processoGerado?: ProcessoGerado | null
-    }
-
-    const base = Array.isArray(savedMsgs) && savedMsgs.length > 1 ? savedMsgs : defaultMessages
-    const refinar = sessionStorage.getItem('mapeamento-refinar') === '1'
-    if (refinar) sessionStorage.removeItem('mapeamento-refinar')
-
-    if (refinar && savedProcesso) {
-      return { messages: [...base, buildAnaliseMessage(savedProcesso)], processoGerado: null, processoContexto: null }
-    }
-
-    return { messages: base, processoGerado: savedProcesso ?? null, processoContexto: null }
+    return JSON.parse(raw) as ProcessoContexto
   } catch {
-    return { messages: defaultMessages, processoGerado: null, processoContexto: null }
+    return null
   }
 }
 
+const MENSAGENS_INICIAIS: Message[] = [{ role: 'assistant', content: PRIMEIRA_MENSAGEM }]
+
 export default function MapeamentoPage() {
   const navigate = useNavigate()
-  const initialRef = useRef(loadInitialState())
-  const [messages, setMessages] = useState<Message[]>(initialRef.current.messages)
-  const [processoGerado, setProcessoGerado] = useState<ProcessoGerado | null>(initialRef.current.processoGerado)
+  const [processoContexto] = useState(lerProcessoContexto)
+  const [messages, setMessages] = useState<Message[]>(processoContexto ? [] : MENSAGENS_INICIAIS)
+  const [processoGerado, setProcessoGerado] = useState<ProcessoGerado | null>(null)
   const [analiseInicial, setAnaliseInicial] = useState<AnaliseInicial | null>(null)
   const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(!!initialRef.current.processoContexto)
+  const [loading, setLoading] = useState(!!processoContexto)
+  const [carregandoSessao, setCarregandoSessao] = useState(!processoContexto)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [respostasRestantes, setRespostasRestantes] = useState<number | null>(null)
   const [creating, setCreating] = useState(false)
   // Marcas por título: sobrevivem à renumeração quando a IA insere etapas
   const [marcas, setMarcas] = useState<Record<string, Marca>>({})
   const etapasAntesRef = useRef<ProcessoStep[] | null>(null)
-  const refinarProcessIdRef = useRef<string | null>(initialRef.current.processoContexto?.processId ?? null)
+  const refinarProcessIdRef = useRef<string | null>(processoContexto?.processId ?? null)
   const refinarPrefixRef = useRef<{ context: string; pergunta: string } | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const ia = useAiUsage()
 
-  // Auto-envia contexto do processo ao abrir via "Refinar com IA" no Studio
+  function aplicarMeta(res: SessaoMeta) {
+    setSessionId(res.sessionId)
+    setRespostasRestantes(res.respostasRestantes)
+  }
+
   useEffect(() => {
-    const ctx = initialRef.current.processoContexto
-    if (!ctx) return
+    const ctx = processoContexto
+    if (!ctx) {
+      // Retoma a sessão ativa deste usuário, se houver
+      api.get<SessaoAtiva>('/api/ai/mapeamentos/ativo')
+        .then(sessao => {
+          if (!sessao) return
+          setSessionId(sessao.id)
+          setRespostasRestantes(sessao.respostasRestantes)
+          const st = sessao.state
+          if (!st) return
+          if (st.messages?.length) setMessages(st.messages)
+          setProcessoGerado(st.processoGerado ?? null)
+          setAnaliseInicial(st.analiseInicial ?? null)
+          refinarPrefixRef.current = st.refinarPrefix ?? null
+          refinarProcessIdRef.current = st.refinarProcessId ?? null
+        })
+        .catch(() => { /* sem sessão para retomar */ })
+        .finally(() => setCarregandoSessao(false))
+      return
+    }
 
+    // Aberto via "Refinar com IA" no Studio: envia o processo como contexto
     const contextMsg = buildContextMessage(ctx)
     api.post<ApiResponse>('/api/ai/mapear', {
       messages: [{ role: 'user', content: contextMsg }],
       mode: 'refinar',
+      processId: ctx.processId ?? undefined,
     }).then(res => {
+      aplicarMeta(res)
       if (res.type === 'analise_inicial') {
         refinarPrefixRef.current = { context: contextMsg, pergunta: res.pergunta }
         setAnaliseInicial(res)
@@ -166,21 +182,40 @@ export default function MapeamentoPage() {
         refinarPrefixRef.current = { context: contextMsg, pergunta: res.content }
         setMessages([{ role: 'assistant', content: res.content }])
       } else if (res.type === 'processo') {
-        const { type: _, ...data } = res
-        setProcessoGerado(data as ProcessoGerado)
+        setProcessoGerado(extrairProcesso(res))
       }
-    }).catch(() => {
-      setMessages([{ role: 'assistant', content: 'Erro ao analisar o processo. Tente novamente.' }])
-    }).finally(() => setLoading(false))
+    }).catch(err => {
+      const sid = sessaoDoErro(err)
+      if (sid) setSessionId(sid)
+      setMessages([{ role: 'assistant', content: textoDoErro(err, 'Erro ao analisar o processo. Tente novamente.') }])
+    }).finally(() => { setLoading(false); ia.refresh() })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Persist to localStorage on every change
+  // Salva o estado da tela na sessão do servidor
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages, processoGerado }))
-    } catch { /* ignore */ }
-  }, [messages, processoGerado])
+    if (!sessionId || carregandoSessao) return
+    const t = setTimeout(() => {
+      const state: EstadoSalvo = {
+        messages,
+        processoGerado,
+        analiseInicial,
+        refinarPrefix: refinarPrefixRef.current,
+        refinarProcessId: refinarProcessIdRef.current,
+      }
+      api.patch(`/api/ai/mapeamentos/${sessionId}/estado`, { state }).catch(() => { /* tenta de novo na próxima mudança */ })
+    }, 800)
+    return () => clearTimeout(t)
+  }, [sessionId, carregandoSessao, messages, processoGerado, analiseInicial])
+
+  function encerrarSessao(status: 'concluido' | 'descartado') {
+    if (!sessionId) return Promise.resolve()
+    return api.post(`/api/ai/mapeamentos/${sessionId}/encerrar`, { status }).catch(() => { /* não bloqueia a navegação */ })
+  }
+
+  const limiteDoMapeamento = respostasRestantes !== null && respostasRestantes <= 0
+  const semFranquia = !sessionId && ia.mapeamentosEsgotados
+  const bloqueado = limiteDoMapeamento || semFranquia
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -188,7 +223,7 @@ export default function MapeamentoPage() {
 
   function handleSend() {
     const text = input.trim()
-    if (!text || loading || processoGerado) return
+    if (!text || loading || processoGerado || bloqueado) return
     setInput('')
     enviar(messages, { role: 'user', content: text })
   }
@@ -210,14 +245,15 @@ export default function MapeamentoPage() {
       const apiMessages = [...prefix, ...sliced].map(m => ({ role: m.role, content: m.content }))
       const res = await api.post<ApiResponse>('/api/ai/mapear', {
         messages: apiMessages,
+        ...(sessionId && { sessionId }),
         ...(refinarProcessIdRef.current && { mode: 'refinar' }),
       })
+      aplicarMeta(res)
 
       if (res.type === 'message') {
         setMessages(prev => [...prev, { role: 'assistant', content: res.content }])
-      } else {
-        const { type: _, ...data } = res
-        const novo = data as ProcessoGerado
+      } else if (res.type === 'processo') {
+        const novo = extrairProcesso(res)
         const antes = etapasAntesRef.current
         if (antes) {
           // ponytail: compara por título; etapa renomeada pela IA aparece como "nova"
@@ -232,12 +268,18 @@ export default function MapeamentoPage() {
         }
         setProcessoGerado(novo)
       }
-    } catch {
+    } catch (err) {
+      const code = aiErrorCode(err)
+      const sid = sessaoDoErro(err)
+      if (sid) setSessionId(sid)
+      if (code === 'MAPPING_NOT_FOUND') setSessionId(null)
+      if (code === 'MAPPING_TURN_LIMIT') setRespostasRestantes(0)
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', content: 'Ocorreu um erro. Pode tentar novamente?' },
+        { role: 'assistant', content: textoDoErro(err, 'Ocorreu um erro. Pode tentar novamente?') },
       ])
     } finally {
+      ia.refresh()
       setLoading(false)
       setTimeout(() => inputRef.current?.focus(), 50)
     }
@@ -256,6 +298,7 @@ export default function MapeamentoPage() {
         metadata: { analise: processoGerado.analise },
         status: 'draft',
       })
+      await encerrarSessao('concluido')
       navigate({ to: '/studio/$id', params: { id: created.id } })
     } catch {
       setCreating(false)
@@ -276,6 +319,7 @@ export default function MapeamentoPage() {
         steps: processoGerado.steps,
         metadata: { analise: processoGerado.analise },
       })
+      await encerrarSessao('concluido')
       navigate({ to: '/studio/$id', params: { id: pid } })
     } catch {
       setCreating(false)
@@ -307,10 +351,12 @@ export default function MapeamentoPage() {
   }
 
   function resetSession() {
-    localStorage.removeItem(STORAGE_KEY)
+    encerrarSessao('descartado')
+    setSessionId(null)
+    setRespostasRestantes(null)
     setMarcas({})
     etapasAntesRef.current = null
-    setMessages([{ role: 'assistant', content: PRIMEIRA_MENSAGEM }])
+    setMessages(MENSAGENS_INICIAIS)
     setInput('')
     setProcessoGerado(null)
     setAnaliseInicial(null)
@@ -355,11 +401,15 @@ export default function MapeamentoPage() {
         <div style={{ flex: 1, overflowY: 'auto', padding: '32px 24px' }}>
           <div style={{ maxWidth: 640, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
+            {carregandoSessao && (
+              <div style={{ height: 240 }}><BrandLoader inline /></div>
+            )}
+
             {analiseInicial && !processoGerado && (
               <AnaliseInicialCard analise={analiseInicial} />
             )}
 
-            {messages.map((msg, i) => (
+            {!carregandoSessao && messages.map((msg, i) => (
               <div
                 key={i}
                 style={{
@@ -419,6 +469,7 @@ export default function MapeamentoPage() {
                 creating={creating}
                 marcas={marcas}
                 temProcessoOrigem={!!refinarProcessIdRef.current}
+                podeContinuar={!limiteDoMapeamento}
                 onUpdateTitle={v => setProcessoGerado(prev => prev ? { ...prev, title: v } : prev)}
                 onUpdateStep={updateStep}
                 onContinuarComMelhorias={continuarComMelhorias}
@@ -447,8 +498,8 @@ export default function MapeamentoPage() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Digite sua resposta... (Enter para enviar)"
-                disabled={loading}
+                placeholder={bloqueado ? 'Mapeamento bloqueado' : 'Digite sua resposta... (Enter para enviar)'}
+                disabled={loading || bloqueado}
                 rows={1}
                 style={{
                   flex: 1,
@@ -489,8 +540,30 @@ export default function MapeamentoPage() {
                 </svg>
               </button>
             </div>
-            <div style={{ maxWidth: 640, margin: '6px auto 0', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
-              Enter para enviar · Shift+Enter para nova linha
+            <div style={{ maxWidth: 640, margin: '6px auto 0', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 12px', fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 12, color: '#A0A0A0' }}>
+              {limiteDoMapeamento ? (
+                <span style={{ color: 'var(--vermelho-texto)' }}>
+                  Este mapeamento chegou ao limite de respostas. Crie o processo ou{' '}
+                  <button onClick={resetSession} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}>
+                    comece um novo
+                  </button>.
+                </span>
+              ) : semFranquia ? (
+                <span style={{ color: 'var(--vermelho-texto)' }}>{ia.mensagemMapeamentos}</span>
+              ) : (
+                <>
+                  <span>Enter para enviar · Shift+Enter para nova linha</span>
+                  {respostasRestantes !== null && respostasRestantes <= 5 ? (
+                    <span style={{ color: 'var(--amarelo-texto)' }}>
+                      {respostasRestantes === 1 ? 'Última resposta: a IA vai fechar o processo' : `Faltam ${respostasRestantes} respostas neste mapeamento`}
+                    </span>
+                  ) : ia.usage && (
+                    <span style={{ color: ia.quase ? 'var(--amarelo-texto)' : undefined }}>
+                      {ia.usage.mapeamentos.used} de {ia.usage.mapeamentos.limit} mapeamentos este mês
+                    </span>
+                  )}
+                </>
+              )}
             </div>
           </div>
         )}
@@ -501,13 +574,14 @@ export default function MapeamentoPage() {
 }
 
 function ProcessoCard({
-  processo, creating, marcas, temProcessoOrigem,
+  processo, creating, marcas, temProcessoOrigem, podeContinuar,
   onUpdateTitle, onUpdateStep, onContinuarComMelhorias, onDescartar, onCriar, onAtualizar, onReset, onContinuar,
 }: {
   processo: ProcessoGerado
   creating: boolean
   marcas: Record<string, Marca>
   temProcessoOrigem: boolean
+  podeContinuar: boolean
   onUpdateTitle: (v: string) => void
   onUpdateStep: (order: number, field: 'title' | 'description' | 'notes', value: string) => void
   onContinuarComMelhorias: (melhorias: string[]) => void
@@ -694,7 +768,9 @@ function ProcessoCard({
             Melhorias sugeridas
           </div>
           <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginTop: 2, marginBottom: 14 }}>
-            Escolha o que aplicar. A IA ajusta as etapas com você na conversa.
+            {podeContinuar
+              ? 'Escolha o que aplicar. A IA ajusta as etapas com você na conversa.'
+              : 'Este mapeamento chegou ao limite de respostas. Aplique as melhorias editando no Studio.'}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {melhorias.map(m => {
@@ -709,7 +785,7 @@ function ProcessoCard({
                   <span style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: '#0A0A0A', lineHeight: 1.55 }}>
                     {m}
                   </span>
-                  <button
+                  {podeContinuar && <button
                     onClick={() => setSelecionadas(prev => aplicada ? prev.filter(x => x !== m) : [...prev, m])}
                     disabled={creating}
                     aria-pressed={aplicada}
@@ -728,12 +804,12 @@ function ProcessoCard({
                       </svg>
                     )}
                     {aplicada ? 'Aplicada' : 'Aplicar'}
-                  </button>
+                  </button>}
                 </div>
               )
             })}
           </div>
-          {selecionadas.length > 0 && (
+          {podeContinuar && selecionadas.length > 0 && (
             <button
               onClick={() => onContinuarComMelhorias(selecionadas)}
               disabled={creating}
@@ -784,7 +860,7 @@ function ProcessoCard({
             {creating ? 'Criando...' : 'Criar rascunho no Studio'}
           </button>
         )}
-        <button
+        {podeContinuar && <button
           onClick={onContinuar}
           disabled={creating}
           style={{
@@ -794,7 +870,7 @@ function ProcessoCard({
           }}
         >
           Continuar conversa
-        </button>
+        </button>}
         <button
           onClick={onReset}
           disabled={creating}

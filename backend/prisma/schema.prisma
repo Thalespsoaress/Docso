@@ -19,6 +19,7 @@ model Organization {
   segment              String?
   employeeCountAtSignup String?
   aiCallsMonth         Int       @default(0)
+  aiMappingsMonth      Int       @default(0)
   aiResetAt            DateTime?
 
   members             OrganizationMember[]
@@ -28,6 +29,7 @@ model Organization {
   onboarding          OnboardingData?
   onboardingTokens    OnboardingToken[]
   invites             Invite[]
+  mappingSessions     MappingSession[]
 }
 
 model OnboardingData {
@@ -80,6 +82,7 @@ model User {
   assignedBy             TrainingAssignment[] @relation("AssignedBy")
   assignedTo             TrainingAssignment[] @relation("AssignedTo")
   invitesSent            Invite[]
+  mappingSessions        MappingSession[]
 }
 
 model OrganizationMember {
@@ -152,4 +155,22 @@ model TrainingAssignment {
   process      Process      @relation(fields: [processId], references: [id])
   assignee     User         @relation("AssignedTo", fields: [assignedTo], references: [id])
   assigner     User         @relation("AssignedBy", fields: [assignedBy], references: [id])
+}
+
+// Uma conversa de mapeamento com a IA. Conta 1 na franquia mensal ao ser criada.
+model MappingSession {
+  id             String   @id @default(uuid())
+  organizationId String
+  createdBy      String
+  processId      String?  // processo de origem, quando é refinamento
+  respostas      Int      @default(0)
+  status         String   @default("active") // active | concluido | descartado
+  state          Json?    // estado da tela (mensagens, processo gerado) para retomar
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  creator      User         @relation(fields: [createdBy], references: [id])
+
+  @@index([createdBy, status])
 }
