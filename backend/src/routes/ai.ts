@@ -462,6 +462,14 @@ ai.post('/mapear', async (c) => {
       ? { type: 'tool' as const, name: FINALIZE_TOOL.name }
       : { type: 'auto' as const }
 
+  // Breakpoint de cache na última mensagem: a próxima chamada lê toda a conversa até aqui a 10% do preço.
+  // ponytail: cache de 5 min; se o usuário demorar mais que isso pra responder, aquela chamada paga a gravação de novo
+  const ultima = body.messages[body.messages.length - 1]
+  const messages: Anthropic.MessageParam[] = [
+    ...body.messages.slice(0, -1),
+    { role: ultima.role, content: [{ type: 'text', text: String(ultima.content), cache_control: { type: 'ephemeral' } }] },
+  ]
+
   let response: Awaited<ReturnType<typeof client.messages.create>>
   try {
     response = await client.messages.create({
@@ -470,12 +478,14 @@ ai.post('/mapear', async (c) => {
       system,
       tools,
       tool_choice,
-      messages: body.messages,
+      messages,
     })
   } catch (err) {
     console.error('[mapear] Anthropic error:', err)
     return c.json({ error: 'Erro ao chamar a IA', code: 'AI_ERROR', ...meta }, 500)
   }
+  const u = response.usage
+  console.info(`[mapear] tokens in=${u.input_tokens} cache_read=${u.cache_read_input_tokens ?? 0} cache_write=${u.cache_creation_input_tokens ?? 0} out=${u.output_tokens}`)
 
   // tool_use tem prioridade — quando a IA finaliza pode vir junto com texto
   const toolBlock = response.content.find(b => b.type === 'tool_use')
